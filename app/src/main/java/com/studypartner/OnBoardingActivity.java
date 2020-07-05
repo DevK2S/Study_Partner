@@ -31,6 +31,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate: starts");
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_on_boarding);
 		
@@ -39,7 +40,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 		skipButton = findViewById(R.id.onBoardingScreenSkipButton);
 		backButton = findViewById(R.id.onBoardingScreenBackButton);
 		tabIndicator = findViewById(R.id.onBoardingScreenTabLayout);
-		buttonAnimation = AnimationUtils.loadAnimation(this, R.anim.button_animation);
+		buttonAnimation = AnimationUtils.loadAnimation(this, R.anim.on_boarding_get_started_animation);
 		
 		Log.d(TAG, "onCreate: Initialising screens for onBoarding");
 		
@@ -106,7 +107,9 @@ public class OnBoardingActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: loading LoginActivity for skip button");
+				getSharedPreferences("OnBoarding", MODE_PRIVATE).edit().putBoolean("ON_BOARDING_SCREEN_VIEWED", true).apply();
 				startActivity(new Intent(OnBoardingActivity.this, LoginActivity.class));
+				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 			}
 		});
 		
@@ -116,6 +119,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 				Log.d(TAG, "onClick: loading LoginActivity for get started button");
 				getSharedPreferences("OnBoarding", MODE_PRIVATE).edit().putBoolean("ON_BOARDING_SCREEN_VIEWED", true).apply();
 				startActivity(new Intent(OnBoardingActivity.this, LoginActivity.class));
+				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 			}
 		});
 		
@@ -147,6 +151,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 			
 			}
 		});
+		
 		Log.d(TAG, "onCreate: ends");
 	}
 	

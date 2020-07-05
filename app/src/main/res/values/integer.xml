@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- By: Karan Gourisaria -->
+<resources>
+    <integer name="onBoardingGetStartedTransition">700</integer>
+    <integer name="slideInTransition">500</integer>
+    <integer name="slideOutTransition">500</integer>
+</resources>

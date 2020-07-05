@@ -24,8 +24,11 @@ public class SplashScreenActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate: starts");
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash_screen);
+		
+		overridePendingTransition(0, R.anim.slide_out_left);
 		
 		mAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 		
@@ -47,9 +50,11 @@ public class SplashScreenActivity extends AppCompatActivity {
 					Log.d(TAG, "run: starting On Boarding Activity");
 					startActivity(new Intent(SplashScreenActivity.this, OnBoardingActivity.class));
 				}
+				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				finish();
 			}
 		},2500);
+		
 		Log.d(TAG, "onCreate: ends");
 	}
 }

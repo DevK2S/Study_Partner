@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- By: Karan Gourisaria -->
+<resources>
+    <dimen name="smallMargin">8dp</dimen>
+    <dimen name="mediumMargin">16dp</dimen>
+    <dimen name="largeMargin">32dp</dimen>
+
+    <dimen name="smallPadding">8dp</dimen>
+    <dimen name="mediumPadding">16dp</dimen>
+    <dimen name="largePadding">32dp</dimen>
+
+    <dimen name="smallText">14sp</dimen>
+    <dimen name="mediumText">20sp</dimen>
+    <dimen name="largeText">24sp</dimen>
+    <dimen name="extraLargeText">32sp</dimen>
+
+    <dimen name="splashScreenAppLogoHeight">250dp</dimen>
+    <dimen name="splashScreenAppLogoWidth">250dp</dimen>
+    <dimen name="splashScreenAppLogoTopMargin">125dp</dimen>
+    <dimen name="splashScreenAppNameTopMargin">150dp</dimen>
+
+    <dimen name="onBoardingAppNameTopMargin">48dp</dimen>
+    <dimen name="onBoardingGetStartedBottomMargin">96dp</dimen>
+    <dimen name="onBoardingItemImageHeight">225dp</dimen>
+    <dimen name="onBoardingGetStartedWidth">150dp</dimen>
+</resources>

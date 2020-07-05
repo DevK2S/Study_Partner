@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- By: Karan Gourisaria -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="rectangle">
-            <gradient android:angle="270"
-                android:startColor="@color/splashScreenGradientStartColor"
-                android:endColor="@color/splashScreenGradientEndColor"/>
-        </shape>
-    </item>
-</selector>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:endColor="@color/splashScreenGradientEndColor"
+        android:startColor="@color/splashScreenGradientStartColor" />
+</shape>
