@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".OnBoardingActivity">
+
+    <Button
+        android:id="@+id/onBoardingScreenNextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@color/onBoardingScreenButton"
+        android:drawableEnd="@drawable/on_boarding_forward_arrow"
+        android:drawableTint="@color/onBoardingScreenGradientStartColor"
+        android:padding="8dp"
+        android:text="@string/on_boarding_screen_next"
+        android:textColor="@color/onBoardingScreenGradientStartColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/onBoardingScreenBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="32dp"
+        android:background="@color/onBoardingScreenButton"
+        android:drawableStart="@drawable/on_boarding_backward_arrow"
+        android:drawableTint="@color/onBoardingScreenGradientStartColor"
+        android:padding="8dp"
+        android:text="@string/on_boarding_screen_back"
+        android:textColor="@color/onBoardingScreenGradientStartColor"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/onBoardingScreenSkipButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/onBoardingScreenButton"
+        android:padding="8dp"
+        android:text="@string/on_boarding_screen_skip"
+        android:textColor="@color/onBoardingScreenGradientStartColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/onBoardingScreenGetStartedButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="96dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/button_gradient"
+        android:text="@string/on_boarding_screen_get_started"
+        android:textColor="@color/onBoardingScreenButton"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/onBoardingScreenViewPager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/onBoardingScreenTabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/onBoardingScreenTabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/onBoardingScreenNextButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/onBoardingScreenBackButton"
+        app:tabBackground="@drawable/on_boarding_indicator_selector" />
+</androidx.constraintlayout.widget.ConstraintLayout>
