@@ -1,5 +1,6 @@
 package com.studypartner;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,13 +40,13 @@ public class SplashScreenActivity extends AppCompatActivity {
 			public void run() {
 				Log.d(TAG, "run: Splash Screen Finished");
 				SharedPreferences sharedPreferences = getSharedPreferences("OnBoarding", MODE_PRIVATE);
-//				if (sharedPreferences.getBoolean(ON_BOARDING_SCREEN_VIEWED,false)) {
-//					Log.d(TAG, "run: starting Login Activity");
-//					startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
-//				} else {
-//					Log.d(TAG, "run: starting On Boarding Activity");
-//					startActivity(new Intent(SplashScreenActivity.this, OnBoardingActivity.class));
-//				}
+				if (sharedPreferences.getBoolean(ON_BOARDING_SCREEN_VIEWED, false)) {
+					Log.d(TAG, "run: starting Login Activity");
+					startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+				} else {
+					Log.d(TAG, "run: starting On Boarding Activity");
+					startActivity(new Intent(SplashScreenActivity.this, OnBoardingActivity.class));
+				}
 				finish();
 			}
 		},2500);

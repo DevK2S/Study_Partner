@@ -2,4 +2,9 @@
     <string name="app_name" translatable="false">Study Partner</string>
 
     <string name="splash_screen_logo_cd">Application Logo</string>
+    <string name="on_boarding_screen_next">Next</string>
+    <string name="on_boarding_screen_back">Back</string>
+    <string name="on_boarding_screen_get_started">Get Started</string>
+    <string name="on_boarding_screen_item_image_cd">On Boarding Screen Item Image</string>
+    <string name="on_boarding_screen_skip">Skip</string>
 </resources>
