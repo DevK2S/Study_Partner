@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name" translatable="false">Study Partner</string>
+
+    <string name="splash_screen_logo_cd">Application Logo</string>
+</resources>
