@@ -4,8 +4,182 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/loginScreenBackground"
     tools:context=".LoginActivity">
 
+    <Button
+        android:id="@+id/loginScreenCreateAccountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/mediumMargin"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="@string/login_screen_create_account"
+        android:textColor="@color/loginScreenPrimaryText"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginScreenGoogleLoginButton" />
 
+    <Button
+        android:id="@+id/loginScreenLoginButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/largeMargin"
+        android:layout_marginStart="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:background="@drawable/login_screen_rounded_buttons"
+        android:text="@string/login_screen_title"
+        android:textColor="@color/loginScreenButtonText"
+        android:textSize="@dimen/mediumText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+
+    <Button
+        android:id="@+id/loginScreenGoogleLoginButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/largeMargin"
+        android:layout_marginStart="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:background="@drawable/login_screen_rounded_buttons"
+        android:backgroundTint="@android:color/white"
+        android:drawableStart="@drawable/login_screen_google_logo"
+        android:text="@string/login_screen_google_sign_in"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/mediumText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginScreenLoginButton" />
+
+    <ImageView
+        android:id="@+id/loginScreenBackgroundRectangle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="125dp"
+        android:background="@drawable/login_screen_background_rectangle_corners"
+        android:contentDescription="@string/login_screen_bg_rectangle_cd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/largeMargin"
+        android:layout_marginStart="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/smallMargin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginScreenPasswordTextInput">
+
+        <Button
+            android:id="@+id/loginScreenForgotPasswordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/login_screen_forgot_password"
+            android:textColor="@color/loginScreenPrimaryText" />
+
+        <CheckBox
+            android:id="@+id/loginScreenRememberMeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:buttonTint="@color/loginScreenBackground"
+            android:text="@string/login_screen_remember_me"
+            android:textColor="@color/loginScreenPrimaryText" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/loginScreenLoginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/onBoardingAppNameTopMargin"
+        android:text="@string/login_screen_title"
+        android:textColor="@color/loginScreenButtonText"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/loginScreenCommunityTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/mediumMargin"
+        android:layout_marginStart="@dimen/mediumMargin"
+        android:layout_marginTop="@dimen/largeMargin"
+        android:fontFamily="@font/baloo"
+        android:text="@string/login_screen_join_community"
+        android:textColor="@color/loginScreenPrimaryText"
+        android:textSize="@dimen/mediumText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loginScreenBackgroundRectangle" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/loginScreenPasswordTextInput"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/largeMargin"
+        android:layout_marginStart="@dimen/largeMargin"
+        app:boxStrokeColor="@color/loginScreenBackground"
+        app:boxStrokeWidthFocused="2dp"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/loginScreenBackground"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginScreenEmailTextInput"
+        app:startIconDrawable="@drawable/login_screen_password_icon"
+        app:startIconTint="@color/loginScreenBackground">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/loginScreenPasswordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_screen_password"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/loginScreenEmailTextInput"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/largeMargin"
+        android:layout_marginStart="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/largeMargin"
+        app:boxStrokeColor="@color/loginScreenBackground"
+        app:boxStrokeWidthFocused="2dp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/loginScreenBackground"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loginScreenCommunityTextView"
+        app:startIconDrawable="@drawable/login_screen_email_icon"
+        app:startIconTint="@color/loginScreenBackground">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/loginScreenEmailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_screen_email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

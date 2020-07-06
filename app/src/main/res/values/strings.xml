@@ -2,9 +2,20 @@
     <string name="app_name" translatable="false">Study Partner</string>
 
     <string name="splash_screen_logo_cd">Application Logo</string>
+
     <string name="on_boarding_screen_next">Next</string>
     <string name="on_boarding_screen_back">Back</string>
     <string name="on_boarding_screen_get_started">Get Started</string>
     <string name="on_boarding_screen_item_image_cd">On Boarding Screen Item Image</string>
     <string name="on_boarding_screen_skip">Skip</string>
+
+    <string name="login_screen_bg_rectangle_cd">Login Screen Background Rectangle</string>
+    <string name="login_screen_join_community">Join the community of 10k+ students</string>
+    <string name="login_screen_email">Email</string>
+    <string name="login_screen_password">Password</string>
+    <string name="login_screen_title">Login</string>
+    <string name="login_screen_remember_me">Remember Me</string>
+    <string name="login_screen_forgot_password">Forgot Password</string>
+    <string name="login_screen_create_account">Create Account</string>
+    <string name="login_screen_google_sign_in">Sign in with Google</string>
 </resources>

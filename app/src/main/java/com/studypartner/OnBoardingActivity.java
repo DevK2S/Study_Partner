@@ -110,6 +110,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 				getSharedPreferences("OnBoarding", MODE_PRIVATE).edit().putBoolean("ON_BOARDING_SCREEN_VIEWED", true).apply();
 				startActivity(new Intent(OnBoardingActivity.this, LoginActivity.class));
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				finish();
 			}
 		});
 		
@@ -120,6 +121,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 				getSharedPreferences("OnBoarding", MODE_PRIVATE).edit().putBoolean("ON_BOARDING_SCREEN_VIEWED", true).apply();
 				startActivity(new Intent(OnBoardingActivity.this, LoginActivity.class));
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				finish();
 			}
 		});
 		

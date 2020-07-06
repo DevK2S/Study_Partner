@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimary">#2699FB</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
     <color name="primaryText">#000000</color>
+    <color name="appNameColor">#707070</color>
 
     <color name="splashScreenGradientStartColor">#2193b0</color>
     <color name="splashScreenGradientEndColor">#6dd5ed</color>
@@ -17,5 +18,8 @@
     <color name="onBoardingTabIndicator">#c0c0c0</color>
     <color name="onBoardingScreenIntroTitleColor">#000000</color>
     <color name="onBoardingScreenIntroDescriptionColor">#656565</color>
-    <color name="onBoardingScreenAppNameColor">#707070</color>
+
+    <color name="loginScreenBackground">#2699FB</color>
+    <color name="loginScreenPrimaryText">#2699FB</color>
+    <color name="loginScreenButtonText">#FFFFFF</color>
 </resources>
