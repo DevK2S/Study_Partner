@@ -6,5 +6,5 @@
     <corners
         android:topLeftRadius="40dp"
         android:topRightRadius="40dp" />
-    <solid android:color="@color/loginScreenButtonText" />
+    <solid android:color="@color/createAccountScreenButtonText" />
 </shape>

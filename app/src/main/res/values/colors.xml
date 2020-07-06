@@ -15,11 +15,15 @@
     <color name="onBoardingScreenGradientStartColor">#4c84ff</color>
     <color name="onBoardingScreenGradientEndColor">#18a3fe</color>
     <color name="onBoardingScreenButtonTextColor">#2699FB</color>
-    <color name="onBoardingTabIndicator">#c0c0c0</color>
+    <color name="onBoardingScreenTabIndicator">#c0c0c0</color>
     <color name="onBoardingScreenIntroTitleColor">#000000</color>
     <color name="onBoardingScreenIntroDescriptionColor">#656565</color>
 
     <color name="loginScreenBackground">#2699FB</color>
     <color name="loginScreenPrimaryText">#2699FB</color>
     <color name="loginScreenButtonText">#FFFFFF</color>
+
+    <color name="createAccountScreenBackground">#2699FB</color>
+    <color name="createAccountScreenPrimaryText">#2699FB</color>
+    <color name="createAccountScreenButtonText">#FFFFFF</color>
 </resources>

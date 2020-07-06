@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateAccountActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/createAccountScreenBackground">
+
+        <Button
+            android:id="@+id/createAccountScreenCreateAccountButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:background="@drawable/create_account_screen_rounded_buttons"
+            android:text="@string/create_account_screen_title"
+            android:textColor="@color/createAccountScreenButtonText"
+            android:textSize="@dimen/mediumText"
+            android:transitionName="create_account_transition"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createAccountScreenConfirmPasswordTextInput" />
+
+        <Button
+            android:id="@+id/createAccountScreenLoginButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:background="@drawable/create_account_screen_rounded_buttons"
+            android:backgroundTint="@color/createAccountScreenButtonText"
+            android:text="@string/create_account_screen_login_instead"
+            android:textColor="@color/createAccountScreenPrimaryText"
+            android:textSize="@dimen/mediumText"
+            android:transitionName="login_transition"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createAccountScreenCreateAccountButton" />
+
+        <Button
+            android:id="@+id/createAccountScreenTCButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/mediumMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:background="?android:attr/selectableItemBackground"
+            android:text="@string/create_account_screen_terms_and_conditions"
+            android:textColor="@color/createAccountScreenPrimaryText"
+            android:textSize="@dimen/smallText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createAccountScreenLoginButton" />
+
+        <ImageView
+            android:id="@+id/createAccountScreenBackgroundRectangle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/createAccountScreenBackgroundRectangleTopMargin"
+            android:background="@drawable/create_account_screen_background_rectangle_corners"
+            android:contentDescription="@string/create_account_screen_background_cd"
+            android:transitionName="bgrect_transition"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/createAccountBackArrow"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:contentDescription="@string/create_account_screen_back_arrow_cd"
+            app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/create_account_screen_back_arrow" />
+
+        <TextView
+            android:id="@+id/createAccountScreenWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_account_screen_welcome"
+            android:textColor="@color/createAccountScreenButtonText"
+            android:textSize="@dimen/extraLargeText"
+            android:textStyle="bold"
+            android:transitionName="welcome_transition"
+            app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/createAccountScreenFullNameTextInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/largeMargin"
+            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/createAccountScreenBackground"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/createAccountScreenBackgroundRectangle"
+            app:startIconDrawable="@drawable/name_icon"
+            app:startIconTint="@color/createAccountScreenBackground">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/createAccountScreenFullNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_account_screen_full_name"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/createAccountScreenUsernameTextInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/createAccountScreenBackground"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createAccountScreenFullNameTextInput"
+            app:startIconDrawable="@drawable/username_icon"
+            app:startIconTint="@color/createAccountScreenBackground">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/createAccountScreenUsernameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_account_screen_username"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/createAccountScreenEmailTextInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:transitionName="email_transition"
+            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/createAccountScreenBackground"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createAccountScreenUsernameTextInput"
+            app:startIconDrawable="@drawable/email_icon"
+            app:startIconTint="@color/createAccountScreenBackground">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/createAccountScreenEmailEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_account_screen_email"
+                android:inputType="textEmailAddress"
+                android:transitionName="email_transition" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/createAccountScreenPasswordTextInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:transitionName="password_transition"
+            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/createAccountScreenBackground"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createAccountScreenEmailTextInput"
+            app:startIconDrawable="@drawable/password_icon"
+            app:startIconTint="@color/createAccountScreenBackground">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/createAccountScreenPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_account_screen_password"
+                android:inputType="textPassword"
+                android:transitionName="password_transition" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/createAccountScreenConfirmPasswordTextInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/createAccountScreenBackground"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/createAccountScreenPasswordTextInput"
+            app:startIconDrawable="@drawable/password_icon"
+            app:startIconTint="@color/createAccountScreenBackground">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/createAccountScreenConfirmPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/create_account_screen_confirm_password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
