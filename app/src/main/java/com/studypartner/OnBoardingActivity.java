@@ -29,6 +29,13 @@ public class OnBoardingActivity extends AppCompatActivity {
 	int currentPagePosition = 0;
 	
 	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+	}
+	
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate: starts");
 		
@@ -45,9 +52,9 @@ public class OnBoardingActivity extends AppCompatActivity {
 		Log.d(TAG, "onCreate: Initialising screens for onBoarding");
 		
 		final List<OnBoardingItem> screenList = new ArrayList<>();
-		screenList.add(new OnBoardingItem("NOTES KEEPER", "One step to keep and arrange all your notes", R.drawable.app_logo));
-		screenList.add(new OnBoardingItem("ALL TYPES OF NOTES", "We can store images, documents, videos and much more", R.drawable.app_logo));
-		screenList.add(new OnBoardingItem("ATTENDANCE MANAGER", "We manage your attendance too", R.drawable.app_logo));
+		screenList.add(new OnBoardingItem("NOTES KEEPER", "One step to keep and arrange all your notes", R.drawable.on_boarding_screen_notes_image));
+		screenList.add(new OnBoardingItem("ALL TYPES OF NOTES", "We can store images, documents, videos and much more", R.drawable.on_boarding_screen_types_of_notes_image));
+		screenList.add(new OnBoardingItem("ATTENDANCE MANAGER", "We manage your attendance too", R.drawable.on_boarding_screen_attendance_image));
 		
 		screenPager = findViewById(R.id.onBoardingScreenViewPager);
 		onBoardingViewPagerAdapter = new OnBoardingViewPagerAdapter(this, screenList);
@@ -110,6 +117,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 				getSharedPreferences("OnBoarding", MODE_PRIVATE).edit().putBoolean("ON_BOARDING_SCREEN_VIEWED", true).apply();
 				startActivity(new Intent(OnBoardingActivity.this, LoginActivity.class));
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				finish();
 			}
 		});
 		
@@ -120,6 +128,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 				getSharedPreferences("OnBoarding", MODE_PRIVATE).edit().putBoolean("ON_BOARDING_SCREEN_VIEWED", true).apply();
 				startActivity(new Intent(OnBoardingActivity.this, LoginActivity.class));
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+				finish();
 			}
 		});
 		

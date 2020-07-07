@@ -7,7 +7,7 @@
             android:thickness="4dp"
             android:useLevel="false">
 
-            <solid android:color="@color/onBoardingTabIndicator" />
+            <solid android:color="@color/onBoardingScreenTabIndicator" />
         </shape>
     </item>
 </layer-list>

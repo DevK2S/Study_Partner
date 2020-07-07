@@ -20,8 +20,15 @@
     <dimen name="splashScreenAppLogoTopMargin">125dp</dimen>
     <dimen name="splashScreenAppNameTopMargin">150dp</dimen>
 
-    <dimen name="onBoardingAppNameTopMargin">48dp</dimen>
-    <dimen name="onBoardingGetStartedBottomMargin">96dp</dimen>
-    <dimen name="onBoardingItemImageHeight">225dp</dimen>
-    <dimen name="onBoardingGetStartedWidth">150dp</dimen>
+    <dimen name="onBoardingScreenAppNameTopMargin">48dp</dimen>
+    <dimen name="onBoardingScreenGetStartedBottomMargin">96dp</dimen>
+    <dimen name="onBoardingScreenItemImageHeight">200dp</dimen>
+    <dimen name="onBoardingScreenItemImageWidth">200dp</dimen>
+    <dimen name="onBoardingScreenGetStartedWidth">150dp</dimen>
+
+    <dimen name="loginScreenBoxStrokeWidthFocused">2dp</dimen>
+    <dimen name="loginScreenBackgroundRectangleTopMargin">100dp</dimen>
+
+    <dimen name="createAccountScreenBoxStrokeWidthFocused">2dp</dimen>
+    <dimen name="createAccountScreenBackgroundRectangleTopMargin">100dp</dimen>
 </resources>

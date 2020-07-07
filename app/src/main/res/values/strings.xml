@@ -2,9 +2,33 @@
     <string name="app_name" translatable="false">Study Partner</string>
 
     <string name="splash_screen_logo_cd">Application Logo</string>
+
     <string name="on_boarding_screen_next">Next</string>
     <string name="on_boarding_screen_back">Back</string>
     <string name="on_boarding_screen_get_started">Get Started</string>
     <string name="on_boarding_screen_item_image_cd">On Boarding Screen Item Image</string>
     <string name="on_boarding_screen_skip">Skip</string>
+
+    <string name="login_screen_welcome_back">Welcome Back</string>
+    <string name="login_screen_bg_rectangle_cd">Login Screen Background Rectangle</string>
+    <string name="login_screen_join_community">Join the community of 10k+ students</string>
+    <string name="login_screen_email">Email</string>
+    <string name="login_screen_password">Password</string>
+    <string name="login_screen_title">Login</string>
+    <string name="login_screen_remember_me">Remember Me</string>
+    <string name="login_screen_forgot_password">Forgot Password?</string>
+    <string name="login_screen_create_account">Create an Account</string>
+    <string name="login_screen_google_sign_in">Sign in with Google</string>
+
+    <string name="create_account_screen_background_cd">Create Account Screen Background Rectangle</string>
+    <string name="create_account_screen_welcome">Welcome</string>
+    <string name="create_account_screen_title">Create Account</string>
+    <string name="create_account_screen_terms_and_conditions"><![CDATA[Terms & Conditions]]></string>
+    <string name="create_account_screen_confirm_password">Confirm Password</string>
+    <string name="create_account_screen_password">Password</string>
+    <string name="create_account_screen_email">Email</string>
+    <string name="create_account_screen_username">Username</string>
+    <string name="create_account_screen_login_instead">Login Instead</string>
+    <string name="create_account_screen_full_name">Full Name</string>
+    <string name="create_account_screen_back_arrow_cd">Back arrow to login page</string>
 </resources>
