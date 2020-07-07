@@ -1,4 +1,4 @@
-package com.studypartner;
+package com.studypartner.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +9,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.studypartner.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -53,7 +55,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				finish();
 			}
-		},2500);
+		}, 2000);
 		
 		Log.d(TAG, "onCreate: ends");
 	}

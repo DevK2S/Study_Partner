@@ -1,4 +1,4 @@
-package com.studypartner.Adapters;
+package com.studypartner.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.studypartner.Items.OnBoardingItem;
 import com.studypartner.R;
+import com.studypartner.items.OnBoardingItem;
 
 import java.util.List;
 
@@ -17,8 +17,8 @@ import androidx.viewpager.widget.PagerAdapter;
 
 public class OnBoardingViewPagerAdapter extends PagerAdapter {
 	
-	Context mContext;
-	List<OnBoardingItem> mListScreen;
+	final Context mContext;
+	final List<OnBoardingItem> mListScreen;
 	
 	public OnBoardingViewPagerAdapter(Context mContext, List<OnBoardingItem> mListScreen) {
 		this.mContext = mContext;

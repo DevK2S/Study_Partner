@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateAccountActivity">
+    tools:context=".activities.CreateAccountActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/createAccountScreenBackground">
+
+        <ImageView
+            android:id="@+id/createAccountBackArrow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/smallMargin"
+            android:contentDescription="@string/create_account_screen_back_arrow_cd"
+            app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/create_account_screen_back_arrow" />
 
         <Button
             android:id="@+id/createAccountScreenCreateAccountButton"
@@ -77,15 +87,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/createAccountBackArrow"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:contentDescription="@string/create_account_screen_back_arrow_cd"
-            app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
+        <ProgressBar
+            android:id="@+id/createAccountScreenProgressBar"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/progress_bar_background"
+            android:elevation="8dp"
+            android:padding="@dimen/mediumPadding"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/create_account_screen_back_arrow" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/createAccountScreenWelcome"
