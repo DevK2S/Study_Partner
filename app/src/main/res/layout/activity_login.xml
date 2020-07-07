@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/loginScreenBackground"
-    tools:context=".LoginActivity">
+    tools:context=".activities.LoginActivity">
 
     <Button
         android:id="@+id/loginScreenCreateAccountButton"
@@ -71,6 +71,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/loginScreenProgressBar"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:background="@drawable/progress_bar_background"
+        android:elevation="8dp"
+        android:padding="@dimen/mediumPadding"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <RelativeLayout
         android:id="@+id/relativeLayout"

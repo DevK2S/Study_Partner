@@ -1,4 +1,4 @@
-package com.studypartner.Items;
+package com.studypartner.items;
 
 public class OnBoardingItem {
 	

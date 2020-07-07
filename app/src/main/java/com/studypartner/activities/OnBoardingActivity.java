@@ -1,4 +1,4 @@
-package com.studypartner;
+package com.studypartner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import com.google.android.material.tabs.TabLayout;
-import com.studypartner.Adapters.OnBoardingViewPagerAdapter;
-import com.studypartner.Items.OnBoardingItem;
+import com.studypartner.R;
+import com.studypartner.adapters.OnBoardingViewPagerAdapter;
+import com.studypartner.items.OnBoardingItem;
 
 import java.util.ArrayList;
 import java.util.List;
