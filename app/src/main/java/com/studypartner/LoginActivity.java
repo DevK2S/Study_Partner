@@ -58,6 +58,9 @@ public class LoginActivity extends AppCompatActivity {
 				TextInputLayout passwordTextInput = findViewById(R.id.loginScreenPasswordTextInput);
 				TextInputEditText passwordEditText = findViewById(R.id.loginScreenPasswordEditText);
 				passwordTextInput.setError(validatePassword(passwordEditText.getText().toString()));
+				/*Intent i = new Intent(LoginActivity.this,MainActivity.class);
+				startActivity(i);*/
+
 			}
 		});
 		

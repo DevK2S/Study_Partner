@@ -31,4 +31,16 @@
     <string name="create_account_screen_login_instead">Login Instead</string>
     <string name="create_account_screen_full_name">Full Name</string>
     <string name="create_account_screen_back_arrow_cd">Back arrow to login page</string>
+
+
+    <string name="Main_screen_bg_rectangle_cd">Main Screen Background </string>/>
+    <string name="Menu_Navigation_Button">Menu Button</string>
+    <string name="Attendence_Button">Attendence Button</string>
+    <string name="Notes_Button">Notes Button</string>
+    <string name="Attendence">Attendence</string>
+    <string name="Notes">Notes </string>
+    <string name="menu">home_Menu</string>
+    <string name="profile">Profile</string>
+    <string name="Settings">Settings</string>
+    <string name="TODO">TODO</string>
 </resources>
