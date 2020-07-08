@@ -1,16 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/menuProfile"
-        android:icon="@drawable/username_icon"
-        android:title="@string/profile" />
-    <item
-        android:id="@+id/TODO"
-        android:title="@string/TODO"/>
-    <item
-        android:id="@+id/Settings"
-        android:title="@string/Settings"/>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group android:checkableBehavior="single">
+
+        <item android:id="@+id/navigationMenuHome"
+            android:title="@string/navigation_menu_home"
+            android:icon="@drawable/home_icon"/>
+
+        <item android:id="@+id/navigationMenuNotes"
+            android:title="@string/navigation_menu_notes"
+            android:icon="@drawable/notes_icon"/>
+
+        <item android:id="@+id/navigationMenuAttendance"
+            android:title="@string/navigation_menu_attendance"
+            android:icon="@drawable/attendance_icon"/>
+
+        <item android:id="@+id/navigationMenuReminder"
+            android:title="@string/navigation_menu_reminders"
+            android:icon="@drawable/reminder_icon"/>
+
+    </group>
+
+    <item android:title="@string/navigation_menu_profile">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item android:id="@+id/navigationMenuProfile"
+                    android:title="@string/navigation_menu_profile"
+                    android:icon="@drawable/username_icon"/>
+
+                <item android:id="@+id/navigationMenuLogout"
+                    android:title="@string/navigation_menu_logout"
+                    android:icon="@drawable/logout_icon"/>
+
+            </group>
+
+        </menu>
+
+    </item>
+
+    <item android:title="@string/navigation_menu_settings">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item android:id="@+id/navigationMenuSettings"
+                    android:title="@string/navigation_menu_settings"
+                    android:icon="@drawable/settings_icon"/>
+
+                <item
+                    android:id="@+id/navigationMenuDarkMode"
+                    android:title="@string/navigation_menu_dark_mode"
+                    android:icon="@drawable/dark_mode_icon"
+                    app:actionLayout="@layout/switch_item"
+                    app:showAsAction="always" />
+
+            </group>
+
+        </menu>
+
+    </item>
 
 </menu>

@@ -2,59 +2,68 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerLayout"
+    android:id="@+id/mainScreenDrawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/loginScreenBackground"
-    tools:context=".MainActivity">
+    android:background="@color/mainScreenBackground"
+    tools:context=".activities.MainActivity"
+    tools:openDrawer="start">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/mainScreenBackground">
 
-        <LinearLayout
-            android:id="@+id/layoutToolBar"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:orientation="horizontal"
-            android:paddingStart="20dp"
-            android:paddingEnd="15dp"
-            android:gravity="center_vertical"
+        <ImageView
+            android:id="@+id/mainScreenMenuImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="@dimen/mediumMargin"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:contentDescription="@string/main_screen_navigation_menu_button"
+            android:src="@drawable/menu_icon"
+            app:layout_constraintBottom_toTopOf="@id/mainScreenBackgroundRectangle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/mainScreenBackgroundRectangle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/mainScreenBackgroundRectangleTopMargin"
+            android:background="@drawable/main_screen_background_rectangle_corners"
+            android:contentDescription="@string/main_screen_bg_rectangle_cd"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageMenu"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:contentDescription="@string/menu"
-                android:src="@drawable/ic_baseline_menu_24"
-                ></ImageView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/mediumMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:text="@string/app_name"
+            android:textColor="@color/mainScreenText"
+            android:textSize="@dimen/extraLargeText"
+            app:layout_constraintBottom_toTopOf="@id/mainScreenBackgroundRectangle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigationView"
-        android:layout_height="match_parent"
+        android:id="@+id/mainScreenNavigationView"
         android:layout_width="wrap_content"
-        app:menu="@menu/navigation_menu"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:scrollIndicators="end"
         app:headerLayout="@layout/navigation_header"
-        android:layout_gravity="start"/>
-
-    <ImageView
-        android:id="@+id/MainScreenBackground"
-        android:layout_width="414dp"
-        android:layout_height="660dp"
-        android:layout_marginTop="@dimen/mainScreenBackgroundRectangleTopMargin"
-        android:layout_marginBottom="@dimen/mainScreenBackgroundRectangleBottomMargin"
-        android:contentDescription="@string/Main_screen_bg_rectangle_cd"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/create_account_screen_background_rectangle_corners" />
-
+        app:itemIconTint="@color/menuIcon"
+        app:itemTextColor="@color/menuText"
+        app:menu="@menu/navigation_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

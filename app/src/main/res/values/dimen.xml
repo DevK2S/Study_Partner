@@ -32,9 +32,9 @@
     <dimen name="createAccountScreenBoxStrokeWidthFocused">2dp</dimen>
     <dimen name="createAccountScreenBackgroundRectangleTopMargin">100dp</dimen>
 
-    <dimen name="mainScreenBackgroundRectangleTopMargin">75dp</dimen>
-    <dimen name="mainScreenBackgroundRectangleBottomMargin">-50dp</dimen>
+    <dimen name="mainScreenBackgroundRectangleTopMargin">100dp</dimen>
 
-    <dimen name="MenuButtonStartMargin">0dp</dimen>
-    <dimen name="MenuButtonBottomMargin">15dp</dimen>
+    <dimen name="navigationHeaderHeight">125dp</dimen>
+    <dimen name="navigationMenuButtonStartMargin">0dp</dimen>
+    <dimen name="navigationMenuButtonBottomMargin">15dp</dimen>
 </resources>
