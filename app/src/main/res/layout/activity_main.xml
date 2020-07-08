@@ -1,71 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainScreenDrawerLayout"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainScreenConstraintLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/mainScreenBackground"
-    tools:context=".activities.MainActivity"
-    tools:openDrawer="start">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainScreenConstraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/mainScreenBackground">
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/mainScreenMenuImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="@dimen/mediumMargin"
-            android:layout_marginStart="@dimen/mediumMargin"
-            android:layout_marginTop="@dimen/mediumMargin"
-            android:contentDescription="@string/main_screen_navigation_menu_button"
-            android:src="@drawable/menu_icon"
-            app:layout_constraintBottom_toTopOf="@id/mainScreenBackgroundRectangle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/mainScreenBackgroundRectangle"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/mainScreenBackgroundRectangleTopMargin"
-            android:background="@drawable/main_screen_background_rectangle_corners"
-            android:contentDescription="@string/main_screen_bg_rectangle_cd"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/mediumMargin"
-            android:layout_marginTop="@dimen/mediumMargin"
-            android:text="@string/app_name"
-            android:textColor="@color/mainScreenText"
-            android:textSize="@dimen/extraLargeText"
-            app:layout_constraintBottom_toTopOf="@id/mainScreenBackgroundRectangle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/mainScreenNavigationView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:scrollIndicators="end"
-        android:theme="@style/NavigationTheme"
-        app:headerLayout="@layout/navigation_header"
-        app:itemIconTint="@color/menuIcon"
-        app:itemTextColor="@color/menuText"
-        app:menu="@menu/navigation_menu" />
-
-</androidx.drawerlayout.widget.DrawerLayout>

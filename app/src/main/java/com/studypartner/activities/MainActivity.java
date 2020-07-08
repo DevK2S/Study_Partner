@@ -3,79 +3,24 @@ package com.studypartner.activities;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 
-import com.google.android.material.navigation.NavigationView;
 import com.studypartner.R;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity {
 	private static final String TAG = "MainActivity";
 	
 	private static final float END_SCALE = 0.7f;
 	
-	private NavigationView navigationView;
-	private DrawerLayout drawerLayout;
-	private ConstraintLayout contentView;
-	
-	@Override
-	public void onBackPressed() {
-		if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-			drawerLayout.closeDrawer(GravityCompat.START);
-		} else {
-			super.onBackPressed();
-		}
-	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		
+		getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
 		checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101);
-		
-		drawerLayout = findViewById(R.id.mainScreenDrawerLayout);
-		contentView = findViewById(R.id.mainScreenConstraintLayout);
-		
-		drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-			@Override
-			public void onDrawerSlide(View drawerView, float slideOffset) {
-				final float diffScaledOffset = slideOffset * (1 - END_SCALE);
-				final float offsetScale = 1 - diffScaledOffset;
-				contentView.setScaleX(offsetScale);
-				contentView.setScaleY(offsetScale);
-				
-				final float xOffset = drawerView.getWidth() * slideOffset;
-				final float xOffsetDiff = contentView.getWidth() * diffScaledOffset / 2;
-				final float xTranslation = xOffset - xOffsetDiff;
-				contentView.setTranslationX(xTranslation);
-			}
-		});
-		
-		findViewById(R.id.mainScreenMenuImage).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-					drawerLayout.closeDrawer(GravityCompat.START);
-				} else {
-					drawerLayout.openDrawer(GravityCompat.START);
-				}
-			}
-		});
-		
-		navigationView = findViewById(R.id.mainScreenNavigationView);
-		
-		navigationView.setNavigationItemSelectedListener(this);
-		navigationView.setCheckedItem(R.id.navigationMenuHome);
-		
+
 	}
 	
 	public void checkPermission(String permission, int requestCode) {
@@ -85,29 +30,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
 		}
 	}
-	
-	
-	@Override
-	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.navigationMenuHome:
-				return true;
-			case R.id.navigationMenuNotes:
-				return true;
-			case R.id.navigationMenuAttendance:
-				return true;
-			case R.id.navigationMenuReminder:
-				return true;
-			case R.id.navigationMenuProfile:
-				return true;
-			case R.id.navigationMenuLogout:
-				return true;
-			case R.id.navigationMenuSettings:
-				return true;
-			case R.id.navigationMenuDarkMode:
-				return true;
-			default:
-				return false;
-		}
-	}
+
 }

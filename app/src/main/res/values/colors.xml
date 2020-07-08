@@ -27,8 +27,8 @@
     <color name="createAccountScreenPrimaryText">#2699FB</color>
     <color name="createAccountScreenButtonText">#FFFFFF</color>
 
-    <color name="mainScreenBackground">#2699FB</color>
-    <color name="mainScreenText">#FFFFFF</color>
+    <color name="baseScreenBackground">#2699FB</color>
+    <color name="baseScreenText">#FFFFFF</color>
 
     <color name="navigationHeaderBackground">#2699FB</color>
     <color name="navigationHeaderText">#FFFFFF</color>
