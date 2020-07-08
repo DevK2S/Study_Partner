@@ -10,6 +10,7 @@
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainScreenConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/mainScreenBackground">
@@ -61,6 +62,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:scrollIndicators="end"
+        android:theme="@style/NavigationTheme"
         app:headerLayout="@layout/navigation_header"
         app:itemIconTint="@color/menuIcon"
         app:itemTextColor="@color/menuText"

@@ -9,5 +9,10 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowActivityTransitions">true</item>
     </style>
+    
+    <style name="NavigationTheme">
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
+    </style>
 
 </resources>
