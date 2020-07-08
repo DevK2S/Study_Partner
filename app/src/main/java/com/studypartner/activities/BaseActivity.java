@@ -1,5 +1,6 @@
 package com.studypartner.activities;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.studypartner.R;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = "BaseActivity";
 
     private static final float END_SCALE = 0.7f;
+    
     protected FrameLayout frameLayout;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -72,7 +75,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         });
 
         navigationView = findViewById(R.id.baseScreenNavigationView);
-
+        navigationView.bringToFront();
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.navigationMenuHome);
 
@@ -99,8 +102,14 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
             case R.id.navigationMenuReminder:
                 return true;
             case R.id.navigationMenuProfile:
+                startActivity(new Intent(BaseActivity.this, ProfileActivity.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 return true;
             case R.id.navigationMenuLogout:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+                finishAffinity();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                 return true;
             case R.id.navigationMenuSettings:
                 return true;

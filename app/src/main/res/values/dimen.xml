@@ -37,4 +37,7 @@
     <dimen name="navigationHeaderHeight">150dp</dimen>
     <dimen name="navigationMenuButtonStartMargin">0dp</dimen>
     <dimen name="navigationMenuButtonBottomMargin">15dp</dimen>
+
+    <dimen name="profileScreenBackgroundRectangleTopMargin">100dp</dimen>
+    <dimen name="profileScreenBoxStrokeWidthFocused">2dp</dimen>
 </resources>

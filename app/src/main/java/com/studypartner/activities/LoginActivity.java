@@ -13,7 +13,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -420,8 +419,6 @@ public class LoginActivity extends AppCompatActivity {
 	private String validateEmail(String email) {
 		if (email.trim().length() == 0) {
 			return "Email cannot be empty";
-		} else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-			return "Invalid Email";
 		}
 		return null;
 	}
@@ -429,14 +426,6 @@ public class LoginActivity extends AppCompatActivity {
 	private String validatePassword(String password) {
 		if (password.trim().length() == 0) {
 			return "Password cannot be empty";
-		} else if (password.length() < 7) {
-			return "Password too small. Minimum length is 7";
-		} else if (password.length() > 15) {
-			return "Password too long. Maximum length is 15";
-		} else if (password.contains(" ")) {
-			return "Password cannot contain spaces";
-		} else if (!(password.contains("@") || password.contains("#")) || password.contains("$") || password.contains("%") || password.contains("*") || password.contains(".") || password.matches("(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))")) {
-			return "Password should contain atleast one uppercase character or one number or any of the special characters from (@, #, $, %, *, .)";
 		}
 		return null;
 	}

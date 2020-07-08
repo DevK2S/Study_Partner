@@ -35,4 +35,8 @@
 
     <color name="menuIcon">#2699FB</color>
     <color name="menuText">#2699FB</color>
+
+    <color name="profileScreenBackground">#2699FB</color>
+    <color name="profileScreenPrimaryText">#2699FB</color>
+    <color name="profileScreenButtonText">#FFFFFF</color>
 </resources>

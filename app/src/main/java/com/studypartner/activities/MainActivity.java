@@ -12,20 +12,16 @@ import androidx.core.content.ContextCompat;
 public class MainActivity extends BaseActivity {
 	private static final String TAG = "MainActivity";
 	
-	private static final float END_SCALE = 0.7f;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
 		checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101);
-
 	}
 	
 	public void checkPermission(String permission, int requestCode) {
 		if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
-			
 			// Requesting the permission
 			ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
 		}
