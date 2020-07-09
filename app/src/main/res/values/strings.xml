@@ -60,6 +60,7 @@
     <string name="profile_screen_new_password">New Password</string>
     <string name="profile_screen_confirm_password">Confirm Password</string>
     <string name="profile_screen_update_password">Update Password</string>
+    <string name="profile_screen_delete_account">Delete Account</string>
     <string name="profile_screen_user_photo_cd">User Profile Image</string>
     <string name="profile_screen_user_profile_camera_cd">User Profile Image Camera</string>
 

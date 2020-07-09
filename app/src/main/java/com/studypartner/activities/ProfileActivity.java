@@ -1,6 +1,8 @@
 package com.studypartner.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,6 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,6 +32,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,6 +51,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 
 public class ProfileActivity extends BaseActivity {
@@ -58,14 +65,16 @@ public class ProfileActivity extends BaseActivity {
 	
 	private Uri filePath;
 	
-	private Button updateProfile, updateEmail, updatePassword;
+	private Button updateProfile, updateEmail, updatePassword, deleteAccount;
 	private TextInputLayout fullNameTextInput, usernameTextInput, emailTextInput, passwordTextInput, oldPasswordTextInput,
-			newPasswordTextInput, confirmPasswordTextInput;
+			newPasswordTextInput, confirmPasswordTextInput, deleteAccountPasswordTextInput;
 	private ImageView profileImageView;
 	private ProgressBar progressBar;
 	private ImageButton cameraButton;
 	
-	private String fullName, username, email, password, oldPassword, newPassword, confirmPassword;
+	private boolean signedInWithGoogle = false;
+	
+	private String fullName, username, email, password, oldPassword, newPassword, confirmPassword, deleteAccountPassword;
 	
 	@Override
 	public void onBackPressed() {
@@ -102,17 +111,14 @@ public class ProfileActivity extends BaseActivity {
 	protected void onResume() {
 		super.onResume();
 		
-		enableViews();
 		oldPasswordTextInput.setEnabled(true);
-		progressBar.setVisibility(View.VISIBLE);
+		emailTextInput.setEnabled(true);
 		
-		fullNameTextInput.getEditText().setText("");
-		usernameTextInput.getEditText().setText("");
-		emailTextInput.getEditText().setText("");
 		passwordTextInput.getEditText().setText("");
 		oldPasswordTextInput.getEditText().setText("");
 		newPasswordTextInput.getEditText().setText("");
 		confirmPasswordTextInput.getEditText().setText("");
+		deleteAccountPasswordTextInput.getEditText().setText("");
 	}
 	
 	@Override
@@ -131,12 +137,12 @@ public class ProfileActivity extends BaseActivity {
 		
 		//Setting hooks
 		
-		currentUser = FirebaseAuth.getInstance().getCurrentUser();
 		mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 		
 		updateProfile = findViewById(R.id.profileScreenUpdateProfileButton);
 		updateEmail = findViewById(R.id.profileScreenUpdateEmailButton);
 		updatePassword = findViewById(R.id.profileScreenUpdatePasswordButton);
+		deleteAccount = findViewById(R.id.profileScreenDeleteAccountButton);
 		
 		fullNameTextInput = findViewById(R.id.profileScreenFullNameTextInput);
 		fullNameTextInput.getEditText().addTextChangedListener(new TextWatcher() {
@@ -267,15 +273,31 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
+		deleteAccountPasswordTextInput = findViewById(R.id.profileScreenDeleteAccountPasswordTextInput);
+		deleteAccountPasswordTextInput.getEditText().addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				deleteAccountPasswordTextInput.setError(null);
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
+			}
+		});
+		
 		
 		profileImageView = findViewById(R.id.profileScreenImageView);
 		cameraButton = findViewById(R.id.profileScreenImageButton);
 		
 		progressBar = findViewById(R.id.profileScreenProgressBar);
 		
-//		Log.d(TAG, "onCreate: raising menu button");
-//		ImageView menuButton = findViewById(R.id.baseScreenMenuImage);
-//		menuButton.setElevation(2);
+		currentUser = FirebaseAuth.getInstance().getCurrentUser();
 		
 		disableViews();
 		mDatabaseReference.child("usernames").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
@@ -286,6 +308,8 @@ public class ProfileActivity extends BaseActivity {
 				user = new User(currentUser.getDisplayName(),
 						snapshot.getValue(String.class),
 						currentUser.getEmail(), currentUser.isEmailVerified());
+				Log.d(TAG, "onDataChange: email: " + currentUser.getEmail());
+				Log.d(TAG, "onDataChange: email verification: " + currentUser.isEmailVerified());
 				
 				usernameTextInput.getEditText().setText(user.getUsername());
 				fullNameTextInput.getEditText().setText(user.getFullName());
@@ -311,37 +335,179 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
+		for (UserInfo userInfo: currentUser.getProviderData()) {
+			if (userInfo.getProviderId().equals("google.com")) {
+				Log.d(TAG, "onCreate: logged in with google");
+				signedInWithGoogle = true;
+			}
+		}
+		
 		Log.d(TAG, "onCreate: loading image in profile photo");
 		Picasso.get().load(currentUser.getPhotoUrl())
 				.error(R.drawable.image_error_icon)
 				.placeholder(R.drawable.image_loading_icon)
 				.into(profileImageView);
 		
-		Log.d(TAG, "onCreate: update profile button clicked");
 		updateProfile.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "onCreate: update profile button clicked");
 				updateProfile();
 			}
 		});
 		
-		Log.d(TAG, "onCreate: update email button clicked");
 		updateEmail.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				updateEmail();
+				Log.d(TAG, "onCreate: update email button clicked");
+				if (!signedInWithGoogle) {
+					updateEmail();
+				} else {
+					Toast.makeText(ProfileActivity.this, "Signed in with google, cannot update email", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		
-		Log.d(TAG, "onCreate: update password button clicked");
 		updatePassword.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				updatePassword();
+				Log.d(TAG, "onCreate: update password button clicked");
+				if (!signedInWithGoogle) {
+					updatePassword();
+				} else {
+					Toast.makeText(ProfileActivity.this, "Signed in with google, cannot update password", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+		
+		deleteAccount.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "onClick: delete account button pressed");
+				
+				deleteAccount();
 			}
 		});
 		
 		Log.d(TAG, "onCreate: ends");
+	}
+	
+	private void deleteAccount() {
+		Log.d(TAG, "deleteAccount: checking internet connection");
+		checkConnection(ProfileActivity.this);
+		
+		disableViews();
+		
+		deleteAccountPassword = deleteAccountPasswordTextInput.getEditText().getText().toString();
+		
+		if (!signedInWithGoogle && deleteAccountPasswordTextInput.getVisibility() == View.GONE) {
+			Log.d(TAG, "deleteAccount: showing delete account password edit text");
+			deleteAccountPasswordTextInput.setVisibility(View.VISIBLE);
+			Toast.makeText(this, "Enter the current password to delete the account", Toast.LENGTH_SHORT).show();
+		} else {
+			Log.d(TAG, "deleteAccount: re authenticating the user");
+			
+			AuthCredential authCredential = null;
+			
+			if (signedInWithGoogle) {
+				GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(ProfileActivity.this);
+				if (googleSignInAccount != null) {
+					authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+				}
+			} else {
+				authCredential = EmailAuthProvider.getCredential(user.getEmail(), deleteAccountPassword);
+			}
+			
+			currentUser.reauthenticate(authCredential)
+					.addOnCompleteListener(new OnCompleteListener<Void>() {
+						@Override
+						public void onComplete(@NonNull Task<Void> task) {
+							if (task.isSuccessful()) {
+								Log.d(TAG, "onComplete: re authenticating successful");
+								
+								final AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+								builder.setTitle("Deleting your account");
+								builder.setMessage("Are you sure you want to delete the account?");
+								builder.setCancelable(false);
+								builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										Log.d(TAG, "onClick: deleting account");
+										
+										mDatabaseReference.child("users").child(currentUser.getUid()).removeValue(new DatabaseReference.CompletionListener() {
+											@Override
+											public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+												if (error == null) {
+													mDatabaseReference.child("usernames").child(currentUser.getUid()).removeValue(new DatabaseReference.CompletionListener() {
+														@Override
+														public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+															if (error == null) {
+																
+																if (!signedInWithGoogle && currentUser.getPhotoUrl() != null) {
+																	FirebaseStorage.getInstance().getReferenceFromUrl(String.valueOf(currentUser.getPhotoUrl())).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+																		@Override
+																		public void onSuccess(Void aVoid) {
+																			Log.d(TAG, "onSuccess: photo deleted successfully");
+																		}
+																	});
+																}
+																
+																FirebaseAuth.getInstance().getCurrentUser().delete()
+																		.addOnCompleteListener(new OnCompleteListener<Void>() {
+																			@Override
+																			public void onComplete(@NonNull Task<Void> task) {
+																				if (task.isSuccessful()) {
+																					Toast.makeText(ProfileActivity.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+																					
+																					SharedPreferences sharedPreferences = getSharedPreferences(SESSIONS, MODE_PRIVATE);
+																					SharedPreferences.Editor editor = sharedPreferences.edit();
+																					
+																					editor.putBoolean(REMEMBER_ME_ENABLED, false);
+																					editor.putString(REMEMBER_ME_EMAIL, "");
+																					editor.putString(REMEMBER_ME_PASSWORD, "");
+																					editor.apply();
+																					
+																					FirebaseAuth.getInstance().signOut();
+																					
+																					startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+																					finishAffinity();
+																					overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+																					
+																				} else {
+																					Log.d(TAG, "onComplete: could not delete account");
+																				}
+																			}
+																		});
+															} else {
+																Log.d(TAG, "onComplete: could not delete data");
+															}
+														}
+													});
+												} else {
+													Log.d(TAG, "onComplete: could not delete data");
+												}
+											}
+										});
+									}
+								});
+								builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										dialog.dismiss();
+										deleteAccountPasswordTextInput.getEditText().setText("");
+										deleteAccountPasswordTextInput.setVisibility(View.GONE);
+									}
+								});
+								
+								builder.show();
+							} else {
+								Toast.makeText(ProfileActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+							}
+						}
+					});
+		}
+		
+		enableViews();
 	}
 	
 	private void updateProfile() {
@@ -524,7 +690,10 @@ public class ProfileActivity extends BaseActivity {
 							Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 						}
 					});
+		} else {
+			Toast.makeText(this, "Full name and username are same as now", Toast.LENGTH_SHORT).show();
 		}
+		
 		enableViews();
 	}
 	
@@ -553,6 +722,7 @@ public class ProfileActivity extends BaseActivity {
 		if (passwordTextInput.getVisibility() == View.GONE) {
 			Log.d(TAG, "updateEmail: showing password edit text");
 			passwordTextInput.setVisibility(View.VISIBLE);
+			emailTextInput.setEnabled(false);
 			Toast.makeText(this, "Enter the current password to change the email", Toast.LENGTH_SHORT).show();
 		} else {
 				
@@ -592,6 +762,8 @@ public class ProfileActivity extends BaseActivity {
 																		editor.putString(REMEMBER_ME_EMAIL, email);
 																		editor.apply();
 																	}
+																	
+																	emailTextInput.setEnabled(true);
 																	
 																	passwordTextInput.getEditText().setText("");
 																	passwordTextInput.setVisibility(View.GONE);
@@ -779,13 +951,14 @@ public class ProfileActivity extends BaseActivity {
 		updateEmail.setClickable(false);
 		updatePassword.setClickable(false);
 		cameraButton.setClickable(false);
+		deleteAccount.setClickable(false);
 		
 		fullNameTextInput.setEnabled(false);
 		usernameTextInput.setEnabled(false);
-		emailTextInput.setEnabled(false);
 		passwordTextInput.setEnabled(false);
 		newPasswordTextInput.setEnabled(false);
 		confirmPasswordTextInput.setEnabled(false);
+		deleteAccountPasswordTextInput.setEnabled(false);
 	}
 	
 	private void enableViews() {
@@ -795,12 +968,13 @@ public class ProfileActivity extends BaseActivity {
 		updateEmail.setClickable(true);
 		updatePassword.setClickable(true);
 		cameraButton.setClickable(true);
+		deleteAccount.setClickable(true);
 		
 		fullNameTextInput.setEnabled(true);
 		usernameTextInput.setEnabled(true);
-		emailTextInput.setEnabled(true);
 		passwordTextInput.setEnabled(true);
 		newPasswordTextInput.setEnabled(true);
 		confirmPasswordTextInput.setEnabled(true);
+		deleteAccountPasswordTextInput.setEnabled(true);
 	}
 }

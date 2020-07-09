@@ -30,10 +30,30 @@
             app:layout_constraintTop_toBottomOf="@id/profileScreenUsernameTextInput" />
 
         <Button
+            android:id="@+id/profileScreenDeleteAccountButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginBottom="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:background="@drawable/profile_screen_rounded_buttons"
+            android:backgroundTint="@android:color/black"
+            android:text="@string/profile_screen_delete_account"
+            android:textColor="@color/profileScreenButtonText"
+            android:textSize="@dimen/mediumText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileScreenDeleteAccountPasswordTextInput"/>
+
+        <Button
             android:id="@+id/profileScreenUpdateEmailButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginBottom="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
             android:layout_marginTop="@dimen/mediumMargin"
             android:background="@drawable/profile_screen_rounded_buttons"
@@ -49,7 +69,6 @@
             android:id="@+id/profileScreenUpdatePasswordButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/largeMargin"
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
             android:layout_marginTop="@dimen/mediumMargin"
@@ -57,7 +76,6 @@
             android:text="@string/profile_screen_update_password"
             android:textColor="@color/profileScreenButtonText"
             android:textSize="@dimen/mediumText"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -290,6 +308,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_confirm_password"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/profileScreenDeleteAccountPasswordTextInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/largeMargin"
+            android:visibility="gone"
+            app:boxStrokeColor="@color/profileScreenBackground"
+            app:boxStrokeWidthFocused="@dimen/profileScreenBoxStrokeWidthFocused"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/profileScreenBackground"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileScreenUpdatePasswordButton"
+            app:startIconDrawable="@drawable/password_icon"
+            app:startIconTint="@color/profileScreenBackground">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/profileScreenDeleteAccountPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/profile_screen_password"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -25,6 +25,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -293,9 +295,6 @@ public class LoginActivity extends AppCompatActivity {
 						if (task.isSuccessful()) {
 							Log.d(TAG, "signInWithCredential: success");
 							storeUserDetails();
-							startActivity(new Intent(LoginActivity.this, MainActivity.class));
-							finishAffinity();
-							overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 						} else {
 							findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
 							Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -312,9 +311,9 @@ public class LoginActivity extends AppCompatActivity {
 		
 		if (signInAccount != null) {
 			
-			String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+			final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 			
-			User user = new User(signInAccount.getDisplayName(), signInAccount.getEmail(), true);
+			final User user = new User(signInAccount.getDisplayName(), signInAccount.getEmail(), true);
 			
 			UserProfileChangeRequest.Builder profileUpdates = new UserProfileChangeRequest.Builder();
 			profileUpdates.setDisplayName(signInAccount.getDisplayName());
@@ -331,11 +330,50 @@ public class LoginActivity extends AppCompatActivity {
 						}
 					});
 			
-			//Make users database
-			FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
-			
-			//Make usernames database
-			FirebaseDatabase.getInstance().getReference().child("usernames").child(uid).setValue(user.getUsername());
+			FirebaseAuth.getInstance().getCurrentUser().updateEmail(signInAccount.getEmail())
+					.addOnCompleteListener(new OnCompleteListener<Void>() {
+						@Override
+						public void onComplete(@NonNull Task<Void> task) {
+							if (task.isSuccessful()) {
+								Log.d(TAG, "onComplete: email " + FirebaseAuth.getInstance().getCurrentUser().getEmail());
+								
+								FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+								
+								//Make users database
+								FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
+								
+								//Make usernames database
+								FirebaseDatabase.getInstance().getReference().child("usernames").child(uid).setValue(user.getUsername());
+								
+								startActivity(new Intent(LoginActivity.this, MainActivity.class));
+								finishAffinity();
+								overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+							} else if (task.getException().getMessage().equals("The email address is already in use by another account.")) {
+								Log.d(TAG, "onComplete: email already in use");
+								
+								findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
+								
+								Toast.makeText(LoginActivity.this, "Email already in use by other account. Cannot sign in", Toast.LENGTH_LONG).show();
+								
+								FirebaseAuth.getInstance().getCurrentUser().delete()
+										.addOnSuccessListener(new OnSuccessListener<Void>() {
+											@Override
+											public void onSuccess(Void aVoid) {
+												Log.d(TAG, "onSuccess: account deleted successfully");
+											}
+										})
+										.addOnFailureListener(new OnFailureListener() {
+											@Override
+											public void onFailure(@NonNull Exception e) {
+												Log.d(TAG, "onFailure: account could not be deleted");
+											}
+										});
+							} else {
+								findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
+								task.getException().printStackTrace();
+							}
+						}
+					});
 		}
 		Log.d(TAG, "storeUserDetails: ends");
 	}
