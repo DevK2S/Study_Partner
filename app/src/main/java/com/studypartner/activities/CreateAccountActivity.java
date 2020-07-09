@@ -17,6 +17,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 import com.studypartner.R;
 import com.studypartner.models.User;
@@ -238,6 +239,21 @@ public class CreateAccountActivity extends AppCompatActivity {
 		String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		
 		User user = new User(fullName, username, email, FirebaseAuth.getInstance().getCurrentUser().isEmailVerified());
+		
+		UserProfileChangeRequest.Builder profileUpdates = new UserProfileChangeRequest.Builder();
+		profileUpdates.setDisplayName(fullName);
+		
+		FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates.build())
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						if (task.isSuccessful()) {
+							Log.d(TAG, "onComplete: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+						} else {
+							Log.d(TAG, "onComplete: Could not update display name");
+						}
+					}
+				});
 		
 		FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
 			@Override

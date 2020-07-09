@@ -3,25 +3,79 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileScreenScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/profileScreenBackground"
     tools:context=".activities.ProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/profileScreenBackground">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/profileScreenBackArrow"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/smallMargin"
-            android:contentDescription="@string/profile_screen_back_arrow_cd"
-            app:layout_constraintBottom_toTopOf="@+id/profileScreenBackgroundRectangle"
+        <Button
+            android:id="@+id/profileScreenUpdateProfileButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:background="@drawable/profile_screen_rounded_buttons"
+            android:text="@string/profile_screen_update_profile"
+            android:textColor="@color/profileScreenButtonText"
+            android:textSize="@dimen/mediumText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/back_arrow_icon" />
+            app:layout_constraintTop_toBottomOf="@id/profileScreenUsernameTextInput" />
+
+        <Button
+            android:id="@+id/profileScreenUpdateEmailButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:background="@drawable/profile_screen_rounded_buttons"
+            android:text="@string/profile_screen_update_email"
+            android:textColor="@color/profileScreenButtonText"
+            android:textSize="@dimen/mediumText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileScreenPasswordTextInput" />
+
+        <Button
+            android:id="@+id/profileScreenUpdatePasswordButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/largeMargin"
+            android:layout_marginEnd="@dimen/largeMargin"
+            android:layout_marginStart="@dimen/largeMargin"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:background="@drawable/profile_screen_rounded_buttons"
+            android:text="@string/profile_screen_update_password"
+            android:textColor="@color/profileScreenButtonText"
+            android:textSize="@dimen/mediumText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileScreenConfirmPasswordTextInput" />
+
+        <ImageButton
+            android:id="@+id/profileScreenImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:backgroundTint="@android:color/white"
+            android:contentDescription="@string/profile_screen_user_profile_camera_cd"
+            android:elevation="8dp"
+            android:src="@drawable/camera_icon"
+            app:layout_constraintBottom_toBottomOf="@id/profileScreenImageView"
+            app:layout_constraintEnd_toEndOf="@id/profileScreenImageView" />
+
 
         <ImageView
             android:id="@+id/profileScreenBackgroundRectangle"
@@ -33,20 +87,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-        <TextView
-            android:id="@+id/profileScreenTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/profile_screen_profile_title"
-            android:textColor="@color/profileScreenButtonText"
-            android:textSize="@dimen/extraLargeText"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/profileScreenBackgroundRectangle"
+        <ProgressBar
+            android:id="@+id/profileScreenProgressBar"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/progress_bar_background"
+            android:elevation="8dp"
+            android:padding="@dimen/mediumPadding"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,7 +118,7 @@
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/profileScreenBackgroundRectangle"
+            app:layout_constraintTop_toBottomOf="@id/profileScreenImageView"
             app:startIconDrawable="@drawable/name_icon"
             app:startIconTint="@color/profileScreenBackground">
 
@@ -103,22 +156,6 @@
                 android:hint="@string/profile_screen_username"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/profileScreenUpdateProfileButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/largeMargin"
-            android:layout_marginStart="@dimen/largeMargin"
-            android:layout_marginTop="@dimen/mediumMargin"
-            android:background="@drawable/profile_screen_rounded_buttons"
-            android:text="@string/profile_screen_update_profile"
-            android:textColor="@color/profileScreenButtonText"
-            android:textSize="@dimen/mediumText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileScreenUsernameTextInput" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/profileScreenEmailTextInput"
@@ -171,24 +208,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/profileScreenUpdateEmailButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/largeMargin"
-            android:layout_marginStart="@dimen/largeMargin"
-            android:layout_marginTop="@dimen/mediumMargin"
-            android:background="@drawable/profile_screen_rounded_buttons"
-            android:text="@string/profile_screen_update_email"
-            android:textColor="@color/profileScreenButtonText"
-            android:textSize="@dimen/mediumText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileScreenPasswordTextInput" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/profileScreenOldPasswordTextInput"
@@ -215,7 +236,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_old_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -242,7 +263,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_new_password"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -272,23 +293,22 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/profileScreenUpdatePasswordButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/profileScreenImageView"
+            android:layout_width="@dimen/profileScreenImageButtonDimensions"
+            android:layout_height="@dimen/profileScreenImageButtonDimensions"
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
-            android:layout_marginTop="@dimen/mediumMargin"
-            android:layout_marginBottom="@dimen/largeMargin"
-            android:background="@drawable/profile_screen_rounded_buttons"
-            android:text="@string/profile_screen_update_password"
-            android:textColor="@color/profileScreenButtonText"
-            android:textSize="@dimen/mediumText"
+            android:layout_marginTop="@dimen/largeMargin"
+            android:backgroundTint="@color/colorPrimary"
+            android:contentDescription="@string/profile_screen_user_photo_cd"
+            android:elevation="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/username_icon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileScreenConfirmPasswordTextInput" />
+            app:layout_constraintTop_toTopOf="@id/profileScreenBackgroundRectangle"
+            app:riv_oval="true" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

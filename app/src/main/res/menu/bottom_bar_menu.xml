@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <group android:checkableBehavior="single">
 
         <item android:id="@+id/bottomNavigationViewMenuHome"
@@ -17,7 +18,7 @@
             android:id="@+id/itemEmpty"
             android:title=""/>
 
-        <item android:id="@+id/bottomNavigationViewMenuAttendence"
+        <item android:id="@+id/bottomNavigationViewMenuAttendance"
             android:title="@string/bottom_navigation_menu_attendance"
             android:icon="@drawable/attendance_icon"
             app:showAsAction="always"/>

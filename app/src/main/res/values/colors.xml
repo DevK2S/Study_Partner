@@ -32,6 +32,11 @@
 
     <color name="navigationHeaderBackground">#2699FB</color>
     <color name="navigationHeaderText">#FFFFFF</color>
+    <color name="navigationHeaderVerifiedText">#0F7803</color>
+    <color name="navigationHeaderNotVerifiedText">#F44336</color>
+
+    <color name="bottomNavigationItemSelected">#FFFFFF</color>
+    <color name="bottomNavigationItem">#000000</color>
 
     <color name="menuIcon">#2699FB</color>
     <color name="menuText">#2699FB</color>

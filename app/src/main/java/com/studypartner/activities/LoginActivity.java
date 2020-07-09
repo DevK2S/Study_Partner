@@ -1,5 +1,6 @@
 package com.studypartner.activities;
 
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -31,6 +32,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 import com.studypartner.R;
 import com.studypartner.models.User;
@@ -43,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
 	private static final String TAG = "LoginActivity";
 	
 	private final int RC_SIGN_IN = 123;
+	
+	private final String SESSIONS = "SESSIONS";
 	
 	private final String REMEMBER_ME_ENABLED = "rememberMeEnabled";
 	private final String REMEMBER_ME_EMAIL = "rememberMeEmail";
@@ -79,27 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG, "onCreate: Checking internet connection");
-		if (isConnected(this)) {
-			Log.d(TAG, "onCreate: Internet not connected");
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Please connect to the internet to proceed further")
-					.setCancelable(false)
-					.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Log.d(TAG, "onClick: opening settings for internet");
-							startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-						}
-					})
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Log.d(TAG, "onClick: closing app");
-							finishAffinity();
-						}
-					});
-			builder.show();
-		}
+		checkConnection(LoginActivity.this);
 	}
 	
 	@Override
@@ -119,27 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 		mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 		
 		Log.d(TAG, "onCreate: Checking internet connection");
-		if (isConnected(this)) {
-			Log.d(TAG, "onCreate: Internet not connected");
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Please connect to the internet to proceed further")
-					.setCancelable(false)
-					.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Log.d(TAG, "onClick: opening settings for internet");
-							startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-						}
-					})
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Log.d(TAG, "onClick: closing app");
-							finishAffinity();
-						}
-					});
-			builder.show();
-		}
+		checkConnection(this);
 		
 		if (FirebaseAuth.getInstance().getCurrentUser() != null) {
 			Log.d(TAG, "onCreate: User already logged in");
@@ -150,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
 			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 		}
 		
-		SharedPreferences sharedPreferences = getSharedPreferences("SESSIONS", MODE_PRIVATE);
+		SharedPreferences sharedPreferences = getSharedPreferences(SESSIONS, MODE_PRIVATE);
 		
 		mEditor = sharedPreferences.edit();
 		
@@ -276,14 +240,36 @@ public class LoginActivity extends AppCompatActivity {
 		Log.d(TAG, "onCreate: ends");
 	}
 	
-	private boolean isConnected(LoginActivity loginActivity) {
+	private void checkConnection (Activity activity) {
 		Log.d(TAG, "isConnected: internet check");
 		
-		ConnectivityManager connectivityManager = (ConnectivityManager) loginActivity.getSystemService(CONNECTIVITY_SERVICE);
+		ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(CONNECTIVITY_SERVICE);
 		
 		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		
-		return activeNetworkInfo == null || !activeNetworkInfo.isConnectedOrConnecting();
+		if (activeNetworkInfo == null || !activeNetworkInfo.isConnectedOrConnecting()) {
+			Log.d(TAG, "onCreate: Internet not connected");
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Please connect to the internet to proceed further")
+					.setCancelable(false)
+					.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Log.d(TAG, "onClick: opening settings for internet");
+							startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+						}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Log.d(TAG, "onClick: closing app");
+							finishAffinity();
+						}
+					});
+			builder.show();
+		} else {
+			Log.d(TAG, "isConnected: internet connected");
+		}
 	}
 	
 	
@@ -329,6 +315,21 @@ public class LoginActivity extends AppCompatActivity {
 			String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 			
 			User user = new User(signInAccount.getDisplayName(), signInAccount.getEmail(), true);
+			
+			UserProfileChangeRequest.Builder profileUpdates = new UserProfileChangeRequest.Builder();
+			profileUpdates.setDisplayName(signInAccount.getDisplayName());
+			
+			FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates.build())
+					.addOnCompleteListener(new OnCompleteListener<Void>() {
+						@Override
+						public void onComplete(@NonNull Task<Void> task) {
+							if (task.isSuccessful()) {
+								Log.d(TAG, "onComplete: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+							} else {
+								Log.d(TAG, "onComplete: Could not update display name");
+							}
+						}
+					});
 			
 			//Make users database
 			FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
