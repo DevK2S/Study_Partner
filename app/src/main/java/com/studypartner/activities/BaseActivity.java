@@ -6,7 +6,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.studypartner.R;
@@ -14,6 +20,7 @@ import com.studypartner.R;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -25,15 +32,28 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
     private static final float END_SCALE = 0.7f;
     
     protected FrameLayout frameLayout;
-    private NavigationView navigationView;
+    protected NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private ConstraintLayout contentView;
-
+    protected ConstraintLayout contentView;
+    protected CoordinatorLayout coordinatorLayout;
+    protected AppBarLayout topAppBarLayout;
+    protected MaterialToolbar topAppBar;
+    protected BottomAppBar bottomAppBar;
+    protected BottomNavigationView bottomNavigationView;
+    protected FloatingActionButton fabMenu;
+    //private LinearLayout fab_createFolderLayout,fab_addFileLayout,fab_addImageLayout;
+   // private FloatingActionButton fab_createFolder,fab_addFile,fab_addImage;
+    Boolean fab_Open=false;
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        /*else if (fab_Open)
+        {
+            closeFab();
+        }*/
+            else {
             super.onBackPressed();
         }
     }
@@ -47,58 +67,68 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
         frameLayout= findViewById(R.id.baseScreenFrameLayout);
         drawerLayout = findViewById(R.id.baseScreenDrawerLayout);
         contentView = findViewById(R.id.baseScreenConstraintLayout);
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        topAppBarLayout=findViewById(R.id.topAppBarLayout);
+        topAppBar=findViewById(R.id.topAppBar);
+        navigationView = findViewById(R.id.baseScreenNavigationView);
+        bottomAppBar=(findViewById(R.id.bottomAppBar));
+        bottomNavigationView=findViewById(R.id.bottomNavigationView);
+        //fabMenu=findViewById(R.id.fab_menu);
+        //fab_createFolder=findViewById(R.id.fab_createFolder);
+       // fab_createFolderLayout=findViewById(R.id.fab_createFolderLayout);
+        //fab_addFileLayout=findViewById(R.id.fab_addFileLayout);
+       // fab_addFile=findViewById(R.id.fab_addFile);
+       // fab_addImageLayout=findViewById(R.id.fab_addImageLayout);
+       // fab_addImage=findViewById(R.id.fab_addImage);
 
         drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
+                //if(fab_Open)
+                    //closeFab();
                 final float diffScaledOffset = slideOffset * (1 - END_SCALE);
                 final float offsetScale = 1 - diffScaledOffset;
-                contentView.setScaleX(offsetScale);
-                contentView.setScaleY(offsetScale);
+                coordinatorLayout.setScaleX(offsetScale);
+                coordinatorLayout.setScaleY(offsetScale);
+
 
                 final float xOffset = drawerView.getWidth() * slideOffset;
-                final float xOffsetDiff = contentView.getWidth() * diffScaledOffset / 2;
+                final float xOffsetDiff = coordinatorLayout.getWidth() * diffScaledOffset / 2;
                 final float xTranslation = xOffset - xOffsetDiff;
-                contentView.setTranslationX(xTranslation);
+                coordinatorLayout.setTranslationX(xTranslation);
             }
         });
 
-        findViewById(R.id.baseScreenMenuImage).setOnClickListener(new View.OnClickListener() {
+        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
+                    /*if(fab_Open)
+                        closeFab();*/
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
             }
         });
 
-        navigationView = findViewById(R.id.baseScreenNavigationView);
+
         navigationView.bringToFront();
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.navigationMenuHome);
+        //bottomNavigationView.setOnNavigationItemSelectedListener(this);
+
 
     }
-
-    public void checkPermission(String permission, int requestCode) {
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED) {
-
-            // Requesting the permission
-            ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-        }
-    }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.navigationMenuHome:
+            /*case R.id.navigationMenuHome:
                 return true;
             case R.id.navigationMenuNotes:
                 return true;
             case R.id.navigationMenuAttendance:
-                return true;
+                return true;*/
             case R.id.navigationMenuReminder:
                 return true;
             case R.id.navigationMenuProfile:

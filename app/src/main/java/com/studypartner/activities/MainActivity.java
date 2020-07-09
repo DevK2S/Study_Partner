@@ -18,6 +18,7 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		getLayoutInflater().inflate(R.layout.activity_main, frameLayout);
 		checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101);
+		//navigationView.setCheckedItem(R.id.navigationMenuHome);
 	}
 	
 	public void checkPermission(String permission, int requestCode) {

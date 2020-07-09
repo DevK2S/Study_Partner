@@ -5,18 +5,6 @@
 
     <group android:checkableBehavior="single">
 
-        <item android:id="@+id/navigationMenuHome"
-            android:title="@string/navigation_menu_home"
-            android:icon="@drawable/home_icon"/>
-
-        <item android:id="@+id/navigationMenuNotes"
-            android:title="@string/navigation_menu_notes"
-            android:icon="@drawable/notes_icon"/>
-
-        <item android:id="@+id/navigationMenuAttendance"
-            android:title="@string/navigation_menu_attendance"
-            android:icon="@drawable/attendance_icon"/>
-
         <item android:id="@+id/navigationMenuReminder"
             android:title="@string/navigation_menu_reminders"
             android:icon="@drawable/reminder_icon"/>
