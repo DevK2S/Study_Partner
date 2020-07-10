@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.studypartner.fragments.HomeFragment"
+        android:label="@string/navigation_menu_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_attendance"
+        android:name="com.studypartner.fragments.AttendanceFragment"
+        android:label="@string/bottom_navigation_menu_attendance"
+        tools:layout="@layout/fragment_attendance" />
+
+    <fragment
+        android:id="@+id/nav_starred"
+        android:name="com.studypartner.fragments.StarredFragment"
+        android:label="@string/bottom_navigation_menu_starred"
+        tools:layout="@layout/fragment_starred" />
+
+    <fragment
+        android:id="@+id/nav_notes"
+        android:name="com.studypartner.fragments.NotesFragment"
+        android:label="@string/bottom_navigation_menu_notes"
+        tools:layout="@layout/fragment_notes" />
+
+    <fragment
+        android:id="@+id/nav_reminder"
+        android:name="com.studypartner.fragments.ReminderFragment"
+        android:label="@string/navigation_menu_reminders"
+        tools:layout="@layout/fragment_reminder" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="com.studypartner.fragments.ProfileFragment"
+        android:label="@string/navigation_menu_profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.studypartner.fragments.SettingsFragment"
+        android:label="@string/navigation_menu_settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <activity
+        android:id="@+id/nav_logout"
+        android:name="com.studypartner.activities.LoginActivity"
+        android:label="@string/navigation_menu_logout"
+        tools:layout="@layout/activity_login"/>
+
+</navigation>

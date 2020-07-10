@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <color name="colorPrimary">#2699FB</color>
     <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#FFFFFF</color>
 
-    <color name="primaryText">#000000</color>
-    <color name="appNameColor">#707070</color>
+    <color name="primaryBlack">#000000</color>
+    <color name="primaryWhite">#FFFFFF</color>
+
+    <color name="iconTint">#2699FB</color>
+    <color name="alternativeIconTint">#FFFFFF</color>
+    <color name="darkIconTint">#000000</color>
+    <color name="errorTint">#B00020</color>
+
+    <color name="editTextBg">#FFFFFF</color>
+
+    <color name="primaryText">#2699FB</color>
+    <color name="alternativeText">#FFFFFF</color>
+    <color name="titleText">#000000</color>
+    <color name="titleBarText">#FFFFFF</color>
+    <color name="subText">#777777</color>
+
+    <color name="progressBarBg">#FFFFFF</color>
+
+    <color name="roundedButtonsBg">#2699FB</color>
+    <color name="alternativeRoundedButtonsBg">#FFFFFF</color>
+
+    <color name="navigationMenuIcon">#2699FB</color>
+    <color name="navigationMenuText">#2699FB</color>
+
+    <color name="bottomNavigationItemSelected">#FFFFFF</color>
+    <color name="bottomNavigationItem">#444444</color>
 
     <color name="splashScreenGradientStartColor">#2193b0</color>
     <color name="splashScreenGradientEndColor">#6dd5ed</color>
-    <color name="splashScreenTextColor">#FFFFFF</color>
+    <color name="splashScreenAppNameText">#FFFFFF</color>
 
+    <color name="onBoardingScreenBackground">#FFFFFF</color>
     <color name="onBoardingScreenButtonBackground">#FFFFFF</color>
-    <color name="onBoardingScreenGradientStartColor">#4c84ff</color>
-    <color name="onBoardingScreenGradientEndColor">#18a3fe</color>
+    <color name="onBoardingScreenSelectedTabIndicator">#4c84ff</color>
     <color name="onBoardingScreenButtonTextColor">#2699FB</color>
     <color name="onBoardingScreenTabIndicator">#c0c0c0</color>
     <color name="onBoardingScreenIntroTitleColor">#000000</color>
-    <color name="onBoardingScreenIntroDescriptionColor">#656565</color>
-
-    <color name="loginScreenBackground">#2699FB</color>
-    <color name="loginScreenPrimaryText">#2699FB</color>
-    <color name="loginScreenButtonText">#FFFFFF</color>
-
-    <color name="createAccountScreenBackground">#2699FB</color>
-    <color name="createAccountScreenPrimaryText">#2699FB</color>
-    <color name="createAccountScreenButtonText">#FFFFFF</color>
-
-    <color name="baseScreenBackground">#2699FB</color>
-    <color name="baseScreenText">#FFFFFF</color>
-
-    <color name="navigationHeaderBackground">#2699FB</color>
-    <color name="navigationHeaderText">#FFFFFF</color>
-    <color name="navigationHeaderVerifiedText">#0F7803</color>
-    <color name="navigationHeaderNotVerifiedText">#F44336</color>
-
-    <color name="bottomNavigationItemSelected">#FFFFFF</color>
-    <color name="bottomNavigationItem">#000000</color>
-
-    <color name="menuIcon">#2699FB</color>
-    <color name="menuText">#2699FB</color>
-
-    <color name="profileScreenBackground">#2699FB</color>
-    <color name="profileScreenPrimaryText">#2699FB</color>
-    <color name="profileScreenButtonText">#FFFFFF</color>
+    <color name="onBoardingScreenIntroDescriptionColor">#777777</color>
 </resources>

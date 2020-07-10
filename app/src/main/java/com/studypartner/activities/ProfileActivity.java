@@ -343,10 +343,12 @@ public class ProfileActivity extends BaseActivity {
 		}
 		
 		Log.d(TAG, "onCreate: loading image in profile photo");
-		Picasso.get().load(currentUser.getPhotoUrl())
-				.error(R.drawable.image_error_icon)
-				.placeholder(R.drawable.image_loading_icon)
-				.into(profileImageView);
+		if (currentUser.getPhotoUrl() != null) {
+			Picasso.get().load(currentUser.getPhotoUrl())
+					.error(R.drawable.image_error_icon)
+					.placeholder(R.drawable.profile_photo_icon)
+					.into(profileImageView);
+		}
 		
 		updateProfile.setOnClickListener(new View.OnClickListener() {
 			@Override

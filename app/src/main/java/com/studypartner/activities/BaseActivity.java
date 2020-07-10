@@ -42,8 +42,6 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 	protected final String REMEMBER_ME_EMAIL = "rememberMeEmail";
 	protected final String REMEMBER_ME_PASSWORD = "rememberMePassword";
 	
-	private static final float END_SCALE = 0.7f;
-	
 	protected FrameLayout frameLayout;
 	protected NavigationView navigationView;
 	protected DrawerLayout drawerLayout;
@@ -112,7 +110,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 		
 		ImageView profileImage = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
 		TextView profileFullName = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
-		TextView profileVerifiedText = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmailVerified);
+		TextView profileEmail = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmail);
 		
 		if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
 			profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
@@ -122,20 +120,14 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 			Log.d(TAG, "onCreate: Downloading profile image");
 			Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
 					.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
-					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.image_loading_icon)))
+					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
 					.into(profileImage);
 		} else {
 			Log.d(TAG, "onCreate: Image url does not exist for user");
-			profileImage.setImageDrawable(getDrawable(R.drawable.image_error_icon));
+			profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
 		}
 		
-		if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-			profileVerifiedText.setText(R.string.navigation_header_verified);
-			profileVerifiedText.setTextColor(getColor(R.color.navigationHeaderVerifiedText));
-		} else {
-			profileVerifiedText.setText(R.string.navigation_header_not_verified);
-			profileVerifiedText.setTextColor(getColor(R.color.navigationHeaderNotVerifiedText));
-		}
+		profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 		
 	}
 	
@@ -179,31 +171,31 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.navigationMenuHome:
-				startActivity(new Intent(BaseActivity.this, MainActivity.class));
-				finishAffinity();
-				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-				return true;
-//			case R.id.navigationMenuNotes:
+//			case R.id.navigationMenuHome:
+//				startActivity(new Intent(BaseActivity.this, MainActivity.class));
+//				finishAffinity();
+//				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 //				return true;
-//			case R.id.navigationMenuAttendance:
+////			case R.id.navigationMenuNotes:
+////				return true;
+////			case R.id.navigationMenuAttendance:
+////				return true;
+//			case R.id.navigationMenuReminder:
 //				return true;
-			case R.id.navigationMenuReminder:
-				return true;
-			case R.id.navigationMenuProfile:
-				startActivity(new Intent(BaseActivity.this, ProfileActivity.class));
-				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-				return true;
-			case R.id.navigationMenuLogout:
-				FirebaseAuth.getInstance().signOut();
-				startActivity(new Intent(BaseActivity.this, LoginActivity.class));
-				finishAffinity();
-				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-				return true;
-			case R.id.navigationMenuSettings:
-				return true;
-			case R.id.navigationMenuDarkMode:
-				return true;
+//			case R.id.navigationMenuProfile:
+//				startActivity(new Intent(BaseActivity.this, ProfileActivity.class));
+//				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//				return true;
+//			case R.id.navigationMenuLogout:
+//				FirebaseAuth.getInstance().signOut();
+//				startActivity(new Intent(BaseActivity.this, LoginActivity.class));
+//				finishAffinity();
+//				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+//				return true;
+//			case R.id.navigationMenuSettings:
+//				return true;
+//			case R.id.navigationMenuDarkMode:
+//				return true;
 			default:
 				return false;
 		}
