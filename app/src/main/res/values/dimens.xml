@@ -1,8 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- By: Karan Gourisaria -->
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="nav_header_vertical_spacing">8dp</dimen>
-    <dimen name="nav_header_height">176dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="smallMargin">8dp</dimen>
+    <dimen name="mediumMargin">16dp</dimen>
+    <dimen name="largeMargin">32dp</dimen>
+
+    <dimen name="smallPadding">8dp</dimen>
+    <dimen name="mediumPadding">16dp</dimen>
+    <dimen name="largePadding">32dp</dimen>
+
+    <dimen name="smallText">14sp</dimen>
+    <dimen name="mediumText">18sp</dimen>
+    <dimen name="largeText">22sp</dimen>
+    <dimen name="extraLargeText">28sp</dimen>
+
+    <dimen name="splashScreenAppLogoHeight">250dp</dimen>
+    <dimen name="splashScreenAppLogoWidth">250dp</dimen>
+    <dimen name="splashScreenAppLogoTopMargin">125dp</dimen>
+    <dimen name="splashScreenAppNameTopMargin">150dp</dimen>
+
+    <dimen name="onBoardingScreenAppNameTopMargin">48dp</dimen>
+    <dimen name="onBoardingScreenGetStartedBottomMargin">96dp</dimen>
+    <dimen name="onBoardingScreenItemImageHeight">200dp</dimen>
+    <dimen name="onBoardingScreenItemImageWidth">200dp</dimen>
+    <dimen name="onBoardingScreenGetStartedWidth">150dp</dimen>
+
+    <dimen name="loginScreenBoxStrokeWidthFocused">2dp</dimen>
+    <dimen name="loginScreenBackgroundRectangleTopMargin">75dp</dimen>
+
+    <dimen name="createAccountScreenBoxStrokeWidthFocused">2dp</dimen>
+    <dimen name="createAccountScreenBackgroundRectangleTopMargin">75dp</dimen>
+
+    <dimen name="mainScreenBackgroundRectangleTopMargin">75dp</dimen>
+
+    <dimen name="navigationHeaderHeight">120dp</dimen>
+    <dimen name="navigationMenuButtonStartMargin">0dp</dimen>
+    <dimen name="navigationMenuButtonBottomMargin">15dp</dimen>
+
+    <dimen name="profileScreenBackgroundRectangleTopMargin">75dp</dimen>
+    <dimen name="profileScreenBoxStrokeWidthFocused">2dp</dimen>
+    <dimen name="profileScreenImageButtonDimensions">100dp</dimen>
 </resources>

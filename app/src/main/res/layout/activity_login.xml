@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/loginScreenBackground"
+    android:background="@color/colorPrimary"
     tools:context=".activities.LoginActivity">
 
     <Button
@@ -15,8 +15,8 @@
         android:layout_marginTop="@dimen/mediumMargin"
         android:background="?android:attr/selectableItemBackground"
         android:text="@string/login_screen_create_account"
-        android:textColor="@color/loginScreenPrimaryText"
-        android:textSize="16sp"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/smallText"
         android:transitionName="create_account_transition"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,9 +31,9 @@
         android:layout_marginEnd="@dimen/largeMargin"
         android:layout_marginStart="@dimen/largeMargin"
         android:layout_marginTop="@dimen/mediumMargin"
-        android:background="@drawable/login_screen_rounded_buttons"
+        android:background="@drawable/rounded_buttons"
         android:text="@string/login_screen_title"
-        android:textColor="@color/loginScreenButtonText"
+        android:textColor="@color/alternativeText"
         android:textSize="@dimen/mediumText"
         android:transitionName="login_transition"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,11 +48,11 @@
         android:layout_marginEnd="@dimen/largeMargin"
         android:layout_marginStart="@dimen/largeMargin"
         android:layout_marginTop="@dimen/mediumMargin"
-        android:background="@drawable/login_screen_rounded_buttons"
-        android:backgroundTint="@android:color/white"
+        android:background="@drawable/rounded_buttons"
+        android:backgroundTint="@color/alternativeRoundedButtonsBg"
         android:drawableStart="@drawable/login_screen_google_logo"
         android:text="@string/login_screen_google_sign_in"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/primaryText"
         android:textSize="@dimen/mediumText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -105,7 +105,7 @@
             android:layout_alignParentEnd="true"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/login_screen_forgot_password"
-            android:textColor="@color/loginScreenPrimaryText"
+            android:textColor="@color/primaryText"
             tools:ignore="RelativeOverlap" />
 
         <CheckBox
@@ -114,9 +114,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:buttonTint="@color/loginScreenBackground"
+            android:buttonTint="@color/colorPrimary"
             android:text="@string/login_screen_remember_me"
-            android:textColor="@color/loginScreenPrimaryText" />
+            android:textColor="@color/primaryText" />
     </RelativeLayout>
 
     <TextView
@@ -125,7 +125,7 @@
         android:layout_height="wrap_content"
         android:text="@string/login_screen_welcome_back"
         android:textAllCaps="false"
-        android:textColor="@color/loginScreenButtonText"
+        android:textColor="@color/alternativeText"
         android:textSize="@dimen/extraLargeText"
         android:textStyle="bold"
         android:transitionName="welcome_transition"
@@ -144,7 +144,7 @@
         android:layout_marginTop="@dimen/largeMargin"
         android:fontFamily="@font/baloo"
         android:text="@string/login_screen_join_community"
-        android:textColor="@color/loginScreenPrimaryText"
+        android:textColor="@color/primaryText"
         android:textSize="@dimen/mediumText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -159,16 +159,20 @@
         android:layout_marginEnd="@dimen/largeMargin"
         android:layout_marginStart="@dimen/largeMargin"
         android:transitionName="password_transition"
-        app:boxStrokeColor="@color/loginScreenBackground"
+        app:hintTextColor="@color/iconTint"
+        app:boxStrokeColor="@color/iconTint"
         app:boxStrokeWidthFocused="@dimen/loginScreenBoxStrokeWidthFocused"
         app:endIconMode="password_toggle"
-        app:endIconTint="@color/loginScreenBackground"
+        app:endIconTint="@color/iconTint"
+        app:errorIconTint="@color/errorTint"
+        app:errorTextColor="@color/errorTint"
+        app:boxStrokeErrorColor="@color/errorTint"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loginScreenEmailTextInput"
         app:startIconDrawable="@drawable/password_icon"
-        app:startIconTint="@color/loginScreenBackground">
+        app:startIconTint="@color/iconTint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/loginScreenPasswordEditText"
@@ -187,16 +191,20 @@
         android:layout_marginStart="@dimen/largeMargin"
         android:layout_marginTop="@dimen/largeMargin"
         android:transitionName="email_transition"
-        app:boxStrokeColor="@color/loginScreenBackground"
+        app:hintTextColor="@color/iconTint"
+        app:boxStrokeColor="@color/iconTint"
         app:boxStrokeWidthFocused="@dimen/loginScreenBoxStrokeWidthFocused"
         app:endIconMode="clear_text"
-        app:endIconTint="@color/loginScreenBackground"
+        app:endIconTint="@color/iconTint"
+        app:errorIconTint="@color/errorTint"
+        app:errorTextColor="@color/errorTint"
+        app:boxStrokeErrorColor="@color/errorTint"
         app:errorEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/loginScreenCommunityTextView"
         app:startIconDrawable="@drawable/email_icon"
-        app:startIconTint="@color/loginScreenBackground">
+        app:startIconTint="@color/iconTint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/loginScreenEmailEditText"

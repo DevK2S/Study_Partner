@@ -1,20 +1,12 @@
 <resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
     </style>
 
-    <style name="NavigationTheme">
-        <item name="colorPrimary">@color/colorPrimaryDark</item>
-        <item name="colorControlHighlight">@color/colorPrimaryDark</item>
-    </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -24,7 +16,6 @@
 
     <style name="BaseActivityToolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:textSize">@dimen/extraLargeText</item>
-        <item name="backgroundColor">@color/colorPrimary</item>
         <item name="android:gravity">center_vertical</item>
         <item name="autoSizeMinTextSize">@dimen/extraLargeText</item>
     </style>

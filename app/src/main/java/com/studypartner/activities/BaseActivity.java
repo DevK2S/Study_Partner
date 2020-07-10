@@ -112,7 +112,7 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 		
 		ImageView profileImage = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
 		TextView profileFullName = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
-		TextView profileVerifiedText = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmailVerified);
+		TextView profileEmail = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmail);
 		
 		if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
 			profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
@@ -122,20 +122,14 @@ public class BaseActivity extends AppCompatActivity implements NavigationView.On
 			Log.d(TAG, "onCreate: Downloading profile image");
 			Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
 					.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
-					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.image_loading_icon)))
+					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
 					.into(profileImage);
 		} else {
 			Log.d(TAG, "onCreate: Image url does not exist for user");
-			profileImage.setImageDrawable(getDrawable(R.drawable.image_error_icon));
+			profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
 		}
 		
-		if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-			profileVerifiedText.setText(R.string.navigation_header_verified);
-			profileVerifiedText.setTextColor(getColor(R.color.navigationHeaderVerifiedText));
-		} else {
-			profileVerifiedText.setText(R.string.navigation_header_not_verified);
-			profileVerifiedText.setTextColor(getColor(R.color.navigationHeaderNotVerifiedText));
-		}
+		profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 		
 	}
 	

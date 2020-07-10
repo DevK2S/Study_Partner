@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/createAccountScreenBackground">
+        android:background="@color/colorPrimary">
 
         <ImageView
             android:id="@+id/createAccountBackArrow"
@@ -21,6 +21,7 @@
             app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:tint="@color/alternativeIconTint"
             app:srcCompat="@drawable/back_arrow_icon" />
 
         <Button
@@ -30,9 +31,9 @@
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
             android:layout_marginTop="@dimen/mediumMargin"
-            android:background="@drawable/create_account_screen_rounded_buttons"
+            android:background="@drawable/rounded_buttons"
             android:text="@string/create_account_screen_title"
-            android:textColor="@color/createAccountScreenButtonText"
+            android:textColor="@color/alternativeText"
             android:textSize="@dimen/mediumText"
             android:transitionName="create_account_transition"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,10 +48,10 @@
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
             android:layout_marginTop="@dimen/mediumMargin"
-            android:background="@drawable/create_account_screen_rounded_buttons"
-            android:backgroundTint="@color/createAccountScreenButtonText"
+            android:background="@drawable/rounded_buttons"
+            android:backgroundTint="@color/alternativeRoundedButtonsBg"
             android:text="@string/create_account_screen_login_instead"
-            android:textColor="@color/createAccountScreenPrimaryText"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/mediumText"
             android:transitionName="login_transition"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +67,7 @@
             android:layout_marginTop="@dimen/mediumMargin"
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/create_account_screen_terms_and_conditions"
-            android:textColor="@color/createAccountScreenPrimaryText"
+            android:textColor="@color/primaryText"
             android:textSize="@dimen/smallText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_account_screen_welcome"
-            android:textColor="@color/createAccountScreenButtonText"
+            android:textColor="@color/alternativeText"
             android:textSize="@dimen/extraLargeText"
             android:textStyle="bold"
             android:transitionName="welcome_transition"
@@ -124,16 +125,20 @@
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
             android:layout_marginTop="@dimen/largeMargin"
-            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:hintTextColor="@color/iconTint"
+            app:boxStrokeColor="@color/iconTint"
             app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
             app:endIconMode="clear_text"
-            app:endIconTint="@color/createAccountScreenBackground"
+            app:endIconTint="@color/iconTint"
+            app:errorIconTint="@color/errorTint"
+            app:errorTextColor="@color/errorTint"
+            app:boxStrokeErrorColor="@color/errorTint"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/createAccountScreenBackgroundRectangle"
             app:startIconDrawable="@drawable/name_icon"
-            app:startIconTint="@color/createAccountScreenBackground">
+            app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/createAccountScreenFullNameEditText"
@@ -150,16 +155,20 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
-            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:hintTextColor="@color/iconTint"
+            app:boxStrokeColor="@color/iconTint"
             app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
             app:endIconMode="clear_text"
-            app:endIconTint="@color/createAccountScreenBackground"
+            app:endIconTint="@color/iconTint"
+            app:errorIconTint="@color/errorTint"
+            app:errorTextColor="@color/errorTint"
+            app:boxStrokeErrorColor="@color/errorTint"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/createAccountScreenFullNameTextInput"
             app:startIconDrawable="@drawable/username_icon"
-            app:startIconTint="@color/createAccountScreenBackground">
+            app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/createAccountScreenUsernameEditText"
@@ -177,16 +186,20 @@
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
             android:transitionName="email_transition"
-            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:hintTextColor="@color/iconTint"
+            app:boxStrokeColor="@color/iconTint"
             app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
             app:endIconMode="clear_text"
-            app:endIconTint="@color/createAccountScreenBackground"
+            app:endIconTint="@color/iconTint"
+            app:errorIconTint="@color/errorTint"
+            app:errorTextColor="@color/errorTint"
+            app:boxStrokeErrorColor="@color/errorTint"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/createAccountScreenUsernameTextInput"
             app:startIconDrawable="@drawable/email_icon"
-            app:startIconTint="@color/createAccountScreenBackground">
+            app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/createAccountScreenEmailEditText"
@@ -205,17 +218,20 @@
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
             android:transitionName="password_transition"
-            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:hintTextColor="@color/iconTint"
+            app:boxStrokeColor="@color/iconTint"
             app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
             app:endIconMode="password_toggle"
-            app:endIconTint="@color/createAccountScreenBackground"
+            app:endIconTint="@color/iconTint"
+            app:errorIconTint="@color/errorTint"
+            app:errorTextColor="@color/errorTint"
+            app:boxStrokeErrorColor="@color/errorTint"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/createAccountScreenEmailTextInput"
             app:startIconDrawable="@drawable/password_icon"
-            app:startIconTint="@color/createAccountScreenBackground">
-
+            app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/createAccountScreenPasswordEditText"
@@ -233,16 +249,20 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/largeMargin"
             android:layout_marginStart="@dimen/largeMargin"
-            app:boxStrokeColor="@color/createAccountScreenBackground"
+            app:hintTextColor="@color/iconTint"
+            app:boxStrokeColor="@color/iconTint"
             app:boxStrokeWidthFocused="@dimen/createAccountScreenBoxStrokeWidthFocused"
             app:endIconMode="password_toggle"
-            app:endIconTint="@color/createAccountScreenBackground"
+            app:endIconTint="@color/iconTint"
+            app:errorIconTint="@color/errorTint"
+            app:errorTextColor="@color/errorTint"
+            app:boxStrokeErrorColor="@color/errorTint"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/createAccountScreenPasswordTextInput"
             app:startIconDrawable="@drawable/password_icon"
-            app:startIconTint="@color/createAccountScreenBackground">
+            app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/createAccountScreenConfirmPasswordEditText"

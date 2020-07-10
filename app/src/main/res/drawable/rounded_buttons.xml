@@ -7,5 +7,5 @@
     <padding
         android:left="@dimen/mediumPadding"
         android:right="@dimen/mediumPadding" />
-    <solid android:color="@color/loginScreenBackground" />
+    <solid android:color="@color/roundedButtonsBg" />
 </shape>
