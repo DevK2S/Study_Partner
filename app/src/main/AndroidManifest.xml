@@ -15,8 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.MainActivity"/>
-        <activity android:name=".activities.BaseActivity" />
-        <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.CreateAccountActivity" />
         <activity android:name=".activities.SplashScreenActivity">
             <intent-filter>

@@ -1,13 +1,7 @@
 package com.studypartner.activities;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +16,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
+import com.studypartner.utils.Connection;
 
 import java.util.Objects;
 
@@ -30,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -38,20 +35,17 @@ import androidx.navigation.ui.NavigationUI;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
 	private static final String TAG = "MainActivity";
 	
-	protected final String SESSIONS = "SESSIONS";
-	
-	protected final String REMEMBER_ME_ENABLED = "rememberMeEnabled";
-	protected final String REMEMBER_ME_EMAIL = "rememberMeEmail";
-	protected final String REMEMBER_ME_PASSWORD = "rememberMePassword";
-	
 	private AppBarConfiguration mAppBarConfiguration;
-	private NavController mNavController;
+	public NavController mNavController;
 	
 	private BottomNavigationView mBottomNavigationView;
-	private BottomAppBar mBottomAppBar;
+	public BottomAppBar mBottomAppBar;
 	private NavigationView mNavigationView;
 	private DrawerLayout mDrawerLayout;
-	private FloatingActionButton fab;
+	public FloatingActionButton fab;
+	
+	private FragmentManager fragmentManager;
+	private FragmentTransaction fragmentTransaction;
 	
 	@Override
 	public void onBackPressed() {
@@ -63,11 +57,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	}
 	
 	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		ImageView profileImage = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
+		TextView profileFullName = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
+		TextView profileEmail = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmail);
+		
+		if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
+			profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+		}
+		
+		if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
+			Log.d(TAG, "onCreate: Downloading profile image");
+			Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
+					.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
+					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
+					.into(profileImage);
+		} else {
+			Log.d(TAG, "onCreate: Image url does not exist for user");
+			profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
+		}
+		
+		profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		checkConnection(this);
+		Connection.checkConnection(this);
 		
 		//setting hooks
 		
@@ -108,26 +128,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			}
 		});
 		
-		ImageView profileImage = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
-		TextView profileFullName = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
-		TextView profileEmail = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmail);
-		
-		if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
-			profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-		}
-		
-		if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
-			Log.d(TAG, "onCreate: Downloading profile image");
-			Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
-					.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
-					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
-					.into(profileImage);
-		} else {
-			Log.d(TAG, "onCreate: Image url does not exist for user");
-			profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
-		}
-		
-		profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+		fragmentManager = getSupportFragmentManager();
+		fragmentTransaction = fragmentManager.beginTransaction();
+		fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
 	}
 	
 	
@@ -148,73 +151,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		
 		switch (itemId) {
 			case R.id.nav_home:
-				Toast.makeText(this, "Home", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onNavigationItemSelected: home selected");
+				if (mNavController.getCurrentDestination().getId() != R.id.nav_home) {
+					Log.d(TAG, "onNavigationItemSelected: opening home fragment");
+					fab.setVisibility(View.VISIBLE);
+					mBottomAppBar.setVisibility(View.VISIBLE);
+					mNavController.navigate(R.id.nav_home);
+				}
 				return true;
+				
 			case R.id.nav_attendance:
 				Toast.makeText(this, "Attendance", Toast.LENGTH_SHORT).show();
 				return true;
+				
 			case R.id.nav_starred:
 				Toast.makeText(this, "Starred", Toast.LENGTH_SHORT).show();
 				return true;
+				
 			case R.id.nav_notes:
 				Toast.makeText(this, "Notes", Toast.LENGTH_SHORT).show();
 				return true;
+				
 			case R.id.nav_reminder:
 				Toast.makeText(this, "Reminder", Toast.LENGTH_SHORT).show();
 				return true;
+				
 			case R.id.nav_settings:
 				Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
 				return true;
+				
 			case R.id.nav_profile:
-				Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onNavigationItemSelected: profile selected");
+				if (mNavController.getCurrentDestination().getId() != R.id.nav_profile) {
+					Log.d(TAG, "onNavigationItemSelected: opening profile fragment");
+					mBottomAppBar.setVisibility(View.GONE);
+					fab.setVisibility(View.GONE);
+					mNavController.navigate(R.id.nav_profile);
+				}
 				return true;
+				
 			case R.id.nav_logout:
 				FirebaseAuth.getInstance().signOut();
 				startActivity(new Intent(this, LoginActivity.class));
 				finishAffinity();
 				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 				return true;
+				
 			default:
 				Toast.makeText(this, "Default", Toast.LENGTH_SHORT).show();
 				return false;
 			
-		}
-	}
-	
-	protected void checkConnection (final Activity activity) {
-		Log.d(TAG, "isConnected: internet check");
-		
-		ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(CONNECTIVITY_SERVICE);
-		
-		NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-		
-		if (activeNetworkInfo == null || !activeNetworkInfo.isConnectedOrConnecting()) {
-			Log.d(TAG, "onCreate: Internet not connected");
-			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
-					.setMessage("Please connect to the internet to proceed further")
-					.setCancelable(false)
-					.setPositiveButton("Connect", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							Log.d(TAG, "onClick: opening settings for internet");
-							startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-						}
-					})
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.cancel();
-						}
-					})
-					.setNeutralButton("Reload", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							checkConnection(activity);
-						}
-					});
-			alertDialog.show();
-		} else {
-			Log.d(TAG, "isConnected: internet connected");
 		}
 	}
 }
