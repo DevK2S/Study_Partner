@@ -416,7 +416,7 @@ public class ProfileFragment extends Fragment {
 		
 		disableViews();
 		
-		deleteAccountPassword = deleteAccountPasswordTextInput.getEditText().getText().toString();
+		deleteAccountPassword = deleteAccountPasswordTextInput.getEditText().getText().toString().trim();
 		
 		if (!signedInWithGoogle && deleteAccountPasswordTextInput.getVisibility() == View.GONE) {
 			Log.d(TAG, "deleteAccount: showing delete account password edit text");
@@ -534,8 +534,8 @@ public class ProfileFragment extends Fragment {
 		
 		disableViews();
 		
-		fullName = fullNameTextInput.getEditText().getText().toString();
-		username = usernameTextInput.getEditText().getText().toString();
+		fullName = fullNameTextInput.getEditText().getText().toString().trim();
+		username = usernameTextInput.getEditText().getText().toString().trim();
 		
 		if (user.validateName(fullName) != null || user.validateUsername(username) != null) {
 			Log.d(TAG, "updateProfile: username and full name invalid");
@@ -722,8 +722,8 @@ public class ProfileFragment extends Fragment {
 		
 		disableViews();
 		
-		email = emailTextInput.getEditText().getText().toString();
-		password = passwordTextInput.getEditText().getText().toString();
+		email = emailTextInput.getEditText().getText().toString().trim();
+		password = passwordTextInput.getEditText().getText().toString().trim();
 		
 		if (email.matches(user.getEmail())) {
 			Toast.makeText(getContext(), "Entered email is same as current email", Toast.LENGTH_SHORT).show();
@@ -813,9 +813,9 @@ public class ProfileFragment extends Fragment {
 		
 		disableViews();
 		
-		oldPassword = oldPasswordTextInput.getEditText().getText().toString();
-		newPassword = newPasswordTextInput.getEditText().getText().toString();
-		confirmPassword = confirmPasswordTextInput.getEditText().getText().toString();
+		oldPassword = oldPasswordTextInput.getEditText().getText().toString().trim();
+		newPassword = newPasswordTextInput.getEditText().getText().toString().trim();
+		confirmPassword = confirmPasswordTextInput.getEditText().getText().toString().trim();
 		
 		if (oldPasswordTextInput.getVisibility() == View.GONE) {
 			Log.d(TAG, "updatePassword: showing old password edit text");
