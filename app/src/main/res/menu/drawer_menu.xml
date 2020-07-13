@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
 
-        <item android:id="@+id/navigationMenuHome"
+        <item android:id="@+id/nav_home"
             android:title="@string/navigation_menu_home"
             android:icon="@drawable/home_icon"/>
 
-        <item android:id="@+id/navigationMenuReminder"
+        <item android:id="@+id/nav_reminder"
             android:title="@string/navigation_menu_reminders"
             android:icon="@drawable/reminder_icon"/>
 
@@ -20,11 +19,11 @@
 
             <group android:checkableBehavior="single">
 
-                <item android:id="@+id/navigationMenuProfile"
+                <item android:id="@+id/nav_profile"
                     android:title="@string/navigation_menu_profile"
                     android:icon="@drawable/username_icon"/>
 
-                <item android:id="@+id/navigationMenuLogout"
+                <item android:id="@+id/nav_logout"
                     android:title="@string/navigation_menu_logout"
                     android:icon="@drawable/logout_icon"/>
 
@@ -40,12 +39,12 @@
 
             <group android:checkableBehavior="single">
 
-                <item android:id="@+id/navigationMenuSettings"
+                <item android:id="@+id/nav_settings"
                     android:title="@string/navigation_menu_settings"
                     android:icon="@drawable/settings_icon"/>
 
                 <item
-                    android:id="@+id/navigationMenuDarkMode"
+                    android:id="@+id/nav_dark_mode"
                     android:title="@string/navigation_menu_dark_mode"
                     android:icon="@drawable/dark_mode_icon" />
 

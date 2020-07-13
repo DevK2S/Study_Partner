@@ -1,4 +1,4 @@
-package com.studypartner.activities;
+package com.studypartner.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,7 +12,9 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -45,19 +48,32 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
+import com.studypartner.activities.LoginActivity;
+import com.studypartner.activities.MainActivity;
 import com.studypartner.models.User;
+import com.studypartner.utils.Connection;
 
 import java.io.IOException;
 import java.util.Objects;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.GravityCompat;
+import androidx.fragment.app.Fragment;
 
-public class ProfileActivity extends BaseActivity {
-	private static final String TAG = "ProfileActivity";
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+
+public class ProfileFragment extends Fragment {
+	private static final String TAG = "ProfileFragment";
 	
 	private final int PICK_IMAGE_REQUEST = 111;
+	
+	private final String SESSIONS = "SESSIONS";
+	
+	private final String REMEMBER_ME_ENABLED = "rememberMeEnabled";
+	private final String REMEMBER_ME_EMAIL = "rememberMeEmail";
+	private final String REMEMBER_ME_PASSWORD = "rememberMePassword";
 	
 	private FirebaseUser currentUser;
 	private DatabaseReference mDatabaseReference;
@@ -76,40 +92,14 @@ public class ProfileActivity extends BaseActivity {
 	
 	private String fullName, username, email, password, oldPassword, newPassword, confirmPassword, deleteAccountPassword;
 	
-	@Override
-	public void onBackPressed() {
-		Log.d(TAG, "onBackPressed: starts");
-		
-		if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-			drawerLayout.closeDrawer(GravityCompat.START);
-		} else {
-			startActivity(new Intent(ProfileActivity.this, MainActivity.class));
-			finishAffinity();
-			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-		}
-	}
+	public ProfileFragment() {}
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-			Log.d(TAG, "onActivityResult: image received");
-			filePath = data.getData();
-			try {
-				Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
-				profileImageView.setImageBitmap(bitmap);
-				uploadImage();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	@Override
-	protected void onResume() {
+	public void onResume() {
 		super.onResume();
+		
+		Log.d(TAG, "onResume: checking internet connection");
+		Connection.checkConnection(this);
 		
 		oldPasswordTextInput.setEnabled(true);
 		emailTextInput.setEnabled(true);
@@ -122,29 +112,53 @@ public class ProfileActivity extends BaseActivity {
 	}
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		Log.d(TAG, "onCreate: starts");
+	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
 		
-		super.onCreate(savedInstanceState);
-		getLayoutInflater().inflate(R.layout.activity_profile, frameLayout);
+		if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+			Log.d(TAG, "onActivityResult: image received");
+			filePath = data.getData();
+			try {
+				Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),filePath);
+				profileImageView.setImageBitmap(bitmap);
+				uploadImage();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		Log.d(TAG, "onCreateView: starts");
 		
-		checkConnection(this);
+		View rootView = inflater.inflate(R.layout.fragment_profile,container, false);
 		
-		toolbarTitle.setText(getString(R.string.profile_screen_profile_title));
+		Connection.checkConnection(this);
 		
-		bottomAppBar.setVisibility(View.GONE);
-		fabMenu.setVisibility(View.GONE);
+		OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+			@Override
+			public void handleOnBackPressed() {
+				Log.d(TAG, "handleOnBackPressed: starts");
+				MainActivity activity = (MainActivity) requireActivity();
+				activity.mBottomAppBar.setVisibility(View.VISIBLE);
+				activity.fab.setVisibility(View.VISIBLE);
+				activity.mNavController.navigate(R.id.nav_home);
+			}
+		};
+		
+		requireActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
 		
 		//Setting hooks
 		
 		mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 		
-		updateProfile = findViewById(R.id.profileScreenUpdateProfileButton);
-		updateEmail = findViewById(R.id.profileScreenUpdateEmailButton);
-		updatePassword = findViewById(R.id.profileScreenUpdatePasswordButton);
-		deleteAccount = findViewById(R.id.profileScreenDeleteAccountButton);
+		updateProfile = rootView.findViewById(R.id.profileScreenUpdateProfileButton);
+		updateEmail = rootView.findViewById(R.id.profileScreenUpdateEmailButton);
+		updatePassword = rootView.findViewById(R.id.profileScreenUpdatePasswordButton);
+		deleteAccount = rootView.findViewById(R.id.profileScreenDeleteAccountButton);
 		
-		fullNameTextInput = findViewById(R.id.profileScreenFullNameTextInput);
+		fullNameTextInput = rootView.findViewById(R.id.profileScreenFullNameTextInput);
 		fullNameTextInput.getEditText().addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -162,7 +176,7 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
-		usernameTextInput = findViewById(R.id.profileScreenUsernameTextInput);
+		usernameTextInput = rootView.findViewById(R.id.profileScreenUsernameTextInput);
 		usernameTextInput.getEditText().addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -180,7 +194,7 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
-		emailTextInput = findViewById(R.id.profileScreenEmailTextInput);
+		emailTextInput = rootView.findViewById(R.id.profileScreenEmailTextInput);
 		emailTextInput.getEditText().addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -198,7 +212,7 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
-		passwordTextInput = findViewById(R.id.profileScreenPasswordTextInput);
+		passwordTextInput = rootView.findViewById(R.id.profileScreenPasswordTextInput);
 		passwordTextInput.getEditText().addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -216,7 +230,7 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
-		oldPasswordTextInput = findViewById(R.id.profileScreenOldPasswordTextInput);
+		oldPasswordTextInput = rootView.findViewById(R.id.profileScreenOldPasswordTextInput);
 		oldPasswordTextInput.getEditText().addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -234,8 +248,8 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
-		newPasswordTextInput = findViewById(R.id.profileScreenNewPasswordTextInput);
-		confirmPasswordTextInput = findViewById(R.id.profileScreenConfirmPasswordTextInput);
+		newPasswordTextInput = rootView.findViewById(R.id.profileScreenNewPasswordTextInput);
+		confirmPasswordTextInput = rootView.findViewById(R.id.profileScreenConfirmPasswordTextInput);
 		
 		newPasswordTextInput.getEditText().addTextChangedListener(new TextWatcher() {
 			@Override
@@ -273,29 +287,29 @@ public class ProfileActivity extends BaseActivity {
 			}
 		});
 		
-		deleteAccountPasswordTextInput = findViewById(R.id.profileScreenDeleteAccountPasswordTextInput);
+		deleteAccountPasswordTextInput = rootView.findViewById(R.id.profileScreenDeleteAccountPasswordTextInput);
 		deleteAccountPasswordTextInput.getEditText().addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+			
 			}
-
+			
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				deleteAccountPasswordTextInput.setError(null);
 			}
-
+			
 			@Override
 			public void afterTextChanged(Editable s) {
-
+			
 			}
 		});
 		
 		
-		profileImageView = findViewById(R.id.profileScreenImageView);
-		cameraButton = findViewById(R.id.profileScreenImageButton);
+		profileImageView = rootView.findViewById(R.id.profileScreenImageView);
+		cameraButton = rootView.findViewById(R.id.profileScreenImageButton);
 		
-		progressBar = findViewById(R.id.profileScreenProgressBar);
+		progressBar = rootView.findViewById(R.id.profileScreenProgressBar);
 		
 		currentUser = FirebaseAuth.getInstance().getCurrentUser();
 		
@@ -365,7 +379,7 @@ public class ProfileActivity extends BaseActivity {
 				if (!signedInWithGoogle) {
 					updateEmail();
 				} else {
-					Toast.makeText(ProfileActivity.this, "Signed in with google, cannot update email", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), "Signed in with google, cannot update email", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -377,7 +391,7 @@ public class ProfileActivity extends BaseActivity {
 				if (!signedInWithGoogle) {
 					updatePassword();
 				} else {
-					Toast.makeText(ProfileActivity.this, "Signed in with google, cannot update password", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), "Signed in with google, cannot update password", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -392,27 +406,29 @@ public class ProfileActivity extends BaseActivity {
 		});
 		
 		Log.d(TAG, "onCreate: ends");
+		
+		return rootView;
 	}
 	
 	private void deleteAccount() {
 		Log.d(TAG, "deleteAccount: checking internet connection");
-		checkConnection(ProfileActivity.this);
+		Connection.checkConnection(this);
 		
 		disableViews();
 		
-		deleteAccountPassword = deleteAccountPasswordTextInput.getEditText().getText().toString();
+		deleteAccountPassword = deleteAccountPasswordTextInput.getEditText().getText().toString().trim();
 		
 		if (!signedInWithGoogle && deleteAccountPasswordTextInput.getVisibility() == View.GONE) {
 			Log.d(TAG, "deleteAccount: showing delete account password edit text");
 			deleteAccountPasswordTextInput.setVisibility(View.VISIBLE);
-			Toast.makeText(this, "Enter the current password to delete the account", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "Enter the current password to delete the account", Toast.LENGTH_SHORT).show();
 		} else {
 			Log.d(TAG, "deleteAccount: re authenticating the user");
 			
 			AuthCredential authCredential = null;
 			
 			if (signedInWithGoogle) {
-				GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(ProfileActivity.this);
+				GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(getContext());
 				if (googleSignInAccount != null) {
 					authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
 				}
@@ -427,7 +443,7 @@ public class ProfileActivity extends BaseActivity {
 							if (task.isSuccessful()) {
 								Log.d(TAG, "onComplete: re authenticating successful");
 								
-								final AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+								final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 								builder.setTitle("Deleting your account");
 								builder.setMessage("Are you sure you want to delete the account?");
 								builder.setCancelable(false);
@@ -459,9 +475,9 @@ public class ProfileActivity extends BaseActivity {
 																			@Override
 																			public void onComplete(@NonNull Task<Void> task) {
 																				if (task.isSuccessful()) {
-																					Toast.makeText(ProfileActivity.this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
+																					Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
 																					
-																					SharedPreferences sharedPreferences = getSharedPreferences(SESSIONS, MODE_PRIVATE);
+																					SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SESSIONS, MODE_PRIVATE);
 																					SharedPreferences.Editor editor = sharedPreferences.edit();
 																					
 																					editor.putBoolean(REMEMBER_ME_ENABLED, false);
@@ -471,9 +487,9 @@ public class ProfileActivity extends BaseActivity {
 																					
 																					FirebaseAuth.getInstance().signOut();
 																					
-																					startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
-																					finishAffinity();
-																					overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+																					startActivity(new Intent(getContext(), LoginActivity.class));
+																					getActivity().finishAffinity();
+																					getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 																					
 																				} else {
 																					Log.d(TAG, "onComplete: could not delete account");
@@ -503,7 +519,7 @@ public class ProfileActivity extends BaseActivity {
 								
 								builder.show();
 							} else {
-								Toast.makeText(ProfileActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+								Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 							}
 						}
 					});
@@ -514,12 +530,12 @@ public class ProfileActivity extends BaseActivity {
 	
 	private void updateProfile() {
 		Log.d(TAG, "updateProfile: checking internet connection");
-		checkConnection(ProfileActivity.this);
+		Connection.checkConnection(this);
 		
 		disableViews();
 		
-		fullName = fullNameTextInput.getEditText().getText().toString();
-		username = usernameTextInput.getEditText().getText().toString();
+		fullName = fullNameTextInput.getEditText().getText().toString().trim();
+		username = usernameTextInput.getEditText().getText().toString().trim();
 		
 		if (user.validateName(fullName) != null || user.validateUsername(username) != null) {
 			Log.d(TAG, "updateProfile: username and full name invalid");
@@ -572,11 +588,11 @@ public class ProfileActivity extends BaseActivity {
 														public void onSuccess(Void aVoid) {
 															Log.d(TAG, "onSuccess: usernames database updated successfully");
 															
-															Toast.makeText(ProfileActivity.this, "Display name and username updated successfully", Toast.LENGTH_SHORT).show();
+															Toast.makeText(getContext(), "Display name and username updated successfully", Toast.LENGTH_SHORT).show();
 															
 															Log.d(TAG, "onSuccess: setting full name in nav header");
+															NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
 															TextView profileFullName = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
-															
 															if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
 																profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 															}
@@ -586,7 +602,7 @@ public class ProfileActivity extends BaseActivity {
 														@Override
 														public void onFailure(@NonNull Exception e) {
 															Log.d(TAG, "onFailure: usernames database could not be updated");
-															Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+															Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 														}
 													});
 										}
@@ -595,7 +611,7 @@ public class ProfileActivity extends BaseActivity {
 										@Override
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: users database could not be updated");
-											Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 										}
 									});
 						}
@@ -604,7 +620,7 @@ public class ProfileActivity extends BaseActivity {
 						@Override
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: display name changing failed");
-							Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 						}
 					});
 			
@@ -629,9 +645,10 @@ public class ProfileActivity extends BaseActivity {
 										public void onSuccess(Void aVoid) {
 											Log.d(TAG, "onSuccess: users database updated successfully");
 											
-											Toast.makeText(ProfileActivity.this, "Display name updated successfully", Toast.LENGTH_SHORT).show();
+											Toast.makeText(getContext(), "Display name updated successfully", Toast.LENGTH_SHORT).show();
 											
 											Log.d(TAG, "onSuccess: setting full name in nav header");
+											NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
 											TextView profileFullName = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
 											
 											if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
@@ -643,7 +660,7 @@ public class ProfileActivity extends BaseActivity {
 										@Override
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: users database could not be updated");
-											Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 										}
 									});
 						}
@@ -652,7 +669,7 @@ public class ProfileActivity extends BaseActivity {
 						@Override
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: display name changing failed");
-							Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 						}
 					});
 			
@@ -673,14 +690,14 @@ public class ProfileActivity extends BaseActivity {
 										public void onSuccess(Void aVoid) {
 											Log.d(TAG, "onSuccess: usernames database updated successfully");
 											
-											Toast.makeText(ProfileActivity.this, "Username updated successfully", Toast.LENGTH_SHORT).show();
+											Toast.makeText(getContext(), "Username updated successfully", Toast.LENGTH_SHORT).show();
 										}
 									})
 									.addOnFailureListener(new OnFailureListener() {
 										@Override
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: usernames database could not be updated");
-											Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 										}
 									});
 						}
@@ -689,11 +706,11 @@ public class ProfileActivity extends BaseActivity {
 						@Override
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: users database could not be updated");
-							Toast.makeText(ProfileActivity.this, "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
 						}
 					});
 		} else {
-			Toast.makeText(this, "Full name and username are same as now", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "Full name and username are same as now", Toast.LENGTH_SHORT).show();
 		}
 		
 		enableViews();
@@ -701,15 +718,15 @@ public class ProfileActivity extends BaseActivity {
 	
 	private void updateEmail() {
 		Log.d(TAG, "updateEmail: checking internet connection");
-		checkConnection(ProfileActivity.this);
+		Connection.checkConnection(this);
 		
 		disableViews();
 		
-		email = emailTextInput.getEditText().getText().toString();
-		password = passwordTextInput.getEditText().getText().toString();
+		email = emailTextInput.getEditText().getText().toString().trim();
+		password = passwordTextInput.getEditText().getText().toString().trim();
 		
 		if (email.matches(user.getEmail())) {
-			Toast.makeText(this, "Entered email is same as current email", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "Entered email is same as current email", Toast.LENGTH_SHORT).show();
 			enableViews();
 			return;
 		}
@@ -725,66 +742,66 @@ public class ProfileActivity extends BaseActivity {
 			Log.d(TAG, "updateEmail: showing password edit text");
 			passwordTextInput.setVisibility(View.VISIBLE);
 			emailTextInput.setEnabled(false);
-			Toast.makeText(this, "Enter the current password to change the email", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "Enter the current password to change the email", Toast.LENGTH_SHORT).show();
 		} else {
-				
-				Log.d(TAG, "updateEmail: re authenticating the user");
-				
-				AuthCredential authCredential = EmailAuthProvider.getCredential(user.getEmail(), password);
-				
-				currentUser.reauthenticate(authCredential)
-						.addOnCompleteListener(new OnCompleteListener<Void>() {
-							@Override
-							public void onComplete(@NonNull Task<Void> task) {
-								if (task.isSuccessful()) {
-									
-									currentUser.updateEmail(email)
-											.addOnCompleteListener(new OnCompleteListener<Void>() {
-												@Override
-												public void onComplete(@NonNull Task<Void> task) {
-													if (task.isSuccessful()) {
-														Log.d(TAG, "updateEmail: email change successful: " + currentUser.getEmail());
-														
-														user.setEmail(email);
-														user.setEmailVerified(false);
-														
-														mDatabaseReference.child("users").child(currentUser.getUid()).setValue(user);
-														
-														currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-															@Override
-															public void onComplete(@NonNull Task<Void> task) {
-																if (task.isSuccessful()) {
-																	Log.d(TAG, "onComplete: verification email sent successfully");
-																	Toast.makeText(ProfileActivity.this, "Email changed successfully", Toast.LENGTH_SHORT).show();
-																	
-																	SharedPreferences sharedPreferences = getSharedPreferences(SESSIONS, MODE_PRIVATE);
-																	SharedPreferences.Editor editor = sharedPreferences.edit();
-																	
-																	if (sharedPreferences.getBoolean(REMEMBER_ME_ENABLED, false)) {
-																		editor.putString(REMEMBER_ME_EMAIL, email);
-																		editor.apply();
-																	}
-																	
-																	emailTextInput.setEnabled(true);
-																	
-																	passwordTextInput.getEditText().setText("");
-																	passwordTextInput.setVisibility(View.GONE);
-																} else {
-																	Log.d(TAG, "onComplete: verification email could not be sent: " + task.getException().getMessage());
+			
+			Log.d(TAG, "updateEmail: re authenticating the user");
+			
+			AuthCredential authCredential = EmailAuthProvider.getCredential(user.getEmail(), password);
+			
+			currentUser.reauthenticate(authCredential)
+					.addOnCompleteListener(new OnCompleteListener<Void>() {
+						@Override
+						public void onComplete(@NonNull Task<Void> task) {
+							if (task.isSuccessful()) {
+								
+								currentUser.updateEmail(email)
+										.addOnCompleteListener(new OnCompleteListener<Void>() {
+											@Override
+											public void onComplete(@NonNull Task<Void> task) {
+												if (task.isSuccessful()) {
+													Log.d(TAG, "updateEmail: email change successful: " + currentUser.getEmail());
+													
+													user.setEmail(email);
+													user.setEmailVerified(false);
+													
+													mDatabaseReference.child("users").child(currentUser.getUid()).setValue(user);
+													
+													currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+														@Override
+														public void onComplete(@NonNull Task<Void> task) {
+															if (task.isSuccessful()) {
+																Log.d(TAG, "onComplete: verification email sent successfully");
+																Toast.makeText(getContext(), "Email changed successfully", Toast.LENGTH_SHORT).show();
+																
+																SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SESSIONS, MODE_PRIVATE);
+																SharedPreferences.Editor editor = sharedPreferences.edit();
+																
+																if (sharedPreferences.getBoolean(REMEMBER_ME_ENABLED, false)) {
+																	editor.putString(REMEMBER_ME_EMAIL, email);
+																	editor.apply();
 																}
+																
+																emailTextInput.setEnabled(true);
+																
+																passwordTextInput.getEditText().setText("");
+																passwordTextInput.setVisibility(View.GONE);
+															} else {
+																Log.d(TAG, "onComplete: verification email could not be sent: " + task.getException().getMessage());
 															}
-														});
-													} else {
-														Toast.makeText(ProfileActivity.this, "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-													}
+														}
+													});
+												} else {
+													Toast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 												}
-											});
-									
-								} else {
-									Toast.makeText(ProfileActivity.this, "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-								}
+											}
+										});
+								
+							} else {
+								Toast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 							}
-						});
+						}
+					});
 		}
 		
 		enableViews();
@@ -792,18 +809,18 @@ public class ProfileActivity extends BaseActivity {
 	
 	private void updatePassword() {
 		Log.d(TAG, "updatePassword: checking internet connection");
-		checkConnection(ProfileActivity.this);
+		Connection.checkConnection(this);
 		
 		disableViews();
 		
-		oldPassword = oldPasswordTextInput.getEditText().getText().toString();
-		newPassword = newPasswordTextInput.getEditText().getText().toString();
-		confirmPassword = confirmPasswordTextInput.getEditText().getText().toString();
+		oldPassword = oldPasswordTextInput.getEditText().getText().toString().trim();
+		newPassword = newPasswordTextInput.getEditText().getText().toString().trim();
+		confirmPassword = confirmPasswordTextInput.getEditText().getText().toString().trim();
 		
 		if (oldPasswordTextInput.getVisibility() == View.GONE) {
 			Log.d(TAG, "updatePassword: showing old password edit text");
 			oldPasswordTextInput.setVisibility(View.VISIBLE);
-			Toast.makeText(this, "Enter the current password to change it", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "Enter the current password to change it", Toast.LENGTH_SHORT).show();
 		} else {
 			
 			Log.d(TAG, "updatePassword: re authenticating the user");
@@ -821,7 +838,7 @@ public class ProfileActivity extends BaseActivity {
 									Log.d(TAG, "updatePassword: showing password edit text");
 									newPasswordTextInput.setVisibility(View.VISIBLE);
 									confirmPasswordTextInput.setVisibility(View.VISIBLE);
-									Toast.makeText(ProfileActivity.this, "Enter the new password", Toast.LENGTH_SHORT).show();
+									Toast.makeText(getContext(), "Enter the new password", Toast.LENGTH_SHORT).show();
 									oldPasswordTextInput.setEnabled(false);
 									enableViews();
 									return;
@@ -840,9 +857,9 @@ public class ProfileActivity extends BaseActivity {
 											@Override
 											public void onComplete(@NonNull Task<Void> task) {
 												if (task.isSuccessful()) {
-													Toast.makeText(ProfileActivity.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
+													Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
 													
-													SharedPreferences sharedPreferences = getSharedPreferences(SESSIONS, MODE_PRIVATE);
+													SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SESSIONS, MODE_PRIVATE);
 													SharedPreferences.Editor editor = sharedPreferences.edit();
 													
 													if (sharedPreferences.getBoolean(REMEMBER_ME_ENABLED, false)) {
@@ -860,13 +877,13 @@ public class ProfileActivity extends BaseActivity {
 													newPasswordTextInput.setVisibility(View.GONE);
 													confirmPasswordTextInput.setVisibility(View.GONE);
 												} else {
-													Toast.makeText(ProfileActivity.this, "Could not update password " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+													Toast.makeText(getContext(), "Could not update password " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 												}
 											}
 										});
 								
 							} else {
-								Toast.makeText(ProfileActivity.this, "Could not update password. Please reenter the correct password", Toast.LENGTH_SHORT).show();
+								Toast.makeText(getContext(), "Could not update password. Please reenter the correct password", Toast.LENGTH_SHORT).show();
 							}
 						}
 					});
@@ -877,11 +894,13 @@ public class ProfileActivity extends BaseActivity {
 	}
 	
 	private void uploadImage() {
+		Log.d(TAG, "uploadImage: checking internet connection");
+		Connection.checkConnection(this);
+		
 		Log.d(TAG, "uploadImage: uploading image");
-		checkConnection(this);
 		
 		if (filePath != null) {
-			final ProgressDialog progressDialog = new ProgressDialog(this);
+			final ProgressDialog progressDialog = new ProgressDialog(getContext());
 			progressDialog.setTitle("Uploading image...");
 			progressDialog.show();
 			
@@ -898,50 +917,51 @@ public class ProfileActivity extends BaseActivity {
 					
 					return ref.getDownloadUrl();
 				}
-			}).addOnSuccessListener(ProfileActivity.this, new OnSuccessListener<Uri>() {
-					@Override
-					public void onSuccess(Uri uri) {
-						Log.d(TAG, "onSuccess: photo upload successful");
-						if (uri != null) {
-							Log.d(TAG, "onSuccess: image download uri is " + uri);
-							UserProfileChangeRequest userProfileUpdate = new UserProfileChangeRequest.Builder()
-									.setPhotoUri(uri)
-									.build();
-							currentUser.updateProfile(userProfileUpdate)
-									.addOnSuccessListener(new OnSuccessListener<Void>() {
-										@Override
-										public void onSuccess(Void aVoid) {
-											Log.d(TAG, "onSuccess: image saved successfully");
-											
-											ImageView profileImage = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
-											if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
-												Log.d(TAG, "onCreate: Downloading profile image");
-												Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
-														.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
-														.placeholder(Objects.requireNonNull(getDrawable(R.drawable.image_loading_icon)))
-														.into(profileImage);
-											} else {
-												Log.d(TAG, "onCreate: Image url does not exist for user");
-												profileImage.setImageDrawable(getDrawable(R.drawable.image_error_icon));
-											}
+			}).addOnSuccessListener(getActivity(), new OnSuccessListener<Uri>() {
+				@Override
+				public void onSuccess(Uri uri) {
+					Log.d(TAG, "onSuccess: photo upload successful");
+					if (uri != null) {
+						Log.d(TAG, "onSuccess: image download uri is " + uri);
+						UserProfileChangeRequest userProfileUpdate = new UserProfileChangeRequest.Builder()
+								.setPhotoUri(uri)
+								.build();
+						currentUser.updateProfile(userProfileUpdate)
+								.addOnSuccessListener(new OnSuccessListener<Void>() {
+									@Override
+									public void onSuccess(Void aVoid) {
+										Log.d(TAG, "onSuccess: image saved successfully");
+										
+										NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+										ImageView profileImage = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
+										if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
+											Log.d(TAG, "onCreate: Downloading profile image");
+											Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
+													.error(Objects.requireNonNull(requireActivity().getDrawable(R.drawable.image_error_icon)))
+													.placeholder(Objects.requireNonNull(requireActivity().getDrawable(R.drawable.image_loading_icon)))
+													.into(profileImage);
+										} else {
+											Log.d(TAG, "onCreate: Image url does not exist for user");
+											profileImage.setImageDrawable(requireActivity().getDrawable(R.drawable.image_error_icon));
 										}
-									})
-									.addOnFailureListener(new OnFailureListener() {
-										@Override
-										public void onFailure(@NonNull Exception e) {
-											Log.d(TAG, "onFailure: image could not be uploaded");
-										}
-									});
-							progressDialog.dismiss();
-						}
-					}
-			}).addOnFailureListener(new OnFailureListener() {
-					@Override
-					public void onFailure(@NonNull Exception e) {
-						Log.d(TAG, "onFailure: photo upload failed");
+									}
+								})
+								.addOnFailureListener(new OnFailureListener() {
+									@Override
+									public void onFailure(@NonNull Exception e) {
+										Log.d(TAG, "onFailure: image could not be uploaded");
+									}
+								});
 						progressDialog.dismiss();
-						Toast.makeText(ProfileActivity.this,"Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
 					}
+				}
+			}).addOnFailureListener(new OnFailureListener() {
+				@Override
+				public void onFailure(@NonNull Exception e) {
+					Log.d(TAG, "onFailure: photo upload failed");
+					progressDialog.dismiss();
+					Toast.makeText(getContext(),"Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+				}
 			});
 		}
 	}

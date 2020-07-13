@@ -30,7 +30,7 @@
     <color name="navigationMenuText">#2699FB</color>
 
     <color name="bottomNavigationItemSelected">#FFFFFF</color>
-    <color name="bottomNavigationItem">#303030</color>
+    <color name="bottomNavigationItem">#444444</color>
 
     <color name="splashScreenGradientStartColor">#2193b0</color>
     <color name="splashScreenGradientEndColor">#6dd5ed</color>

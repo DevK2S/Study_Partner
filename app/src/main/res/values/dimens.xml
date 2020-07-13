@@ -34,7 +34,7 @@
 
     <dimen name="mainScreenBackgroundRectangleTopMargin">75dp</dimen>
 
-    <dimen name="navigationHeaderHeight">120dp</dimen>
+    <dimen name="navigationHeaderHeight">150dp</dimen>
     <dimen name="navigationMenuButtonStartMargin">0dp</dimen>
     <dimen name="navigationMenuButtonBottomMargin">15dp</dimen>
 
