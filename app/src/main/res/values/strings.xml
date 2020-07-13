@@ -32,9 +32,6 @@
     <string name="create_account_screen_full_name">Full Name</string>
     <string name="create_account_screen_back_arrow_cd">Back arrow to login page</string>
 
-    <string name="main_screen_bg_rectangle_cd">Main Screen Background Rectangle</string>
-    <string name="main_screen_navigation_menu_button">Navigation Menu Bar</string>
-
     <string name="bottom_navigation_menu_home">Home</string>
     <string name="bottom_navigation_menu_notes">Notes</string>
     <string name="bottom_navigation_menu_attendance">Attendance</string>
@@ -47,9 +44,7 @@
     <string name="navigation_menu_home">Home</string>
     <string name="navigation_menu_dark_mode">Dark Mode</string>
 
-    <string name="profile_screen_profile_title">Profile</string>
     <string name="profile_screen_background_rectangle_cd">Profile Screen Background Rectangle</string>
-    <string name="profile_screen_back_arrow_cd">Profile Screen Back Arrow</string>
     <string name="profile_screen_full_name">Full Name</string>
     <string name="profile_screen_username">Username</string>
     <string name="profile_screen_email">New Email</string>
@@ -63,20 +58,6 @@
     <string name="profile_screen_delete_account">Delete Account</string>
     <string name="profile_screen_user_photo_cd">User Profile Image</string>
     <string name="profile_screen_user_profile_camera_cd">User Profile Image Camera</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-
-    <string name="navigation_header_verified">Verified</string>
-    <string name="navigation_header_not_verified">Not Verified</string>
-
-    <string name="createFolder">Create Folder</string>
-    <string name="addFile">Add Files</string>
-    <string name="addImage">Add Images</string>
 
     <string name="hello_blank_fragment">Hello Blank Fragment</string>
 

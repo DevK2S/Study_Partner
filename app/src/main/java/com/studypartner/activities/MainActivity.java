@@ -1,6 +1,5 @@
 package com.studypartner.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,9 +24,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -44,20 +42,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private DrawerLayout mDrawerLayout;
 	public FloatingActionButton fab;
 	
-	private FragmentManager fragmentManager;
-	private FragmentTransaction fragmentTransaction;
 	
 	@Override
 	public void onBackPressed() {
+		Log.d(TAG, "onBackPressed: back pressed");
 		if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
 			mDrawerLayout.closeDrawer(GravityCompat.START);
+		} else if (mNavController.getCurrentDestination().getId() == R.id.nav_home){
+			Log.d(TAG, "onBackPressed: closing app");
+			finishAffinity();
+			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		} else {
+			Log.d(TAG, "onBackPressed: navigating to home");
 			super.onBackPressed();
 		}
 	}
 	
 	@Override
 	protected void onResume() {
+		Log.d(TAG, "onResume: starts");
 		super.onResume();
 		
 		ImageView profileImage = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
@@ -69,24 +72,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		}
 		
 		if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
-			Log.d(TAG, "onCreate: Downloading profile image");
+			Log.d(TAG, "onResume: Downloading profile image");
 			Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
 					.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
 					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
 					.into(profileImage);
 		} else {
-			Log.d(TAG, "onCreate: Image url does not exist for user");
+			Log.d(TAG, "onResume: Image url does not exist for user");
 			profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
 		}
 		
 		profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+		Log.d(TAG, "onResume: ends");
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d(TAG, "onCreate: starts");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		Log.d(TAG, "onCreate: checking connection");
 		Connection.checkConnection(this);
 		
 		//setting hooks
@@ -127,15 +133,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			}
 			}
 		});
-		
-		fragmentManager = getSupportFragmentManager();
-		fragmentTransaction = fragmentManager.beginTransaction();
-		fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
 	}
-	
 	
 	@Override
 	public boolean onSupportNavigateUp() {
+		Log.d(TAG, "onSupportNavigateUp: starts");
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 		return NavigationUI.navigateUp(navController, mAppBarConfiguration)
 				|| super.onSupportNavigateUp();
@@ -143,11 +145,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	
 	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+		Log.d(TAG, "onNavigationItemSelected: starts");
 		int itemId = item.getItemId();
 		
 		if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
 			mDrawerLayout.closeDrawer(GravityCompat.START);
 		}
+		
+		Log.d(TAG, "onNavigationItemSelected: animations for opening fragment to right of current one");
+		NavOptions.Builder leftToRightBuilder = new NavOptions.Builder();
+		leftToRightBuilder.setEnterAnim(R.anim.slide_in_right);
+		leftToRightBuilder.setExitAnim(R.anim.slide_out_left);
+		leftToRightBuilder.setPopEnterAnim(R.anim.slide_in_left);
+		leftToRightBuilder.setPopExitAnim(R.anim.slide_out_right);
+		leftToRightBuilder.setLaunchSingleTop(true);
+		
+		Log.d(TAG, "onNavigationItemSelected: animations for opening fragment to left of current one");
+		NavOptions.Builder rightToLeftBuilder = new NavOptions.Builder();
+		rightToLeftBuilder.setEnterAnim(R.anim.slide_in_left);
+		rightToLeftBuilder.setExitAnim(R.anim.slide_out_right);
+		rightToLeftBuilder.setPopEnterAnim(R.anim.slide_in_right);
+		rightToLeftBuilder.setPopExitAnim(R.anim.slide_out_left);
+		rightToLeftBuilder.setLaunchSingleTop(true);
 		
 		switch (itemId) {
 			case R.id.nav_home:
@@ -156,28 +175,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					Log.d(TAG, "onNavigationItemSelected: opening home fragment");
 					fab.setVisibility(View.VISIBLE);
 					mBottomAppBar.setVisibility(View.VISIBLE);
-					mNavController.navigate(R.id.nav_home);
+					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+					mNavController.popBackStack(R.id.nav_home, false);
 				}
 				return true;
 				
 			case R.id.nav_attendance:
-				Toast.makeText(this, "Attendance", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onNavigationItemSelected: attendance selected");
+				if (mNavController.getCurrentDestination().getId() == R.id.nav_home) {
+					Log.d(TAG, "onNavigationItemSelected: opening attendance fragment");
+					mNavController.navigate(R.id.nav_attendance, null, leftToRightBuilder.build());
+				} else if (mNavController.getCurrentDestination().getId() != R.id.nav_attendance) {
+					Log.d(TAG, "onNavigationItemSelected: opening attendance fragment");
+					mNavController.navigate(R.id.nav_attendance, null, rightToLeftBuilder.build());
+				}
 				return true;
 				
 			case R.id.nav_starred:
-				Toast.makeText(this, "Starred", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onNavigationItemSelected: starred selected");
+				if (mNavController.getCurrentDestination().getId() == R.id.nav_notes) {
+					Log.d(TAG, "onNavigationItemSelected: opening starred fragment");
+					mNavController.navigate(R.id.nav_starred, null, rightToLeftBuilder.build());
+				} else if (mNavController.getCurrentDestination().getId() != R.id.nav_starred) {
+					Log.d(TAG, "onNavigationItemSelected: opening starred fragment");
+					mNavController.navigate(R.id.nav_starred, null, leftToRightBuilder.build());
+				}
 				return true;
 				
 			case R.id.nav_notes:
-				Toast.makeText(this, "Notes", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onNavigationItemSelected: notes selected");
+				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
+					Log.d(TAG, "onNavigationItemSelected: opening notes fragment");
+					mNavController.navigate(R.id.nav_notes, null, leftToRightBuilder.build());
+				}
 				return true;
 				
 			case R.id.nav_reminder:
-				Toast.makeText(this, "Reminder", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onNavigationItemSelected: reminder selected");
+				if (mNavController.getCurrentDestination().getId() != R.id.nav_reminder) {
+					Log.d(TAG, "onNavigationItemSelected: opening reminder fragment");
+					mBottomAppBar.setVisibility(View.GONE);
+					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+					mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
+				}
 				return true;
 				
 			case R.id.nav_settings:
-				Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onNavigationItemSelected: settings selected");
+				if (mNavController.getCurrentDestination().getId() != R.id.nav_settings) {
+					Log.d(TAG, "onNavigationItemSelected: opening settings fragment");
+					mBottomAppBar.setVisibility(View.GONE);
+					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+					mNavController.navigate(R.id.nav_settings, null, leftToRightBuilder.build());
+				}
 				return true;
 				
 			case R.id.nav_profile:
@@ -185,22 +235,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_profile) {
 					Log.d(TAG, "onNavigationItemSelected: opening profile fragment");
 					mBottomAppBar.setVisibility(View.GONE);
-					fab.setVisibility(View.GONE);
-					mNavController.navigate(R.id.nav_profile);
+					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+					mNavController.navigate(R.id.nav_profile, null, leftToRightBuilder.build());
 				}
 				return true;
 				
 			case R.id.nav_logout:
+				Log.d(TAG, "onNavigationItemSelected: logging out");
 				FirebaseAuth.getInstance().signOut();
-				startActivity(new Intent(this, LoginActivity.class));
+				mNavController.navigate(R.id.nav_logout);
 				finishAffinity();
 				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 				return true;
 				
 			default:
-				Toast.makeText(this, "Default", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Please don't select this", Toast.LENGTH_SHORT).show();
 				return false;
-			
 		}
 	}
 }

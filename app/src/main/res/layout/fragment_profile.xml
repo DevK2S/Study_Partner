@@ -4,7 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/profileScreenScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.ProfileFragment">
@@ -143,7 +142,6 @@
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenFullNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_full_name"
@@ -174,7 +172,6 @@
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenUsernameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_username"
@@ -205,7 +202,6 @@
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenEmailEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_email"
@@ -236,7 +232,6 @@
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenPasswordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_password"
@@ -268,7 +263,6 @@
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenOldPasswordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_old_password"
@@ -299,7 +293,6 @@
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenNewPasswordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_new_password"
@@ -330,7 +323,6 @@
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenConfirmPasswordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_confirm_password"
@@ -362,7 +354,6 @@
             app:startIconTint="@color/darkIconTint">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/profileScreenDeleteAccountPasswordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_password"

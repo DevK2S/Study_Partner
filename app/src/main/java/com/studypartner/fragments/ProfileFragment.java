@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
@@ -113,6 +114,7 @@ public class ProfileFragment extends Fragment {
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		Log.d(TAG, "onActivityResult: starts");
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
@@ -120,6 +122,7 @@ public class ProfileFragment extends Fragment {
 			filePath = data.getData();
 			try {
 				Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),filePath);
+				Log.d(TAG, "onActivityResult: setting image");
 				profileImageView.setImageBitmap(bitmap);
 				uploadImage();
 			} catch (IOException e) {
@@ -134,20 +137,21 @@ public class ProfileFragment extends Fragment {
 		
 		View rootView = inflater.inflate(R.layout.fragment_profile,container, false);
 		
+		Log.d(TAG, "onCreateView: checking connection");
+		
 		Connection.checkConnection(this);
 		
-		OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
 				MainActivity activity = (MainActivity) requireActivity();
 				activity.mBottomAppBar.setVisibility(View.VISIBLE);
+				activity.mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
 				activity.fab.setVisibility(View.VISIBLE);
-				activity.mNavController.navigate(R.id.nav_home);
+				activity.mNavController.navigate(R.id.action_nav_profile_to_nav_home);
 			}
-		};
-		
-		requireActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
+		});
 		
 		//Setting hooks
 		
@@ -322,8 +326,6 @@ public class ProfileFragment extends Fragment {
 				user = new User(currentUser.getDisplayName(),
 						snapshot.getValue(String.class),
 						currentUser.getEmail(), currentUser.isEmailVerified());
-				Log.d(TAG, "onDataChange: email: " + currentUser.getEmail());
-				Log.d(TAG, "onDataChange: email verification: " + currentUser.isEmailVerified());
 				
 				usernameTextInput.getEditText().setText(user.getUsername());
 				fullNameTextInput.getEditText().setText(user.getFullName());

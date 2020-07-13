@@ -32,13 +32,8 @@
     <dimen name="createAccountScreenBoxStrokeWidthFocused">2dp</dimen>
     <dimen name="createAccountScreenBackgroundRectangleTopMargin">75dp</dimen>
 
-    <dimen name="mainScreenBackgroundRectangleTopMargin">75dp</dimen>
-
     <dimen name="navigationHeaderHeight">150dp</dimen>
-    <dimen name="navigationMenuButtonStartMargin">0dp</dimen>
-    <dimen name="navigationMenuButtonBottomMargin">15dp</dimen>
 
-    <dimen name="profileScreenBackgroundRectangleTopMargin">75dp</dimen>
     <dimen name="profileScreenBoxStrokeWidthFocused">2dp</dimen>
     <dimen name="profileScreenImageButtonDimensions">100dp</dimen>
 </resources>
