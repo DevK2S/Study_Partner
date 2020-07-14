@@ -1,6 +1,9 @@
 package com.studypartner.activities;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +20,14 @@ import com.squareup.picasso.Picasso;
 import com.studypartner.R;
 import com.studypartner.utils.Connection;
 
+import java.io.File;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -91,7 +97,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		Log.d(TAG, "onCreate: starts");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		//checking Permissions
+		WriteReadPermission();
+		/// Access your app's Private documents directory
+		File file = new File(getExternalFilesDir(null),"Folders");
+		// Make the directory if it does not yet exist
+		if(!file.mkdirs())
+			file.mkdirs();
+
 		Log.d(TAG, "onCreate: checking connection");
 		Connection.checkConnection(this);
 		
@@ -252,5 +265,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Toast.makeText(this, "Please don't select this", Toast.LENGTH_SHORT).show();
 				return false;
 		}
+	}
+	private  boolean isExternalStorageReadableWritable()
+	{
+		return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED;
+	}
+	private void  WriteReadPermission()
+	{
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+		}
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+		}
+
 	}
 }
