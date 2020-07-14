@@ -98,12 +98,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		//checking Permissions
-		WriteReadPermission();
-		/// Access your app's Private documents directory
-		File file = new File(getExternalFilesDir(null),"Folders");
-		// Make the directory if it does not yet exist
-		if(!file.mkdirs())
-			file.mkdirs();
+		if(isExternalStorageReadableWritable())
+			WriteReadPermission();
 
 		Log.d(TAG, "onCreate: checking connection");
 		Connection.checkConnection(this);
@@ -268,16 +264,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	}
 	private  boolean isExternalStorageReadableWritable()
 	{
-		return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED;
+		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
 	}
 	private void  WriteReadPermission()
 	{
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-		}
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 		}
 
+	}
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
+			if(requestCode==1){
+				if (grantResults.length > 0  && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+				{
+					// i am creating folder in external storage here
+					File file = new File(getExternalFilesDir(null),"Folders");
+					if(!file.mkdirs())
+					file.mkdirs();
+
+				}
+				else
+				{
+					finishAffinity();
+				}
+
+		}
 	}
 }
