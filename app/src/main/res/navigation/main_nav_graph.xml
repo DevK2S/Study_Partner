@@ -9,43 +9,92 @@
         android:id="@+id/nav_home"
         android:name="com.studypartner.fragments.HomeFragment"
         android:label="@string/navigation_menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+    </fragment>
 
     <fragment
         android:id="@+id/nav_attendance"
         android:name="com.studypartner.fragments.AttendanceFragment"
         android:label="@string/bottom_navigation_menu_attendance"
-        tools:layout="@layout/fragment_attendance" />
+        tools:layout="@layout/fragment_attendance" >
+        <action
+            android:id="@+id/action_nav_attendance_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_starred"
         android:name="com.studypartner.fragments.StarredFragment"
         android:label="@string/bottom_navigation_menu_starred"
-        tools:layout="@layout/fragment_starred" />
+        tools:layout="@layout/fragment_starred" >
+        <action
+            android:id="@+id/action_nav_starred_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_notes"
         android:name="com.studypartner.fragments.NotesFragment"
         android:label="@string/bottom_navigation_menu_notes"
-        tools:layout="@layout/fragment_notes" />
+        tools:layout="@layout/fragment_notes" >
+        <action
+            android:id="@+id/action_nav_notes_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_reminder"
         android:name="com.studypartner.fragments.ReminderFragment"
         android:label="@string/navigation_menu_reminders"
-        tools:layout="@layout/fragment_reminder" />
+        tools:layout="@layout/fragment_reminder" >
+        <action
+            android:id="@+id/action_nav_reminder_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.studypartner.fragments.ProfileFragment"
         android:label="@string/navigation_menu_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.studypartner.fragments.SettingsFragment"
         android:label="@string/navigation_menu_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_nav_settings_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <activity
         android:id="@+id/nav_logout"

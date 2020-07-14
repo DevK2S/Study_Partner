@@ -24,7 +24,7 @@ public class Connection {
 	private static final String TAG = "Connection";
 	
 	public static void checkConnection (final Fragment fragment) {
-		Log.d(TAG, "isConnected: internet check");
+		Log.d(TAG, "checkConnection: internet check");
 		
 		ConnectivityManager connectivityManager = (ConnectivityManager) fragment.requireActivity().getSystemService(CONNECTIVITY_SERVICE);
 		
@@ -57,12 +57,12 @@ public class Connection {
 					});
 			alertDialog.show();
 		} else {
-			Log.d(TAG, "isConnected: internet connected");
+			Log.d(TAG, "checkConnection: internet connected");
 		}
 	}
 	
 	public static void checkConnection (final Activity activity) {
-		Log.d(TAG, "isConnected: internet check");
+		Log.d(TAG, "checkConnection: internet check");
 		
 		ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(CONNECTIVITY_SERVICE);
 		
@@ -95,7 +95,7 @@ public class Connection {
 					});
 			alertDialog.show();
 		} else {
-			Log.d(TAG, "isConnected: internet connected");
+			Log.d(TAG, "checkConnection: internet connected");
 		}
 	}
 }

@@ -18,19 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:backgroundTint="@color/colorPrimary"
             app:navigationIcon="@drawable/menu_icon"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-            <TextView
-                android:id="@+id/toolbar_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/mediumMargin"
-                android:layout_marginStart="@dimen/mediumMargin"
-                android:gravity="center_vertical"
-                android:textColor="@color/titleBarText"
-                android:textSize="@dimen/extraLargeText" />
-
-        </com.google.android.material.appbar.MaterialToolbar>
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -40,11 +28,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:backgroundTint="@color/colorPrimary"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="0dp"
+        app:fabCradleMargin="8dp"
         app:fabAlignmentMode="center"
+        app:fabAnimationMode="scale"
         app:fabCradleRoundedCornerRadius="@dimen/mediumMargin"
-        app:fabCradleVerticalOffset="@dimen/smallMargin"
-        app:hideOnScroll="true"
-        app:layout_anchorGravity="center">
+        app:hideOnScroll="true">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
@@ -52,6 +42,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bottom_background_transparent"
             android:fitsSystemWindows="true"
+            app:itemHorizontalTranslationEnabled="true"
             app:itemIconTint="@color/bottom_navigation_selector"
             app:itemRippleColor="@color/bottom_navigation_selector"
             app:itemTextColor="@color/bottom_navigation_selector"
@@ -65,8 +56,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/plus_icon"
-        android:tint="@color/primaryWhite"
         app:backgroundTint="@color/colorPrimary"
+        app:tint="@color/primaryWhite"
         app:layout_anchor="@id/bottom_app_bar" />
 
     <include layout="@layout/content_main" />
