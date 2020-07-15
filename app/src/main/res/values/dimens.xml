@@ -15,6 +15,10 @@
     <dimen name="largeText">22sp</dimen>
     <dimen name="extraLargeText">28sp</dimen>
 
+    <dimen name="smallElevation">4dp</dimen>
+    <dimen name="mediumElevation">8dp</dimen>
+    <dimen name="largeElevation">12dp</dimen>
+
     <dimen name="splashScreenAppLogoHeight">250dp</dimen>
     <dimen name="splashScreenAppLogoWidth">250dp</dimen>
     <dimen name="splashScreenAppLogoTopMargin">125dp</dimen>

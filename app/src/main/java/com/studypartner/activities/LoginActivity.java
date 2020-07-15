@@ -76,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 				Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
 				firebaseAuthWithGoogle(account.getIdToken());
 			} catch (ApiException e) {
+				e.printStackTrace();
 				findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
 			}
 		}
