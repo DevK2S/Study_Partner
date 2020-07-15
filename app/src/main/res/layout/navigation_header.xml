@@ -4,17 +4,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/navigationHeaderHeight"
-    android:paddingTop="@dimen/mediumPadding"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:layout_marginTop="@dimen/mediumMargin"
     android:paddingBottom="@dimen/mediumPadding"
-    android:background="@color/colorPrimary">
+    android:paddingTop="@dimen/mediumPadding">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:padding="@dimen/smallPadding"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/mediumMargin"
             android:layout_marginEnd="@dimen/mediumMargin"
+            android:layout_marginStart="@dimen/mediumMargin"
             android:orientation="vertical">
 
             <TextView
@@ -42,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/alternativeText"
                 android:textSize="@dimen/mediumText"
-                tools:text="TextView" />
+                tools:text="John Doe" />
 
             <TextView
                 android:id="@+id/navigationDrawerEmail"
@@ -52,8 +55,6 @@
                 android:textColor="@color/alternativeText"
                 android:textSize="12sp"
                 tools:text="example@example.com" />
-
         </LinearLayout>
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

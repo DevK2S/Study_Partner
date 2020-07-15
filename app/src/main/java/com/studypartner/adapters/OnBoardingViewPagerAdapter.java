@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.studypartner.R;
-import com.studypartner.items.OnBoardingItem;
+import com.studypartner.models.OnBoardingItem;
 
 import java.util.List;
 

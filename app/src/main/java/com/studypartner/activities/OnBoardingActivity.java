@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.google.android.material.tabs.TabLayout;
 import com.studypartner.R;
 import com.studypartner.adapters.OnBoardingViewPagerAdapter;
-import com.studypartner.items.OnBoardingItem;
+import com.studypartner.models.OnBoardingItem;
 
 import java.util.ArrayList;
 import java.util.List;

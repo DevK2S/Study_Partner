@@ -1,6 +1,7 @@
 package com.studypartner.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -97,9 +99,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		Log.d(TAG, "onCreate: starts");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		//checking Permissions
-		if(isExternalStorageReadableWritable())
-			WriteReadPermission();
+		if(isExternalStorageReadableWritable()) writeReadPermission();
 
 		Log.d(TAG, "onCreate: checking connection");
 		Connection.checkConnection(this);
@@ -243,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: profile selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_profile) {
 					Log.d(TAG, "onNavigationItemSelected: opening profile fragment");
+					fab.setVisibility(View.GONE);
 					mBottomAppBar.setVisibility(View.GONE);
 					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					mNavController.navigate(R.id.nav_profile, null, leftToRightBuilder.build());
@@ -262,36 +265,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				return false;
 		}
 	}
-	private  boolean isExternalStorageReadableWritable()
-	{
+	
+	private boolean isExternalStorageReadableWritable() {
 		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
 	}
-	private void  WriteReadPermission()
-	{
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+	
+	private void writeReadPermission() {
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 		}
-
 	}
+	
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-
-			if(requestCode==1){
-				if (grantResults.length > 0  && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-				{
-					// i am creating folder in external storage here
-					File file = new File(getExternalFilesDir(null),"Folders");
-					if(!file.mkdirs())
-					file.mkdirs();
-
-				}
-				else
-				{
-					finishAffinity();
-				}
-
+		if (requestCode == 1) {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				Log.d(TAG, "onRequestPermissionsResult: creating folder");
+				File file = new File(getExternalFilesDir(null), "Folders");
+				if (!file.mkdirs())
+					Log.d(TAG, "onRequestPermissionsResult: folder could not be created");
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("Read and Write Permissions");
+				builder.setMessage("Read and write permissions are required to store notes in the app");
+				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "onClick: closing app");
+						finishAndRemoveTask();
+					}
+				});
+				builder.show();
+			}
+			
 		}
 	}
 }

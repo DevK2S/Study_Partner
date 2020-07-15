@@ -274,7 +274,6 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 	
-	
 	private void googleLogin() {
 		Log.d(TAG, "googleLogin: starts");
 		
