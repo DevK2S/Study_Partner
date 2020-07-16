@@ -69,7 +69,7 @@ public class NotesFragment extends Fragment {
 	void addFolder()
 	{
 		String newFolder="New Folder";
-		File file=new File(newFolder,newFolder);
+		File file=new File(noteFolder,newFolder);
 		file.mkdirs();
 
 	}
