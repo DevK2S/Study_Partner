@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- By: Karan Gourisaria -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/smallMargin">
+
+    <TextView
+        android:id="@+id/attendanceItemSubjectNameTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/attendance_item_subject_name_change"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="@color/primaryBlack"
+        android:textSize="@dimen/mediumText"
+        android:layout_marginTop="@dimen/mediumMargin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/attendanceItemSubjectNameTextInput"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/largeMargin"
+        android:layout_marginStart="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/smallMargin"
+        app:boxStrokeColor="@color/iconTint"
+        app:boxStrokeWidthFocused="2dp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/iconTint"
+        app:hintTextColor="@color/iconTint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/attendanceItemSubjectNameTitle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/attendance_item_subject"
+            android:inputType="textShortMessage" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/attendanceItemSubjectOkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:layout_marginBottom="@dimen/mediumMargin"
+        android:background="@drawable/rounded_buttons"
+        android:backgroundTint="@color/roundedButtonsBg"
+        android:text="@string/attendance_item_subject_ok"
+        android:textColor="@color/alternativeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/attendanceItemSubjectNameTextInput" />
+
+    <Button
+        android:id="@+id/attendanceItemSubjectCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/largeMargin"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:layout_marginBottom="@dimen/mediumMargin"
+        android:background="@drawable/rounded_buttons"
+        android:backgroundTint="@color/lightGrayText"
+        android:text="@string/attendance_item_subject_cancel"
+        android:textColor="@color/primaryText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/attendanceItemSubjectNameTextInput" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

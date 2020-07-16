@@ -1,187 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/attendanceItemAttendanceCard"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/mediumMargin"
+    android:backgroundTint="@color/colorPrimary"
+    app:cardCornerRadius="40dp"
+    app:cardElevation="@dimen/mediumElevation"
+    app:contentPadding="@dimen/mediumPadding">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/attendanceItemAttendanceCard"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/mediumMargin"
-        android:backgroundTint="@color/colorPrimary"
-        app:cardCornerRadius="@dimen/smallMargin"
-        app:cardElevation="@dimen/mediumElevation"
-        app:contentPadding="@dimen/mediumPadding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/attendanceItemAttendedPlusButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:focusable="false"
+            android:text="@string/attendance_item_plus"
+            android:textSize="@dimen/smallText"
+            app:layout_constraintStart_toEndOf="@id/attendanceItemAttended"
+            app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
+
+        <Button
+            android:id="@+id/attendanceItemAttendedMinusButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="-10dp"
+            android:focusable="false"
+            android:text="@string/attendance_item_minus"
+            android:textSize="@dimen/mediumText"
+            app:layout_constraintStart_toEndOf="@id/attendanceItemAttendedPlusButton"
+            app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
+
+        <Button
+            android:id="@+id/attendanceItemMissedPlusButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/smallMargin"
+            android:focusable="false"
+            android:text="@string/attendance_item_plus"
+            android:textSize="@dimen/smallText"
+            app:layout_constraintStart_toStartOf="@+id/attendanceItemAttendedPlusButton"
+            app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedPlusButton" />
+
+        <Button
+            android:id="@+id/attendanceItemMissedMinusButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="-10dp"
+            android:layout_marginTop="@dimen/smallMargin"
+            android:focusable="false"
+            android:text="@string/attendance_item_minus"
+            android:textSize="@dimen/mediumText"
+            app:layout_constraintStart_toEndOf="@id/attendanceItemMissedPlusButton"
+            app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedMinusButton" />
+
+        <TextView
+            android:id="@+id/attendanceItemAttended"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/attendance_item_attended"
+            android:textAllCaps="true"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/smallText"
+            app:layout_constraintBaseline_toBaselineOf="@id/attendanceItemAttendedPlusButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
+
+        <TextView
+            android:id="@+id/attendanceItemMissed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/attendance_item_missed"
+            android:textAllCaps="true"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/smallText"
+            app:layout_constraintBaseline_toBaselineOf="@id/attendanceItemMissedPlusButton"
+            app:layout_constraintEnd_toEndOf="@+id/attendanceItemAttended"
+            app:layout_constraintStart_toStartOf="@+id/attendanceItemAttended" />
+
+        <TextView
+            android:id="@+id/attendanceItemPercentageAttended"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/attendance_item_empty_percentage"
+            android:textColor="@color/highAttendanceColor"
+            android:textSize="@dimen/mediumText"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/attendanceItemAttendedPercentageProgressBar"
+            app:layout_constraintEnd_toEndOf="@id/attendanceItemAttendedPercentageProgressBar"
+            app:layout_constraintStart_toStartOf="@+id/attendanceItemAttendedPercentageProgressBar"
+            app:layout_constraintTop_toTopOf="@+id/attendanceItemAttendedPercentageProgressBar" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/attendanceItemClassesCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mediumMargin"
+            android:elevation="0dp"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            app:cardCornerRadius="@dimen/mediumMargin"
+            app:contentPaddingBottom="@dimen/smallPadding"
+            app:contentPaddingTop="@dimen/smallPadding"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedPercentageProgressBar">
+
+            <TextView
+                android:id="@+id/attendanceItemClassesText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/alternativeText"
+                android:textSize="@dimen/smallText"
+                tools:text="You need to attend 5 more classes" />
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/attendanceSubjectAndPercentageLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <Button
-                android:id="@+id/attendanceItemAttendedPlusButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+            <ImageButton
+                android:id="@+id/attendanceItemEditButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:src="@drawable/pen_icon"
+                android:tint="@color/alternativeIconTint"
+                app:layout_constraintEnd_toStartOf="@id/attendanceItemDeleteButton"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/attendance_item_edit_button" />
+
+            <ImageButton
+                android:id="@+id/attendanceItemDeleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:contentDescription="@string/attendance_item_delete_button"
+                android:src="@drawable/delete_icon"
+                android:tint="@color/alternativeIconTint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/attendanceItemSubjectName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/mediumMargin"
-                android:layout_marginTop="@dimen/mediumMargin"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="+"
-                android:textSize="@dimen/smallText"
-                app:layout_constraintStart_toEndOf="@id/attendanceItemAttended"
-                app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
-
-            <Button
-                android:id="@+id/attendanceItemAttendedMinusButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="-10dp"
-                android:layout_marginTop="@dimen/mediumMargin"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="-"
-                android:textSize="@dimen/mediumText"
-                app:layout_constraintStart_toEndOf="@id/attendanceItemAttendedPlusButton"
-                app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
-
-            <Button
-                android:id="@+id/attendanceItemMissedPlusButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="@dimen/mediumMargin"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="+"
-                android:textSize="@dimen/smallText"
-                app:layout_constraintStart_toStartOf="@+id/attendanceItemAttendedPlusButton"
-                app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedPlusButton" />
-
-            <Button
-                android:id="@+id/attendanceItemMissedMinusButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="-10dp"
-                android:layout_marginTop="@dimen/mediumMargin"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="-"
-                android:textSize="@dimen/mediumText"
-                app:layout_constraintStart_toEndOf="@id/attendanceItemMissedPlusButton"
-                app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedMinusButton" />
-
-            <TextView
-                android:id="@+id/attendanceItemAttended"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/mediumMargin"
-                android:text="Attended: 5"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/smallText"
-                app:layout_constraintBaseline_toBaselineOf="@id/attendanceItemAttendedPlusButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
-
-            <TextView
-                android:id="@+id/attendanceItemMissed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Missed: 2"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/smallText"
-                app:layout_constraintBaseline_toBaselineOf="@id/attendanceItemMissedPlusButton"
-                app:layout_constraintEnd_toEndOf="@+id/attendanceItemAttended"
-                app:layout_constraintStart_toStartOf="@+id/attendanceItemAttended" />
-
-            <TextView
-                android:id="@+id/attendanceItemPercentageAttended"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="75%"
-                android:textColor="#00FF00"
+                android:textAllCaps="true"
+                android:textColor="@color/alternativeText"
                 android:textSize="@dimen/largeText"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/attendanceItemAttendedPercentageProgressBar"
-                app:layout_constraintEnd_toEndOf="@id/attendanceItemAttendedPercentageProgressBar"
-                app:layout_constraintStart_toStartOf="@+id/attendanceItemAttendedPercentageProgressBar"
-                app:layout_constraintTop_toTopOf="@+id/attendanceItemAttendedPercentageProgressBar" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/attendanceItemClassesCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/mediumMargin"
-                android:elevation="0dp"
-                app:cardBackgroundColor="#00FF00"
-                app:contentPaddingBottom="@dimen/smallPadding"
-                app:contentPaddingTop="@dimen/smallPadding"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedPercentageProgressBar">
-
-                <TextView
-                    android:id="@+id/attendanceItemClassesText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="You need to attend 5 more classes"
-                    android:textAlignment="center"
-                    android:textColor="@color/primaryBlack"
-                    android:textSize="@dimen/mediumText" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/attendanceSubjectAndPercentageLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/attendanceItemSubjectName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Java"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/largeText"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/attendanceItemRequiredPercentage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/smallMargin"
-                    android:text="Required: 60%"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/mediumText"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.mikhaellopez.circularprogressbar.CircularProgressBar
-                android:id="@+id/attendanceItemAttendedPercentageProgressBar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:backgroundTint="@color/colorAccent"
-                app:cpb_background_progressbar_width="5dp"
-                app:cpb_progress="75"
-                app:cpb_progress_direction="to_right"
-                app:cpb_progress_max="100"
-                app:cpb_progressbar_color="#00FF00"
-                app:cpb_progressbar_width="@dimen/smallMargin"
-                app:layout_constraintBottom_toBottomOf="@+id/attendanceItemMissed"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/attendanceItemAttended" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="Java" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/attendanceItemAttendedPercentageProgressBar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:backgroundTint="@color/colorAccent"
+            android:layout_marginEnd="@dimen/smallMargin"
+            app:cpb_progress="75"
+            app:cpb_progress_direction="to_left"
+            app:cpb_progress_max="100"
+            app:cpb_progressbar_color="@color/highAttendanceColor"
+            app:cpb_progressbar_width="6dp"
+            app:cpb_background_progressbar_color="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/attendanceItemMissed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/attendanceItemAttended" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -61,4 +61,22 @@
 
     <string name="hello_blank_fragment">Hello Blank Fragment</string>
 
+    <string name="attendance_item_plus">+</string>
+    <string name="attendance_item_minus">-</string>
+    <string name="attendance_item_attended">Attended: %1$d</string>
+    <string name="attendance_item_missed">Missed: %1$d</string>
+    <string name="attendance_item_empty_percentage">---</string>
+    <string name="attendance_item_need_to_attend">"You need to attend %1$d more class%2$s"</string>
+    <string name="attendance_item_you_can_miss">"You can miss %1$d class%2$s"</string>
+    <string name="attendance_item_cannot_miss">You cannot miss any classes</string>
+    <string name="attendance_item_edit_button">Attendance Item Edit Button</string>
+    <string name="attendance_item_delete_button">Attendance Item Delete Button</string>
+    <string name="attendance_item_subject_name_change">Enter the subject name</string>
+    <string name="attendance_item_subject">Subject</string>
+    <string name="attendance_item_subject_ok">OK</string>
+    <string name="attendance_item_subject_cancel">Cancel</string>
+    <string name="attendance_on_track">You did it, you are right on track!</string>
+    <string name="attendance_not_on_track">You need to buckle up!</string>
+    <string name="attendance_add">ADD</string>
+
 </resources>

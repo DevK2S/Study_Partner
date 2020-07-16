@@ -10,7 +10,11 @@
         android:icon="@drawable/attendance_icon"
         android:title="@string/bottom_navigation_menu_attendance"/>
 
-    <item android:title="" />
+    <item
+        android:id="@+id/nav_fab"
+        android:title=""
+        android:icon="@drawable/plus_icon"
+        android:enabled="false"/>
 
     <item
         android:id="@+id/nav_starred"

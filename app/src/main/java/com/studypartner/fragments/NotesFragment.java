@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +27,7 @@ public class NotesFragment extends Fragment {
 	private RecyclerView recyclerView;
 	private String path;
 	private File noteFolder;
+	
 	public NotesFragment() {
 	}
 	
@@ -37,8 +37,8 @@ public class NotesFragment extends Fragment {
 		Log.d(TAG, "onCreateView: starts");
 		
 		View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
-		noteFolder=new File(String.valueOf(getContext().getExternalFilesDir(null)), "Folders");
-
+		noteFolder = new File(String.valueOf(getContext().getExternalFilesDir(null)), "Folders");
+		
 		final MainActivity activity = (MainActivity) requireActivity();
 		activity.mBottomAppBar.bringToFront();
 		activity.fab.bringToFront();
@@ -50,7 +50,7 @@ public class NotesFragment extends Fragment {
 				activity.mNavController.navigate(R.id.action_nav_notes_to_nav_home);
 			}
 		});
-
+		
 		fab = activity.fab;
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -66,13 +66,13 @@ public class NotesFragment extends Fragment {
 		
 		return rootView;
 	}
-	void addFolder()
-	{
-		String newFolder="New Folder";
-		File file=new File(noteFolder,newFolder);
+	
+	void addFolder() {
+		String newFolder = "New Folder";
+		File file = new File(noteFolder, newFolder);
 		file.mkdirs();
-
 	}
+	
 	void displayFolder() {
 		
 		File file = new File(String.valueOf(getContext().getExternalFilesDir(null)), "Folders");
@@ -89,13 +89,13 @@ public class NotesFragment extends Fragment {
 		test4.mkdirs();
 		
 		File[] f = file.listFiles();
-		ArrayList<Pair<String,String>> subjects = new ArrayList<>();
+		ArrayList<Pair<String, String>> subjects = new ArrayList<>();
 		
 		if (f != null && f.length > 0) {
 			
-			for (File value : f) subjects.add(new Pair(value.getAbsolutePath(),value.getName()));
-			subjects.add(new Pair(test3.getAbsolutePath(),test3.getName()));
-			subjects.add(new Pair(test4.getAbsolutePath(),test4.getName()));
+			for (File value : f) subjects.add(new Pair(value.getAbsolutePath(), value.getName()));
+			subjects.add(new Pair(test3.getAbsolutePath(), test3.getName()));
+			subjects.add(new Pair(test4.getAbsolutePath(), test4.getName()));
 			
 			NotesAdapter adapter = new NotesAdapter(getContext(), subjects);
 			recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

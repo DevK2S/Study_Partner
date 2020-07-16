@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_home) {
 					Log.d(TAG, "onNavigationItemSelected: opening home fragment");
 					fab.setVisibility(View.VISIBLE);
+					fab.show();
 					mBottomAppBar.setVisibility(View.VISIBLE);
 					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
 					mNavController.popBackStack(R.id.nav_home, false);
@@ -195,9 +196,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: attendance selected");
 				if (mNavController.getCurrentDestination().getId() == R.id.nav_home) {
 					Log.d(TAG, "onNavigationItemSelected: opening attendance fragment");
+					fab.hide();
 					mNavController.navigate(R.id.nav_attendance, null, leftToRightBuilder.build());
 				} else if (mNavController.getCurrentDestination().getId() != R.id.nav_attendance) {
 					Log.d(TAG, "onNavigationItemSelected: opening attendance fragment");
+					fab.hide();
 					mNavController.navigate(R.id.nav_attendance, null, rightToLeftBuilder.build());
 				}
 				return true;
@@ -209,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_starred, null, rightToLeftBuilder.build());
 				} else if (mNavController.getCurrentDestination().getId() != R.id.nav_starred) {
 					Log.d(TAG, "onNavigationItemSelected: opening starred fragment");
+					fab.show();
 					mNavController.navigate(R.id.nav_starred, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -217,16 +221,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: notes selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
 					Log.d(TAG, "onNavigationItemSelected: opening notes fragment");
+					fab.show();
 					mNavController.navigate(R.id.nav_notes, null, leftToRightBuilder.build());
 				}
 				return true;
 				
+			case R.id.nav_fab:
+				Log.d(TAG, "onNavigationItemSelected: fab selected");
+				return true;
+			
 			case R.id.nav_reminder:
 				Log.d(TAG, "onNavigationItemSelected: reminder selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_reminder) {
 					Log.d(TAG, "onNavigationItemSelected: opening reminder fragment");
 					mBottomAppBar.setVisibility(View.GONE);
 					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+					fab.show();
 					mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -237,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					Log.d(TAG, "onNavigationItemSelected: opening settings fragment");
 					mBottomAppBar.setVisibility(View.GONE);
 					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+					fab.show();
 					mNavController.navigate(R.id.nav_settings, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -261,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				return true;
 				
 			default:
-				Toast.makeText(this, "Please don't select this", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "This feature is not yet available", Toast.LENGTH_SHORT).show();
 				return false;
 		}
 	}

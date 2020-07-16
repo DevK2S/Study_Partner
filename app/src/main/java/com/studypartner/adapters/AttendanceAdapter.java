@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
@@ -16,7 +17,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.AttendanceViewHolder> {
@@ -28,7 +28,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		void onAttendedMinusButtonClicked (int position);
 		void onMissedPlusButtonClicked (int position);
 		void onMissedMinusButtonClicked (int position);
-		
+		void editButtonClicked (int position);
+		void deleteButtonClicked (int position);
 	}
 	
 	private Context mContext;
@@ -59,29 +60,40 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		DecimalFormat decimalFormat = new DecimalFormat("##.#");
 		
 		holder.subjectName.setText(item.getSubjectName());
-		holder.requiredPercentage.setText("Required: " + decimalFormat.format(item.getRequiredPercentage()) + "%");
-		holder.percentageAttended.setText(decimalFormat.format(item.getAttendedPercentage()) + "%");
-		holder.classesAttended.setText("Attended:   " + item.getAttendedClasses());
-		holder.classesMissed.setText("Missed:   " + item.getMissedClasses());
+		
+		if (item.getAttendedPercentage() > 0.0) {
+			holder.percentageAttended.setText(decimalFormat.format(item.getAttendedPercentage()) + "%");
+		}
+		
+		holder.classesAttended.setText(mContext.getString(R.string.attendance_item_attended, item.getAttendedClasses()));
+		holder.classesMissed.setText(mContext.getString(R.string.attendance_item_missed, item.getMissedClasses()));
 		holder.attendedProgressBar.setProgress((float) item.getAttendedPercentage());
 		
 		if (item.getAttendedPercentage() < item.getRequiredPercentage()) {
 			Log.d(TAG, "onBindViewHolder: percentage less than required, setting colors red");
 			
-			holder.attendedProgressBar.setProgressBarColor(0xFFFF0000);
-			holder.percentageAttended.setTextColor(0xFFFF0000);
-			holder.classesCard.setCardBackgroundColor(0xFFFF0000);
-			holder.classesText.setText("You need to attend " + item.getClassesNeededToAttend() + " more class");
-			if (item.getClassesNeededToAttend() > 1) holder.classesText.setText(holder.classesText.getText() + "es");
+			holder.attendedProgressBar.setProgressBarColor(mContext.getColor(R.color.lowAttendanceColor));
+			holder.percentageAttended.setTextColor(mContext.getColor(R.color.lowAttendanceColor));
+			
+			if (item.getClassesNeededToAttend() > 1) {
+				holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), "es"));
+			} else if (item.getClassesNeededToAttend() == 1) {
+				holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), ""));
+			}
+			
 		} else {
 			Log.d(TAG, "onBindViewHolder: percentage more than required, setting colors green");
 			
-			holder.attendedProgressBar.setProgressBarColor(0xFF00FF00);
-			holder.percentageAttended.setTextColor(0xFF00FF00);
-			holder.classesCard.setCardBackgroundColor(0xFF00FF00);
-			holder.classesText.setText("You can miss " + item.getClassesNeededToAttend() * (-1) + " class");
-			if (item.getClassesNeededToAttend() < -1) holder.classesText.setText(holder.classesText.getText() + "es");
-			else if (item.getClassesNeededToAttend() == 0) holder.classesText.setText("You cannot miss any classes");
+			holder.attendedProgressBar.setProgressBarColor(mContext.getColor(R.color.highAttendanceColor));
+			holder.percentageAttended.setTextColor(mContext.getColor(R.color.highAttendanceColor));
+			
+			if (item.getClassesNeededToAttend() == 0) {
+				holder.classesText.setText(mContext.getString(R.string.attendance_item_cannot_miss));
+			} else if (item.getClassesNeededToAttend() == -1) {
+				holder.classesText.setText(mContext.getString(R.string.attendance_item_you_can_miss, item.getClassesNeededToAttend() * (-1), ""));
+			} else {
+				holder.classesText.setText(mContext.getString(R.string.attendance_item_you_can_miss, item.getClassesNeededToAttend() * (-1), "es"));
+			}
 		}
 	}
 	
@@ -92,10 +104,10 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 	
 	static class AttendanceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 		
-		private TextView subjectName, requiredPercentage, percentageAttended, classesAttended, classesMissed, classesText;
+		private TextView subjectName, percentageAttended, classesAttended, classesMissed, classesText;
 		private Button attendedPlusButton, attendedMinusButton, missedPlusButton, missedMinusButton;
+		private ImageButton editButton, deleteButton;
 		private CircularProgressBar attendedProgressBar;
-		private CardView classesCard;
 		
 		private AttendanceItemClickListener mClickListener;
 		
@@ -105,7 +117,6 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 			mClickListener = listener;
 			
 			subjectName = itemView.findViewById(R.id.attendanceItemSubjectName);
-			requiredPercentage = itemView.findViewById(R.id.attendanceItemRequiredPercentage);
 			percentageAttended = itemView.findViewById(R.id.attendanceItemPercentageAttended);
 			classesText = itemView.findViewById(R.id.attendanceItemClassesText);
 			classesAttended = itemView.findViewById(R.id.attendanceItemAttended);
@@ -119,10 +130,12 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 			missedPlusButton.setOnClickListener(this);
 			missedMinusButton = itemView.findViewById(R.id.attendanceItemMissedMinusButton);
 			missedMinusButton.setOnClickListener(this);
+			editButton = itemView.findViewById(R.id.attendanceItemEditButton);
+			editButton.setOnClickListener(this);
+			deleteButton = itemView.findViewById(R.id.attendanceItemDeleteButton);
+			deleteButton.setOnClickListener(this);
 			
 			attendedProgressBar = itemView.findViewById(R.id.attendanceItemAttendedPercentageProgressBar);
-			
-			classesCard = itemView.findViewById(R.id.attendanceItemClassesCard);
 		}
 		
 		@Override
@@ -147,6 +160,14 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 				
 				Log.d(TAG, "onClick: missed minus clicked");
 				mClickListener.onMissedMinusButtonClicked(getAdapterPosition());
+				
+			} else if (v.getId() == editButton.getId()) {
+				Log.d(TAG, "onClick: edit button clicked");
+				mClickListener.editButtonClicked(getAdapterPosition());
+				
+			} else if (v.getId() == deleteButton.getId()) {
+				Log.d(TAG, "onClick: delete button clicked");
+				mClickListener.deleteButtonClicked(getAdapterPosition());
 				
 			}
 		}

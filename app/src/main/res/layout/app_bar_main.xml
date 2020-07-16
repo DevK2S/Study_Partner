@@ -30,7 +30,7 @@
         android:backgroundTint="@color/colorPrimary"
         app:contentInsetEnd="0dp"
         app:contentInsetStart="0dp"
-        app:fabCradleMargin="8dp"
+        app:fabCradleMargin="@dimen/smallMargin"
         app:fabAlignmentMode="center"
         app:fabAnimationMode="scale"
         app:fabCradleRoundedCornerRadius="@dimen/mediumMargin"
