@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +76,8 @@ public class AttendanceFragment extends Fragment {
 	
 	private double requiredPercentage;
 	
-	public AttendanceFragment() {}
+	public AttendanceFragment() {
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,22 +127,28 @@ public class AttendanceFragment extends Fragment {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot snapshot) {
 				Log.d(TAG, "onDataChange: starts");
-				for (DataSnapshot attendance : snapshot.getChildren()) {
-					Log.d(TAG, "onDataChange: adding attendance records");
-					AttendanceItem attendanceItem = attendance.getValue(AttendanceItem.class);
-					Log.d(TAG, "onDataChange: id " + attendanceItem.getId() + " sub name " + attendanceItem.getSubjectName());
-					mAttendanceItemArrayList.add(attendanceItem);
-					attendanceAdapter.notifyItemInserted(mAttendanceItemArrayList.size());
-					loadingProgressBar.setVisibility(View.INVISIBLE);
-					mainLayout.setEnabled(true);
-					updateButton.setEnabled(true);
-					addButton.setEnabled(true);
+				if (snapshot.exists()) {
+					mEmptyLayout.setVisibility(View.INVISIBLE);
+					for (DataSnapshot attendance : snapshot.getChildren()) {
+						Log.d(TAG, "onDataChange: adding attendance records");
+						AttendanceItem attendanceItem = attendance.getValue(AttendanceItem.class);
+						Log.d(TAG, "onDataChange: id " + attendanceItem.getId() + " sub name " + attendanceItem.getSubjectName());
+						mAttendanceItemArrayList.add(attendanceItem);
+						attendanceAdapter.notifyItemInserted(mAttendanceItemArrayList.size());
+					}
+					setTotalPercentages();
+				} else {
+					mEmptyLayout.setVisibility(View.VISIBLE);
 				}
+				loadingProgressBar.setVisibility(View.INVISIBLE);
+				mainLayout.setEnabled(true);
+				updateButton.setEnabled(true);
+				addButton.setEnabled(true);
 			}
 			
 			@Override
 			public void onCancelled(@NonNull DatabaseError error) {
-			
+				
 			}
 		});
 		
@@ -258,7 +264,23 @@ public class AttendanceFragment extends Fragment {
 				sharedPreferences.edit().putBoolean(REQUIRED_ATTENDANCE_CHOSEN, true).apply();
 				sharedPreferences.edit().putFloat(REQUIRED_ATTENDANCE, (float) requiredPercentage).apply();
 				changeLayout();
-				requiredProgressBar.setProgress((float) requiredPercentage);
+				setTotalPercentages();
+				for (AttendanceItem item : mAttendanceItemArrayList) {
+					item.setRequiredPercentage(requiredPercentage);
+					
+					mDatabaseReference.child(item.getId()).setValue(item).addOnCompleteListener(new OnCompleteListener<Void>() {
+						@Override
+						public void onComplete(@NonNull Task<Void> task) {
+							if (task.isSuccessful()) {
+								Log.d(TAG, "onComplete: required percentage changed");
+								attendanceAdapter.notifyDataSetChanged();
+							} else {
+								Log.d(TAG, "onComplete: required percentage could not be changed");
+							}
+						}
+					});
+				}
+				
 			}
 		});
 		
@@ -299,21 +321,6 @@ public class AttendanceFragment extends Fragment {
 			}
 		});
 		
-		if (mAttendanceItemArrayList.size() == 0) {
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					mEmptyLayout.setVisibility(View.VISIBLE);
-					loadingProgressBar.setVisibility(View.INVISIBLE);
-					mainLayout.setEnabled(true);
-					updateButton.setEnabled(true);
-					addButton.setEnabled(true);
-				}
-			}, 1000);
-		} else {
-			mEmptyLayout.setVisibility(View.INVISIBLE);
-		}
-		
 		initializeViews();
 		
 		return rootView;
@@ -346,6 +353,7 @@ public class AttendanceFragment extends Fragment {
 		dayText.setText(dayFormat.format(date));
 		dateText.setText(dateFormat.format(date));
 		setTotalPercentages();
+		
 	}
 	
 	private void setTotalPercentages() {
@@ -353,7 +361,7 @@ public class AttendanceFragment extends Fragment {
 		
 		int totalClasses = 0, attendedClasses = 0;
 		
-		for (AttendanceItem item: mAttendanceItemArrayList) {
+		for (AttendanceItem item : mAttendanceItemArrayList) {
 			attendedClasses += item.getAttendedClasses();
 			totalClasses += item.getTotalClasses();
 		}
@@ -384,7 +392,7 @@ public class AttendanceFragment extends Fragment {
 		}
 		
 		if (attendedClasses == 0) {
-			percentageAttended.setTextColor(getResources().getColor(R.color.requiredAttendanceColor,getActivity().getTheme()));
+			percentageAttended.setTextColor(getResources().getColor(R.color.requiredAttendanceColor, getActivity().getTheme()));
 		}
 	}
 	
@@ -415,7 +423,7 @@ public class AttendanceFragment extends Fragment {
 				if (subjectName.length() > 0) {
 					Log.d(TAG, "onClick: adding new subject");
 					
-					AttendanceItem newItem = new AttendanceItem(subjectName, 60.0, 0, 0);
+					AttendanceItem newItem = new AttendanceItem(subjectName, requiredPercentage, 0, 0);
 					mEmptyLayout.setVisibility(View.GONE);
 					mAttendanceItemArrayList.add(newItem);
 					attendanceAdapter.notifyItemInserted(mAttendanceItemArrayList.size());
@@ -485,7 +493,7 @@ public class AttendanceFragment extends Fragment {
 		builder.show();
 	}
 	
-	private void deleteSubject (final int position) {
+	private void deleteSubject(final int position) {
 		Log.d(TAG, "deleteSubject: delete button clicked");
 		mBottomAppBar.performShow();
 		loadingProgressBar.setVisibility(View.VISIBLE);

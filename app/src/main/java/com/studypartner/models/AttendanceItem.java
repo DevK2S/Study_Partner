@@ -79,6 +79,8 @@ public class AttendanceItem {
 	
 	public void setRequiredPercentage(double requiredPercentage) {
 		this.requiredPercentage = requiredPercentage;
+		this.attendedPercentage = attendedPercentage();
+		this.classesNeededToAttend = classesNeededToAttend();
 	}
 	
 	public void setSubjectName(String subjectName) {
