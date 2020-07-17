@@ -60,40 +60,47 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		DecimalFormat decimalFormat = new DecimalFormat("##.#");
 		
 		holder.subjectName.setText(item.getSubjectName());
-		
-		if (item.getAttendedPercentage() > 0.0) {
-			holder.percentageAttended.setText(decimalFormat.format(item.getAttendedPercentage()) + "%");
-		}
-		
 		holder.classesAttended.setText(mContext.getString(R.string.attendance_item_attended, item.getAttendedClasses()));
 		holder.classesMissed.setText(mContext.getString(R.string.attendance_item_missed, item.getMissedClasses()));
 		holder.attendedProgressBar.setProgress((float) item.getAttendedPercentage());
 		
-		if (item.getAttendedPercentage() < item.getRequiredPercentage()) {
-			Log.d(TAG, "onBindViewHolder: percentage less than required, setting colors red");
+		if (item.getTotalClasses() > 0) {
+			Log.d(TAG, "onBindViewHolder: total classes > 0");
+			holder.percentageAttended.setText(decimalFormat.format(item.getAttendedPercentage()) + "%");
 			
-			holder.attendedProgressBar.setProgressBarColor(mContext.getColor(R.color.lowAttendanceColor));
-			holder.percentageAttended.setTextColor(mContext.getColor(R.color.lowAttendanceColor));
-			
-			if (item.getClassesNeededToAttend() > 1) {
-				holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), "es"));
-			} else if (item.getClassesNeededToAttend() == 1) {
-				holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), ""));
+			if (item.getAttendedPercentage() < item.getRequiredPercentage()) {
+				Log.d(TAG, "onBindViewHolder: percentage less than required, setting colors red");
+				
+				holder.attendedProgressBar.setProgressBarColor(mContext.getColor(R.color.lowAttendanceColor));
+				holder.percentageAttended.setTextColor(mContext.getColor(R.color.lowAttendanceColor));
+				
+				if (item.getClassesNeededToAttend() > 1) {
+					holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), "es"));
+				} else if (item.getClassesNeededToAttend() == 1) {
+					holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), ""));
+				} else {
+					holder.classesText.setText(mContext.getString(R.string.attendance_item_cannot_miss));
+				}
+				
+			} else {
+				Log.d(TAG, "onBindViewHolder: percentage more than required, setting colors green");
+				
+				holder.attendedProgressBar.setProgressBarColor(mContext.getColor(R.color.highAttendanceColor));
+				holder.percentageAttended.setTextColor(mContext.getColor(R.color.highAttendanceColor));
+				
+				if (item.getClassesNeededToAttend() < -1) {
+					holder.classesText.setText(mContext.getString(R.string.attendance_item_you_can_miss, item.getClassesNeededToAttend() * (-1), "es"));
+				} else if (item.getClassesNeededToAttend() == -1) {
+					holder.classesText.setText(mContext.getString(R.string.attendance_item_you_can_miss, item.getClassesNeededToAttend() * (-1), ""));
+				} else {
+					holder.classesText.setText(mContext.getString(R.string.attendance_item_cannot_miss));
+				}
 			}
 			
 		} else {
-			Log.d(TAG, "onBindViewHolder: percentage more than required, setting colors green");
-			
-			holder.attendedProgressBar.setProgressBarColor(mContext.getColor(R.color.highAttendanceColor));
-			holder.percentageAttended.setTextColor(mContext.getColor(R.color.highAttendanceColor));
-			
-			if (item.getClassesNeededToAttend() == 0) {
-				holder.classesText.setText(mContext.getString(R.string.attendance_item_cannot_miss));
-			} else if (item.getClassesNeededToAttend() == -1) {
-				holder.classesText.setText(mContext.getString(R.string.attendance_item_you_can_miss, item.getClassesNeededToAttend() * (-1), ""));
-			} else {
-				holder.classesText.setText(mContext.getString(R.string.attendance_item_you_can_miss, item.getClassesNeededToAttend() * (-1), "es"));
-			}
+			Log.d(TAG, "onBindViewHolder: no classes attended");
+			holder.percentageAttended.setText(mContext.getString(R.string.attendance_item_empty_percentage));
+			holder.classesText.setText("");
 		}
 	}
 	

@@ -1,11 +1,17 @@
 package com.studypartner.models;
 
+import java.util.UUID;
+
 public class AttendanceItem {
+	private String id;
 	private int attendedClasses, totalClasses, missedClasses, classesNeededToAttend;
 	private double attendedPercentage, requiredPercentage;
 	private String subjectName;
 	
+	public AttendanceItem() {}
+	
 	public AttendanceItem(String subjectName, double requiredPercentage, int attendedClasses, int missedClasses) {
+		this.id = String.valueOf(UUID.randomUUID());
 		this.subjectName = subjectName;
 		this.requiredPercentage = requiredPercentage;
 		this.attendedClasses = attendedClasses;
@@ -13,6 +19,10 @@ public class AttendanceItem {
 		this.totalClasses = attendedClasses + missedClasses;
 		this.classesNeededToAttend = classesNeededToAttend();
 		this.attendedPercentage = attendedPercentage();
+	}
+	
+	public String getId() {
+		return id;
 	}
 	
 	public int getAttendedClasses() {
@@ -41,6 +51,22 @@ public class AttendanceItem {
 	
 	public String getSubjectName() {
 		return subjectName;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public void setTotalClasses(int totalClasses) {
+		this.totalClasses = totalClasses;
+	}
+	
+	public void setClassesNeededToAttend(int classesNeededToAttend) {
+		this.classesNeededToAttend = classesNeededToAttend;
+	}
+	
+	public void setAttendedPercentage(double attendedPercentage) {
+		this.attendedPercentage = attendedPercentage;
 	}
 	
 	public void setAttendedClasses(int attendedClasses) {
@@ -74,27 +100,33 @@ public class AttendanceItem {
 	}
 	
 	public void decreaseAttendedClasses() {
-		this.attendedClasses--;
-		this.totalClasses--;
-		this.attendedPercentage = attendedPercentage();
-		this.classesNeededToAttend = classesNeededToAttend();
+		if (this.totalClasses > 0 && this.attendedClasses > 0) {
+			this.totalClasses--;
+			this.attendedClasses--;
+			this.attendedPercentage = attendedPercentage();
+			this.classesNeededToAttend = classesNeededToAttend();
+		}
 	}
 	
 	public void decreaseMissedClasses() {
-		this.missedClasses--;
-		this.totalClasses--;
-		this.attendedPercentage = attendedPercentage();
-		this.classesNeededToAttend = classesNeededToAttend();
+		if (this.totalClasses > 0 && this.missedClasses > 0) {
+			this.totalClasses--;
+			this.missedClasses--;
+			this.attendedPercentage = attendedPercentage();
+			this.classesNeededToAttend = classesNeededToAttend();
+		}
 	}
 	
 	private double attendedPercentage() {
-		return (double) (attendedClasses * 100) / totalClasses;
+		return (totalClasses == 0) ? 0 : (double) (attendedClasses * 100) / totalClasses;
 	}
 	
 	private int classesNeededToAttend() {
 		int classesNeeded;
 		
-		if (attendedPercentage < requiredPercentage) {
+		if (totalClasses == 0) {
+			classesNeeded = 0;
+		} else if (attendedPercentage < requiredPercentage) {
 			classesNeeded = (int) Math.ceil((((requiredPercentage / 100) * totalClasses) - attendedClasses) / (1 - (requiredPercentage / 100)));
 		} else {
 			classesNeeded = (int) ((((requiredPercentage / 100) * totalClasses) - attendedClasses) / (requiredPercentage / 100));

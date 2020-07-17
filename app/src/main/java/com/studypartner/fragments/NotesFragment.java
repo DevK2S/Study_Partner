@@ -47,6 +47,7 @@ public class NotesFragment extends Fragment {
 			@Override
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
+				fab.setOnClickListener(null);
 				activity.mNavController.navigate(R.id.action_nav_notes_to_nav_home);
 			}
 		});
@@ -55,16 +56,24 @@ public class NotesFragment extends Fragment {
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Toast.makeText(activity, "hehe maachuda", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "onClick: fab onclick called");
+				Toast.makeText(activity, "Adding folder", Toast.LENGTH_SHORT).show();
 				addFolder();
 				displayFolder();
 			}
 		});
+		
 		recyclerView = rootView.findViewById(R.id.recyclerView);
 		
 		displayFolder();
 		
 		return rootView;
+	}
+	
+	@Override
+	public void onPause() {
+		fab.setOnClickListener(null);
+		super.onPause();
 	}
 	
 	void addFolder() {

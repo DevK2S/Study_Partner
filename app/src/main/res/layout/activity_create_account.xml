@@ -83,6 +83,7 @@
             android:background="@drawable/background_rectangle_corners"
             android:contentDescription="@string/create_account_screen_background_cd"
             android:transitionName="bgrect_transition"
+            android:elevation="@dimen/largeElevation"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,7 +137,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/createAccountScreenBackgroundRectangle"
-            app:startIconDrawable="@drawable/name_icon"
+            app:startIconDrawable="@drawable/pen_icon"
             app:startIconTint="@color/iconTint">
 
             <com.google.android.material.textfield.TextInputEditText

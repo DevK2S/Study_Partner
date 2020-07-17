@@ -184,11 +184,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: home selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_home) {
 					Log.d(TAG, "onNavigationItemSelected: opening home fragment");
-					fab.setVisibility(View.VISIBLE);
-					fab.show();
-					mBottomAppBar.setVisibility(View.VISIBLE);
-					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
-					mNavController.popBackStack(R.id.nav_home, false);
+					if (fab.isOrWillBeHidden()) {
+						Log.d(TAG, "onNavigationItemSelected: showing fab");
+						fab.show();
+					}
+					if (fab.getVisibility() != View.VISIBLE) {
+						Log.d(TAG, "onNavigationItemSelected: making fab visibility visible");
+						fab.setVisibility(View.VISIBLE);
+					}
+					if (mBottomAppBar.getVisibility() != View.VISIBLE) {
+						Log.d(TAG, "onNavigationItemSelected: making bottom app bar visibility visible");
+						mBottomAppBar.setVisibility(View.VISIBLE);
+					}
+					mNavController.navigate(R.id.nav_home, null, rightToLeftBuilder.build());
 				}
 				return true;
 				
@@ -196,11 +204,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: attendance selected");
 				if (mNavController.getCurrentDestination().getId() == R.id.nav_home) {
 					Log.d(TAG, "onNavigationItemSelected: opening attendance fragment");
-					fab.hide();
 					mNavController.navigate(R.id.nav_attendance, null, leftToRightBuilder.build());
 				} else if (mNavController.getCurrentDestination().getId() != R.id.nav_attendance) {
 					Log.d(TAG, "onNavigationItemSelected: opening attendance fragment");
-					fab.hide();
 					mNavController.navigate(R.id.nav_attendance, null, rightToLeftBuilder.build());
 				}
 				return true;
@@ -213,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				} else if (mNavController.getCurrentDestination().getId() != R.id.nav_starred) {
 					Log.d(TAG, "onNavigationItemSelected: opening starred fragment");
 					fab.show();
+					mBottomAppBar.bringToFront();
 					mNavController.navigate(R.id.nav_starred, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -222,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
 					Log.d(TAG, "onNavigationItemSelected: opening notes fragment");
 					fab.show();
+					mBottomAppBar.bringToFront();
 					mNavController.navigate(R.id.nav_notes, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -235,8 +243,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_reminder) {
 					Log.d(TAG, "onNavigationItemSelected: opening reminder fragment");
 					mBottomAppBar.setVisibility(View.GONE);
-					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					fab.show();
+					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -246,8 +254,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_settings) {
 					Log.d(TAG, "onNavigationItemSelected: opening settings fragment");
 					mBottomAppBar.setVisibility(View.GONE);
-					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					fab.show();
+					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					mNavController.navigate(R.id.nav_settings, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -256,15 +264,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: profile selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_profile) {
 					Log.d(TAG, "onNavigationItemSelected: opening profile fragment");
+					fab.show();
+					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
 					fab.setVisibility(View.GONE);
 					mBottomAppBar.setVisibility(View.GONE);
-					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					mNavController.navigate(R.id.nav_profile, null, leftToRightBuilder.build());
 				}
 				return true;
 				
 			case R.id.nav_logout:
 				Log.d(TAG, "onNavigationItemSelected: logging out");
+				fab.show();
 				FirebaseAuth.getInstance().signOut();
 				mNavController.navigate(R.id.nav_logout);
 				finishAffinity();

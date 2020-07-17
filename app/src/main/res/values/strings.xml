@@ -75,8 +75,18 @@
     <string name="attendance_item_subject">Subject</string>
     <string name="attendance_item_subject_ok">OK</string>
     <string name="attendance_item_subject_cancel">Cancel</string>
+    <string name="attendance_update">Update</string>
     <string name="attendance_on_track">You did it, you are right on track!</string>
     <string name="attendance_not_on_track">You need to buckle up!</string>
+    <string name="attendance_no_classes">Get ready to fight!</string>
     <string name="attendance_add">ADD</string>
+    <string name="attendance_background_rectangle_cd">Attendance Background Rectangle</string>
+    <string name="attendance_empty">It\'s too empty in here</string>
+    <string name="attendance_empty_add_subs">Add your subjects and never miss any exam</string>
+    <string name="attendance_empty_icon_cd">Empty Attendance Icon</string>
+    <string name="attendance_percentage_attended">%1$s</string>
+    <string name="attendance_required_name">Name</string>
+    <string name="attendance_minimum_attendance_criteria">Minimum Attendance Criteria</string>
+    <string name="attendance_default_required_attendance">75%</string>
 
 </resources>
