@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: notes selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
 					Log.d(TAG, "onNavigationItemSelected: opening notes fragment");
-					mNavController.navigate(R.id.nav_notes, null, leftToRightBuilder.build());
+					mNavController.navigate(R.id.nestednav_notes, null, leftToRightBuilder.build());
 				}
 				return true;
 				

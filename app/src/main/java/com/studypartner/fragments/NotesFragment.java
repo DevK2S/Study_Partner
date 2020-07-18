@@ -12,6 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
+import com.studypartner.models.FileItem;
 import com.studypartner.utils.Connection;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,9 +28,8 @@ public class NotesFragment extends Fragment {
 	private static final String TAG = "NotesFragment";
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
-	private String path;
 	private File noteFolder;
-	
+
 	public NotesFragment() {
 	}
 	
@@ -101,15 +102,18 @@ public class NotesFragment extends Fragment {
 		test4.mkdirs();
 		
 		File[] f = file.listFiles();
-		ArrayList<Pair<String, String>> subjects = new ArrayList<>();
+		ArrayList<FileItem> subjects = new ArrayList<>();
+
 		
 		if (f != null && f.length > 0) {
 			
-			for (File value : f) subjects.add(new Pair(value.getAbsolutePath(), value.getName()));
-			subjects.add(new Pair(test3.getAbsolutePath(), test3.getName()));
-			subjects.add(new Pair(test4.getAbsolutePath(), test4.getName()));
-			
-			NotesAdapter adapter = new NotesAdapter(getContext(), subjects);
+			for (File value : f) subjects.add(new FileItem(value.getAbsolutePath(), value.getName(),"Folder"));
+			subjects.add(new FileItem(test3.getAbsolutePath(), test3.getName(),"Folder"));
+			subjects.add(new FileItem(test4.getAbsolutePath(), test4.getName(),"Folder"));
+
+			final MainActivity activity = (MainActivity) requireActivity();
+
+			NotesAdapter adapter = new NotesAdapter(getContext(),activity, subjects);
 			recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 			recyclerView.setAdapter(adapter);
 		}

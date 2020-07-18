@@ -41,20 +41,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_notes"
-        android:name="com.studypartner.fragments.NotesFragment"
-        android:label="@string/bottom_navigation_menu_notes"
-        tools:layout="@layout/fragment_notes" >
-        <action
-            android:id="@+id/action_nav_notes_to_nav_home"
-            app:destination="@id/nav_home"
-            app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/nav_home"
-            app:popUpToInclusive="true"/>
-    </fragment>
-
-    <fragment
         android:id="@+id/nav_reminder"
         android:name="com.studypartner.fragments.ReminderFragment"
         android:label="@string/navigation_menu_reminders"
@@ -101,5 +87,33 @@
         android:name="com.studypartner.activities.LoginActivity"
         android:label="@string/navigation_menu_logout"
         tools:layout="@layout/activity_login"/>
+    <navigation android:id="@+id/nestednav_notes"
+        app:startDestination="@id/nav_notes">
+        <fragment
+            android:id="@+id/nav_notes"
+            android:name="com.studypartner.fragments.NotesFragment"
+            android:label="@string/bottom_navigation_menu_notes"
+            tools:layout="@layout/fragment_notes">
+
+            <action
+                android:id="@+id/action_nav_notes_to_nav_home"
+                app:destination="@id/nav_home"
+                app:enterAnim="@anim/slide_in_left"
+                app:exitAnim="@anim/slide_out_right"
+                app:popUpTo="@id/nav_home"
+                app:popUpToInclusive="true" />
+            <action
+                android:id="@+id/action_nav_notes_to_basicNotesFragment"
+                app:destination="@id/basicNotesFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/basicNotesFragment"
+            android:name="com.studypartner.fragments.BasicNotesFragment"
+            tools:layout="@layout/fragment_basic_notes">
+            <argument
+                android:name="FileDes"
+                app:argType="com.studypartner.models.FileItem" />
+        </fragment>
+    </navigation>
 
 </navigation>
