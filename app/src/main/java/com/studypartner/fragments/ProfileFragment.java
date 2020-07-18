@@ -29,7 +29,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
@@ -146,9 +145,6 @@ public class ProfileFragment extends Fragment {
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
 				MainActivity activity = (MainActivity) requireActivity();
-				activity.mBottomAppBar.setVisibility(View.VISIBLE);
-				activity.mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
-				activity.fab.setVisibility(View.VISIBLE);
 				activity.mNavController.navigate(R.id.action_nav_profile_to_nav_home);
 			}
 		});

@@ -1,5 +1,7 @@
 package com.studypartner.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -161,8 +163,6 @@ public class AttendanceFragment extends Fragment {
 			@Override
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
-				mBottomAppBar.performShow();
-				mfab.show();
 				mNavController.navigate(R.id.action_nav_attendance_to_nav_home);
 			}
 		});
@@ -260,6 +260,9 @@ public class AttendanceFragment extends Fragment {
 		attendanceRequiredPercentageFabNext.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
+				Connection.checkConnection(AttendanceFragment.this);
+				
 				requiredPercentage = attendanceRequiredPercentageSeekBarSetter.getProgress();
 				sharedPreferences.edit().putBoolean(REQUIRED_ATTENDANCE_CHOSEN, true).apply();
 				sharedPreferences.edit().putFloat(REQUIRED_ATTENDANCE, (float) requiredPercentage).apply();
@@ -326,22 +329,48 @@ public class AttendanceFragment extends Fragment {
 		return rootView;
 	}
 	
-	@Override
-	public void onResume() {
-		Log.d(TAG, "onResume: bringing bottom app bar to front");
-		mBottomAppBar.bringToFront();
-		mfab.hide();
-		super.onResume();
-	}
-	
 	private void changeLayout() {
 		if (mainLayout.getVisibility() == View.VISIBLE) {
-			mainLayout.setVisibility(View.GONE);
-			requiredAttendanceLayout.setVisibility(View.VISIBLE);
+			mainLayout.animate()
+					.alpha(0.0f)
+					.setDuration(300)
+					.setListener(new AnimatorListenerAdapter() {
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							mainLayout.setVisibility(View.GONE);
+						}
+					});
+			
+			requiredAttendanceLayout.animate()
+					.alpha(1.0f)
+					.setDuration(300)
+					.setListener(new AnimatorListenerAdapter() {
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							requiredAttendanceLayout.setVisibility(View.VISIBLE);
+						}
+					});
 			attendanceName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 		} else {
-			mainLayout.setVisibility(View.VISIBLE);
-			requiredAttendanceLayout.setVisibility(View.GONE);
+			requiredAttendanceLayout.animate()
+					.alpha(0.0f)
+					.setDuration(300)
+					.setListener(new AnimatorListenerAdapter() {
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							requiredAttendanceLayout.setVisibility(View.GONE);
+						}
+					});
+			
+			mainLayout.animate()
+					.alpha(1.0f)
+					.setDuration(300)
+					.setListener(new AnimatorListenerAdapter() {
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							mainLayout.setVisibility(View.VISIBLE);
+						}
+					});
 		}
 	}
 	
@@ -399,6 +428,8 @@ public class AttendanceFragment extends Fragment {
 	private void addSubject() {
 		Log.d(TAG, "addSubject: add subject clicked");
 		
+		Connection.checkConnection(this);
+		
 		final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 		
 		View dialogView = getLayoutInflater().inflate(R.layout.attendance_item_subject_name_dialog, null);
@@ -444,6 +475,8 @@ public class AttendanceFragment extends Fragment {
 	
 	private void editSubjectName(final int position) {
 		Log.d(TAG, "editSubjectName: edit button clicked");
+		
+		Connection.checkConnection(this);
 		
 		final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 		
@@ -495,6 +528,9 @@ public class AttendanceFragment extends Fragment {
 	
 	private void deleteSubject(final int position) {
 		Log.d(TAG, "deleteSubject: delete button clicked");
+		
+		Connection.checkConnection(this);
+		
 		mBottomAppBar.performShow();
 		loadingProgressBar.setVisibility(View.VISIBLE);
 		mainLayout.setEnabled(false);

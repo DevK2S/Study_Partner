@@ -3,26 +3,30 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/home_icon"
+        android:orderInCategory="1"
         android:title="@string/bottom_navigation_menu_home"/>
 
     <item
         android:id="@+id/nav_attendance"
         android:icon="@drawable/attendance_icon"
+        android:orderInCategory="2"
         android:title="@string/bottom_navigation_menu_attendance"/>
 
     <item
         android:id="@+id/nav_fab"
         android:title=""
-        android:icon="@drawable/plus_icon"
+        android:orderInCategory="3"
         android:enabled="false"/>
 
     <item
         android:id="@+id/nav_starred"
         android:icon="@drawable/starred_icon"
+        android:orderInCategory="4"
         android:title="@string/bottom_navigation_menu_starred"/>
 
     <item
         android:id="@+id/nav_notes"
         android:icon="@drawable/notes_icon"
+        android:orderInCategory="5"
         android:title="@string/bottom_navigation_menu_notes"/>
 </menu>

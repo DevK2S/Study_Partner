@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,12 +35,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, NavController.OnDestinationChangedListener {
 	private static final String TAG = "MainActivity";
 	
 	private AppBarConfiguration mAppBarConfiguration;
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	public void onBackPressed() {
 		Log.d(TAG, "onBackPressed: back pressed");
 		if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+			Log.d(TAG, "onBackPressed: closing drawer");
 			mDrawerLayout.closeDrawer(GravityCompat.START);
 		} else if (mNavController.getCurrentDestination().getId() == R.id.nav_home){
 			Log.d(TAG, "onBackPressed: closing app");
@@ -119,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		
 		//set up navigation
 		mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
+		mNavController.addOnDestinationChangedListener(this);
 		
 		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_attendance, R.id.nav_starred, R.id.nav_notes, R.id.nav_reminder, R.id.nav_profile, R.id.nav_settings, R.id.nav_logout)
 				.setDrawerLayout(mDrawerLayout)
@@ -138,8 +143,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			@Override
 			public void onClick(View view) {
 			if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+				Log.d(TAG, "onClick: closing drawer");
 				mDrawerLayout.closeDrawer(GravityCompat.START);
 			} else {
+				Log.d(TAG, "onClick: opening drawer");
 				mDrawerLayout.openDrawer(GravityCompat.START);
 			}
 			}
@@ -155,11 +162,83 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	}
 	
 	@Override
+	public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+		Log.d(TAG, "onDestinationChanged: starts");
+		switch (destination.getId()) {
+			case R.id.nav_home:
+				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+				mBottomAppBar.setVisibility(View.VISIBLE);
+				mBottomAppBar.performShow();
+				mBottomAppBar.bringToFront();
+				if (mBottomNavigationView.getMenu().size() != 5) {
+					mBottomNavigationView.getMenu().add(Menu.NONE, R.id.nav_fab, 3, "");
+				}
+				fab.show();
+				fab.setImageResource(R.drawable.plus_icon);
+				fab.setVisibility(View.VISIBLE);
+				break;
+			case R.id.nav_attendance:
+				fab.hide();
+				mBottomAppBar.performShow();
+				mBottomAppBar.setVisibility(View.VISIBLE);
+				mBottomNavigationView.getMenu().removeItem(R.id.nav_fab);
+				mBottomAppBar.bringToFront();
+				break;
+			case R.id.nav_starred:
+				fab.show();
+				fab.setVisibility(View.VISIBLE);
+				fab.setImageResource(R.drawable.plus_icon);
+				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+				mBottomAppBar.setVisibility(View.VISIBLE);
+				if (mBottomNavigationView.getMenu().size() != 5) {
+					mBottomNavigationView.getMenu().add(Menu.NONE, R.id.nav_fab, 3, "");
+				}
+				mBottomAppBar.performShow();
+				mBottomAppBar.bringToFront();
+				break;
+			case R.id.nav_notes:
+				fab.show();
+				fab.setVisibility(View.VISIBLE);
+				fab.setImageResource(R.drawable.notes_add_icon);
+				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
+				mBottomAppBar.performShow();
+				if (mBottomNavigationView.getMenu().size() != 5) {
+					mBottomNavigationView.getMenu().add(Menu.NONE, R.id.nav_fab, 3, "");
+				}
+				mBottomAppBar.setVisibility(View.VISIBLE);
+				mBottomAppBar.bringToFront();
+				break;
+			case R.id.nav_reminder:
+				mBottomAppBar.setVisibility(View.GONE);
+				fab.show();
+				fab.setVisibility(View.VISIBLE);
+				fab.setImageResource(R.drawable.reminder_add_icon);
+				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+				break;
+			case R.id.nav_profile:
+				mBottomAppBar.setVisibility(View.GONE);
+				fab.setVisibility(View.GONE);
+				fab.hide();
+				break;
+			case R.id.nav_settings:
+				mBottomAppBar.setVisibility(View.GONE);
+				fab.setVisibility(View.VISIBLE);
+				fab.show();
+				fab.setImageResource(R.drawable.settings_icon);
+				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
+				break;
+			default:
+				break;
+		}
+	}
+	
+	@Override
 	public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 		Log.d(TAG, "onNavigationItemSelected: starts");
 		int itemId = item.getItemId();
 		
 		if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+			Log.d(TAG, "onNavigationItemSelected: closing drawer");
 			mDrawerLayout.closeDrawer(GravityCompat.START);
 		}
 		
@@ -184,18 +263,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: home selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_home) {
 					Log.d(TAG, "onNavigationItemSelected: opening home fragment");
-					if (fab.isOrWillBeHidden()) {
-						Log.d(TAG, "onNavigationItemSelected: showing fab");
-						fab.show();
-					}
-					if (fab.getVisibility() != View.VISIBLE) {
-						Log.d(TAG, "onNavigationItemSelected: making fab visibility visible");
-						fab.setVisibility(View.VISIBLE);
-					}
-					if (mBottomAppBar.getVisibility() != View.VISIBLE) {
-						Log.d(TAG, "onNavigationItemSelected: making bottom app bar visibility visible");
-						mBottomAppBar.setVisibility(View.VISIBLE);
-					}
 					mNavController.navigate(R.id.nav_home, null, rightToLeftBuilder.build());
 				}
 				return true;
@@ -218,8 +285,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_starred, null, rightToLeftBuilder.build());
 				} else if (mNavController.getCurrentDestination().getId() != R.id.nav_starred) {
 					Log.d(TAG, "onNavigationItemSelected: opening starred fragment");
-					fab.show();
-					mBottomAppBar.bringToFront();
 					mNavController.navigate(R.id.nav_starred, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -228,8 +293,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: notes selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
 					Log.d(TAG, "onNavigationItemSelected: opening notes fragment");
-					fab.show();
-					mBottomAppBar.bringToFront();
 					mNavController.navigate(R.id.nav_notes, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -242,9 +305,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: reminder selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_reminder) {
 					Log.d(TAG, "onNavigationItemSelected: opening reminder fragment");
-					mBottomAppBar.setVisibility(View.GONE);
-					fab.show();
-					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -253,9 +313,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: settings selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_settings) {
 					Log.d(TAG, "onNavigationItemSelected: opening settings fragment");
-					mBottomAppBar.setVisibility(View.GONE);
-					fab.show();
-					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 					mNavController.navigate(R.id.nav_settings, null, leftToRightBuilder.build());
 				}
 				return true;
@@ -264,17 +321,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: profile selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_profile) {
 					Log.d(TAG, "onNavigationItemSelected: opening profile fragment");
-					fab.show();
-					mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
-					fab.setVisibility(View.GONE);
-					mBottomAppBar.setVisibility(View.GONE);
 					mNavController.navigate(R.id.nav_profile, null, leftToRightBuilder.build());
 				}
 				return true;
 				
 			case R.id.nav_logout:
 				Log.d(TAG, "onNavigationItemSelected: logging out");
-				fab.show();
 				FirebaseAuth.getInstance().signOut();
 				mNavController.navigate(R.id.nav_logout);
 				finishAffinity();

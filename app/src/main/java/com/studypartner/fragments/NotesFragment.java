@@ -12,6 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
+import com.studypartner.utils.Connection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,6 +36,8 @@ public class NotesFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
+		
+		Connection.checkConnection(this);
 		
 		View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 		noteFolder = new File(String.valueOf(getContext().getExternalFilesDir(null)), "Folders");
