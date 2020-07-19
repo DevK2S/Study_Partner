@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/smallMargin"
+    app:layout_goneMarginBottom="@dimen/smallMargin"
+    app:cardCornerRadius="@dimen/mediumMargin"
+    app:contentPadding="@dimen/mediumPadding">
 
     <TextView
-        android:id="@+id/folder_name"
-        android:layout_width="0dp"
+        android:id="@+id/file_name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
-    <Button
-        android:id="@+id/open_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="12sp" />
+        android:layout_gravity="center"
+        android:textAlignment="center" />
 
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:textSize="12sp" />
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

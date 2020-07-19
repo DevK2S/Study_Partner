@@ -106,23 +106,25 @@
                 android:id="@+id/action_nav_notes_to_basicNotesFragment"
                 app:destination="@id/basicNotesFragment"
                 app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"/>
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"/>
         </fragment>
         <fragment
             android:id="@+id/basicNotesFragment"
-            android:name="com.studypartner.fragments.BasicNotesFragment"
+            android:name="com.studypartner.fragments.FileFragment"
             android:label="@string/bottom_navigation_menu_notes"
-            tools:layout="@layout/fragment_basic_notes">
+            tools:layout="@layout/fragment_file">
             <argument
                 android:name="FileDes"
                 app:argType="com.studypartner.models.FileItem" />
             <action
-                android:id="@+id/action_basicNotesFragment_to_nav_notes"
-                app:destination="@id/nav_notes"
-                app:enterAnim="@anim/slide_in_left"
-                app:exitAnim="@anim/slide_out_right"
-                app:popUpTo="@id/nav_home"
-                app:popUpToInclusive="true" />
+                android:id="@+id/action_basicNotesFragment_self"
+                app:destination="@id/basicNotesFragment"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"/>
         </fragment>
     </navigation>
 

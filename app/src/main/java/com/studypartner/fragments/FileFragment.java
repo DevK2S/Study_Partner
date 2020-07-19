@@ -22,31 +22,35 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class NotesFragment extends Fragment {
-	private static final String TAG = "NotesFragment";
+
+public class FileFragment extends Fragment {
+	private static final String TAG = "BasicNotesFragment";
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
 	private File noteFolder;
 	
 	private NotesAdapter mNotesAdapter;
 	
-	private MainActivity activity;
-	
 	private ArrayList<FileItem> notes = new ArrayList<>();
 	
-	public NotesFragment() {
+	public FileFragment() {
+		// Required empty public constructor
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
+		// Inflate the layout for this fragment
+		
 		Log.d(TAG, "onCreateView: starts");
 		
 		Connection.checkConnection(this);
 		
-		View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_file, container, false);
 		
-		noteFolder = new File(String.valueOf(getContext().getExternalFilesDir(null)), "Folders");
+		FileItem fileDesc = getArguments().getParcelable("FileDes");
+		
+		noteFolder = new File(String.valueOf(fileDesc.getPath()));
 		
 		File[] files = noteFolder.listFiles();
 		
@@ -56,20 +60,20 @@ public class NotesFragment extends Fragment {
 				notes.add(new FileItem(f.getPath(), f.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
 		}
 		
-		activity = (MainActivity) requireActivity();
-		activity.mBottomAppBar.bringToFront();
-		activity.fab.bringToFront();
+		final MainActivity activity = (MainActivity) requireActivity();
+		activity.fab.hide();
+		activity.mBottomAppBar.performHide();
 		
 		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
-				fab.setOnClickListener(null);
-				activity.mNavController.navigate(R.id.action_nav_notes_to_nav_home);
+				activity.mNavController.navigateUp();
 			}
 		});
 		
-		fab = activity.fab;
+		fab = rootView.findViewById(R.id.fileFab);
+		
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -78,11 +82,12 @@ public class NotesFragment extends Fragment {
 			}
 		});
 		
-		recyclerView = rootView.findViewById(R.id.notesRecyclerView);
+		recyclerView = rootView.findViewById(R.id.fileRecyclerView);
 		
 		mNotesAdapter = new NotesAdapter(getContext(), notes);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		recyclerView.setAdapter(mNotesAdapter);
+		
 		recyclerView.addOnItemTouchListener(new NotesAdapter.NotesItemTouchListener(getContext(), recyclerView, new NotesAdapter.NotesClickListener() {
 			@Override
 			public void onClick(View view, final int position) {
@@ -90,7 +95,7 @@ public class NotesFragment extends Fragment {
 					FileItem fileDesc = notes.get(position);
 					Bundle bundle = new Bundle();
 					bundle.putParcelable("FileDes", fileDesc);
-					((MainActivity)requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_basicNotesFragment, bundle);
+					((MainActivity)requireActivity()).mNavController.navigate(R.id.action_basicNotesFragment_self, bundle);
 				}
 			}
 			
@@ -106,25 +111,14 @@ public class NotesFragment extends Fragment {
 		return rootView;
 	}
 	
-	@Override
-	public void onResume() {
-		super.onResume();
-		activity.mBottomAppBar.performShow();
-		activity.mBottomAppBar.bringToFront();
-		activity.fab.show();
-		activity.fab.bringToFront();
-	}
-	
-	@Override
-	public void onPause() {
-		fab.setOnClickListener(null);
-		super.onPause();
-	}
-	
 	void addFolder() {
 		String newFolder = UUID.randomUUID().toString().substring(0, 3);
 		File file = new File(noteFolder, newFolder);
-		if (file.mkdirs()) notes.add(new FileItem(file.getPath(), file.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
+		if (file.mkdirs()) {
+			notes.add(new FileItem(file.getPath(), file.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
+			Log.d(TAG, "addFolder: made folder");
+		}
 		mNotesAdapter.notifyItemInserted(notes.size());
 	}
+	
 }
