@@ -98,6 +98,7 @@ public class NotesFragment extends Fragment {
 			public void onLongClick(View view, int position) {
 				File file = new File(notes.get(position).getPath());
 				notes.remove(position);
+
 				Log.d(TAG, "onClick: deletion: " + file.delete());
 				mNotesAdapter.notifyItemRemoved(position);
 			}
