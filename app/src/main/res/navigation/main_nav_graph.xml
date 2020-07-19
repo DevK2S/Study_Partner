@@ -9,8 +9,7 @@
         android:id="@+id/nav_home"
         android:name="com.studypartner.fragments.HomeFragment"
         android:label="@string/navigation_menu_home"
-        tools:layout="@layout/fragment_home" >
-    </fragment>
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_attendance"
@@ -87,7 +86,8 @@
         android:name="com.studypartner.activities.LoginActivity"
         android:label="@string/navigation_menu_logout"
         tools:layout="@layout/activity_login"/>
-    <navigation android:id="@+id/nestednav_notes"
+
+    <navigation android:id="@+id/nested_nav_notes"
         app:startDestination="@id/nav_notes">
         <fragment
             android:id="@+id/nav_notes"
@@ -104,15 +104,25 @@
                 app:popUpToInclusive="true" />
             <action
                 android:id="@+id/action_nav_notes_to_basicNotesFragment"
-                app:destination="@id/basicNotesFragment" />
+                app:destination="@id/basicNotesFragment"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"/>
         </fragment>
         <fragment
             android:id="@+id/basicNotesFragment"
             android:name="com.studypartner.fragments.BasicNotesFragment"
+            android:label="@string/bottom_navigation_menu_notes"
             tools:layout="@layout/fragment_basic_notes">
             <argument
                 android:name="FileDes"
                 app:argType="com.studypartner.models.FileItem" />
+            <action
+                android:id="@+id/action_basicNotesFragment_to_nav_notes"
+                app:destination="@id/nav_notes"
+                app:enterAnim="@anim/slide_in_left"
+                app:exitAnim="@anim/slide_out_right"
+                app:popUpTo="@id/nav_home"
+                app:popUpToInclusive="true" />
         </fragment>
     </navigation>
 

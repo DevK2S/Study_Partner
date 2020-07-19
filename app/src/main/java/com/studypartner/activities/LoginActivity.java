@@ -393,6 +393,9 @@ public class LoginActivity extends AppCompatActivity {
 								mEditor.putString(REMEMBER_ME_EMAIL, emailEditText.getText().toString());
 								mEditor.putString(REMEMBER_ME_PASSWORD, passwordEditText.getText().toString());
 								mEditor.apply();
+							} else {
+								mEditor.putBoolean(REMEMBER_ME_ENABLED, false);
+								mEditor.apply();
 							}
 							updateDetails();
 							startActivity(new Intent(LoginActivity.this, MainActivity.class));

@@ -2,7 +2,6 @@ package com.studypartner.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +50,7 @@ public class NotesFragment extends Fragment {
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
 				fab.setOnClickListener(null);
+				
 				activity.mNavController.navigate(R.id.action_nav_notes_to_nav_home);
 			}
 		});
@@ -103,13 +102,12 @@ public class NotesFragment extends Fragment {
 		
 		File[] f = file.listFiles();
 		ArrayList<FileItem> subjects = new ArrayList<>();
-
 		
 		if (f != null && f.length > 0) {
 			
-			for (File value : f) subjects.add(new FileItem(value.getAbsolutePath(), value.getName(),"Folder"));
-			subjects.add(new FileItem(test3.getAbsolutePath(), test3.getName(),"Folder"));
-			subjects.add(new FileItem(test4.getAbsolutePath(), test4.getName(),"Folder"));
+			for (File value : f) subjects.add(new FileItem(value.getAbsolutePath(), value.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
+			subjects.add(new FileItem(test3.getAbsolutePath(), test3.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
+			subjects.add(new FileItem(test4.getAbsolutePath(), test4.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
 
 			final MainActivity activity = (MainActivity) requireActivity();
 

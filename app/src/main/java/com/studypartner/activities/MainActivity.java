@@ -50,9 +50,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	private BottomNavigationView mBottomNavigationView;
 	public BottomAppBar mBottomAppBar;
 	private NavigationView mNavigationView;
-	private DrawerLayout mDrawerLayout;
+	public DrawerLayout mDrawerLayout;
 	public FloatingActionButton fab;
+	public Toolbar mToolbar;
 	
+	public NavOptions.Builder leftToRightBuilder, rightToLeftBuilder;
 	
 	@Override
 	public void onBackPressed() {
@@ -112,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		
 		//setting hooks
 		
-		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		mToolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(mToolbar);
 		
 		mDrawerLayout = findViewById(R.id.drawer_layout);
 		mBottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -139,18 +141,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		mNavigationView.setNavigationItemSelectedListener(this);
 		mBottomNavigationView.setOnNavigationItemSelectedListener(this);
 		
-		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-			if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
-				Log.d(TAG, "onClick: closing drawer");
-				mDrawerLayout.closeDrawer(GravityCompat.START);
-			} else {
-				Log.d(TAG, "onClick: opening drawer");
-				mDrawerLayout.openDrawer(GravityCompat.START);
-			}
+				if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+					Log.d(TAG, "onClick: closing drawer");
+					mDrawerLayout.closeDrawer(GravityCompat.START);
+				} else if (mNavController.getCurrentDestination().getId() == R.id.basicNotesFragment) {
+					mNavController.navigateUp();
+				} else {
+					Log.d(TAG, "onClick: opening drawer");
+					mDrawerLayout.openDrawer(GravityCompat.START);
+				}
 			}
 		});
+		
+		Log.d(TAG, "onNavigationItemSelected: animations for opening fragment to right of current one");
+		leftToRightBuilder = new NavOptions.Builder();
+		leftToRightBuilder.setEnterAnim(R.anim.slide_in_right);
+		leftToRightBuilder.setExitAnim(R.anim.slide_out_left);
+		leftToRightBuilder.setPopEnterAnim(R.anim.slide_in_left);
+		leftToRightBuilder.setPopExitAnim(R.anim.slide_out_right);
+		leftToRightBuilder.setLaunchSingleTop(true);
+		
+		Log.d(TAG, "onNavigationItemSelected: animations for opening fragment to left of current one");
+		rightToLeftBuilder = new NavOptions.Builder();
+		rightToLeftBuilder.setEnterAnim(R.anim.slide_in_left);
+		rightToLeftBuilder.setExitAnim(R.anim.slide_out_right);
+		rightToLeftBuilder.setPopEnterAnim(R.anim.slide_in_right);
+		rightToLeftBuilder.setPopExitAnim(R.anim.slide_out_left);
+		rightToLeftBuilder.setLaunchSingleTop(true);
 	}
 	
 	@Override
@@ -242,22 +262,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			mDrawerLayout.closeDrawer(GravityCompat.START);
 		}
 		
-		Log.d(TAG, "onNavigationItemSelected: animations for opening fragment to right of current one");
-		NavOptions.Builder leftToRightBuilder = new NavOptions.Builder();
-		leftToRightBuilder.setEnterAnim(R.anim.slide_in_right);
-		leftToRightBuilder.setExitAnim(R.anim.slide_out_left);
-		leftToRightBuilder.setPopEnterAnim(R.anim.slide_in_left);
-		leftToRightBuilder.setPopExitAnim(R.anim.slide_out_right);
-		leftToRightBuilder.setLaunchSingleTop(true);
-		
-		Log.d(TAG, "onNavigationItemSelected: animations for opening fragment to left of current one");
-		NavOptions.Builder rightToLeftBuilder = new NavOptions.Builder();
-		rightToLeftBuilder.setEnterAnim(R.anim.slide_in_left);
-		rightToLeftBuilder.setExitAnim(R.anim.slide_out_right);
-		rightToLeftBuilder.setPopEnterAnim(R.anim.slide_in_right);
-		rightToLeftBuilder.setPopExitAnim(R.anim.slide_out_left);
-		rightToLeftBuilder.setLaunchSingleTop(true);
-		
 		switch (itemId) {
 			case R.id.nav_home:
 				Log.d(TAG, "onNavigationItemSelected: home selected");
@@ -293,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: notes selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
 					Log.d(TAG, "onNavigationItemSelected: opening notes fragment");
-					mNavController.navigate(R.id.nestednav_notes, null, leftToRightBuilder.build());
+					mNavController.navigate(R.id.nested_nav_notes, null, leftToRightBuilder.build());
 				}
 				return true;
 				
