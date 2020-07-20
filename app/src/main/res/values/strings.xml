@@ -88,5 +88,9 @@
     <string name="attendance_required_name">Name</string>
     <string name="attendance_minimum_attendance_criteria">Minimum Attendance Criteria</string>
     <string name="attendance_default_required_attendance">75%</string>
+    <string name="file_type_image_cd">File Type Image</string>
+    <string name="notes_action_delete">Delete</string>
+    <string name="notes_action_refresh">Refresh</string>
+    <string name="notes_action_select_all">Select All</string>
 
 </resources>

@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/file_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="@dimen/smallMargin"
-    app:cardCornerRadius="@dimen/smallMargin"
-    app:contentPadding="@dimen/mediumPadding"
-    app:layout_goneMarginBottom="@dimen/smallMargin">
+    app:cardCornerRadius="@dimen/smallMargin">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/notes_row"
+        android:padding="@dimen/smallPadding">
 
-        <CheckBox
-            android:id="@+id/file_checkbox"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/file_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/colorPrimary"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@android:color/transparent"
+            app:contentPadding="@dimen/smallPadding"
+            app:cardCornerRadius="@dimen/smallMargin"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/file_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/file_type_image_cd"
+                android:src="@drawable/folder_icon"
+                android:tint="@color/colorPrimary"/>
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/file_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/smallMargin"
+            android:layout_marginStart="@dimen/mediumMargin"
             android:textSize="@dimen/mediumText"
+            android:textColor="@color/alternativeText"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/file_checkbox"
+            app:layout_constraintStart_toEndOf="@+id/file_card"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="File" />
     </androidx.constraintlayout.widget.ConstraintLayout>

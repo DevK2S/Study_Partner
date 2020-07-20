@@ -2,36 +2,44 @@ package com.studypartner.adapters;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.GestureDetector;
+import android.util.SparseBooleanArray;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.studypartner.R;
 import com.studypartner.models.FileItem;
 
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
 	private static final String TAG = "NotesAdapter";
 	
 	public interface NotesClickListener {
-		void onClick(View view, int position);
-		void onLongClick(View view, int position);
+		void onClick(int position);
+		void onLongClick(int position);
 	}
 	
 	private Context mContext;
 	private ArrayList<FileItem> mFileItems;
+	private SparseBooleanArray selectedItems;
+	private NotesClickListener listener;
 	
-	public NotesAdapter(Context context, ArrayList<FileItem> fileItems) {
-		mContext = context;
-		mFileItems = fileItems;
+	private static int currentSelectedIndex = -1;
+	
+	public NotesAdapter(Context context, ArrayList<FileItem> fileItems, NotesClickListener listener) {
+		this.mContext = context;
+		this.mFileItems = fileItems;
+		this.listener = listener;
+		selectedItems = new SparseBooleanArray();
 	}
 	
 	public void setFileItems(ArrayList<FileItem> fileItems) {
@@ -52,6 +60,78 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		
 		FileItem fileItem = mFileItems.get(position);
 		holder.fileName.setText(fileItem.getName());
+		
+		if (fileItem.getType() != FileItem.FileType.FILE_TYPE_FOLDER) {
+			Picasso.get()
+					.load(fileItem.getPath())
+					.error(R.drawable.image_error_icon)
+					.into(holder.fileImage);
+		}
+		
+		holder.itemView.setActivated(selectedItems.get(position, false));
+		applyClickEvents(holder, position);
+		
+	}
+	
+	private void applyClickEvents(NotesViewHolder holder, final int position) {
+		holder.fileLayout.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				listener.onClick(position);
+			}
+		});
+		
+		holder.fileLayout.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view) {
+				listener.onLongClick(position);
+				view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+				return true;
+			}
+		});
+	}
+	
+	public void toggleSelection(int pos) {
+		currentSelectedIndex = pos;
+		if (selectedItems.get(pos, false)) {
+			selectedItems.delete(pos);
+		} else {
+			selectedItems.put(pos, true);
+		}
+		notifyItemChanged(pos);
+	}
+	
+	public void selectAll() {
+		for (int i = 0; i < getItemCount(); i++)
+			selectedItems.put(i, true);
+		notifyDataSetChanged();
+		
+	}
+	
+	public void clearSelections() {
+		selectedItems.clear();
+		notifyDataSetChanged();
+	}
+	
+	public int getSelectedItemCount() {
+		return selectedItems.size();
+	}
+	
+	public ArrayList<Integer> getSelectedItems() {
+		ArrayList<Integer> items = new ArrayList<>(selectedItems.size());
+		for (int i = 0; i < selectedItems.size(); i++) {
+			items.add(selectedItems.keyAt(i));
+		}
+		return items;
+	}
+	
+	public void removeData(int position) {
+		mFileItems.remove(position);
+		resetCurrentIndex();
+	}
+	
+	private void resetCurrentIndex() {
+		currentSelectedIndex = -1;
 	}
 	
 	@Override
@@ -59,70 +139,33 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		return mFileItems.size();
 	}
 	
-	public static class NotesViewHolder extends RecyclerView.ViewHolder{
+	public class NotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 		
 		TextView fileName;
-		CheckBox fileCheckBox;
+		ImageView fileImage;
+		CardView fileLayout;
 		
 		public NotesViewHolder(View view) {
 			super(view);
 			
 			fileName = view.findViewById(R.id.file_name);
-			fileCheckBox = view.findViewById(R.id.file_checkbox);
-		}
-		
-		public void changeCheckBoxVisibility() {
-			if (fileCheckBox.getVisibility() == View.GONE) fileCheckBox.setVisibility(View.VISIBLE);
-			else fileCheckBox.setVisibility(View.GONE);
-		}
-		
-		public void changeCheckBoxSelection() {
-			if (fileCheckBox.isChecked()) fileCheckBox.setChecked(false);
-			else fileCheckBox.setChecked(true);
-		}
-	}
-	
-	public static class NotesItemTouchListener implements RecyclerView.OnItemTouchListener {
-		private NotesClickListener mNotesClickListener;
-		private GestureDetector mGestureDetector;
-		
-		public NotesItemTouchListener(Context context, final RecyclerView recyclerView, final NotesClickListener notesClickListener) {
-			this.mNotesClickListener = notesClickListener;
-			this.mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-				@Override
-				public boolean onSingleTapUp(MotionEvent e) {
-					return true;
-				}
-				
-				@Override
-				public void onLongPress(MotionEvent e) {
-					View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-					if (child != null && notesClickListener != null) {
-						int position = recyclerView.getChildAdapterPosition(child);
-						notesClickListener.onLongClick(child, position);
-					}
-				}
-			});
+			fileImage = view.findViewById(R.id.file_image);
+			fileLayout = view.findViewById(R.id.file_layout);
+			
+			view.setOnClickListener(this);
+			view.setOnLongClickListener(this);
 		}
 		
 		@Override
-		public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-			View child = rv.findChildViewUnder(e.getX(), e.getY());
-			if (child != null && mNotesClickListener != null && mGestureDetector.onTouchEvent(e)) {
-				mNotesClickListener.onClick(child, rv.getChildAdapterPosition(child));
-				return true;
-			}
-			return false;
+		public void onClick(View v) {
+			listener.onClick(getAdapterPosition());
 		}
 		
 		@Override
-		public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-		
-		}
-		
-		@Override
-		public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-		
+		public boolean onLongClick(View v) {
+			listener.onLongClick(getAdapterPosition());
+			v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+			return true;
 		}
 	}
 }

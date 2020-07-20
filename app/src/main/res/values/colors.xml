@@ -49,4 +49,6 @@
     <color name="lowAttendanceColor">#FF153C</color>
     <color name="highAttendanceColor">#6AFF1F</color>
     <color name="requiredAttendanceColor">#F0F812</color>
+
+    <color name="notesItemActivated">#555555</color>
 </resources>
