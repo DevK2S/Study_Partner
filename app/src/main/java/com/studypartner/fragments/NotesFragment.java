@@ -99,7 +99,7 @@ public class NotesFragment extends Fragment {
             public void onLongClick(View view, int position) {
                 File file = new File(notes.get(position).getPath());
                 deleteRecursive(file);
-                Log.d(TAG, "onClick: deletion: " + file.delete());
+                notes.remove(position);
                 mNotesAdapter.notifyItemRemoved(position);
             }
         }));
@@ -131,14 +131,12 @@ public class NotesFragment extends Fragment {
     }
 
     public void deleteRecursive(File fileOrDirectory) {
-
         if (fileOrDirectory.isDirectory()) {
             for (File child : fileOrDirectory.listFiles()) {
                 deleteRecursive(child);
             }
         }
-
-        fileOrDirectory.delete();
+    
+        Log.d(TAG, "deleteRecursive: " + fileOrDirectory.delete());
     }
-
 }

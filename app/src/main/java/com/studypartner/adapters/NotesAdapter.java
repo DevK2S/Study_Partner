@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.studypartner.R;
@@ -58,14 +59,26 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		return mFileItems.size();
 	}
 	
-	static class NotesViewHolder extends RecyclerView.ViewHolder {
+	public static class NotesViewHolder extends RecyclerView.ViewHolder{
 		
 		TextView fileName;
+		CheckBox fileCheckBox;
 		
 		public NotesViewHolder(View view) {
 			super(view);
 			
 			fileName = view.findViewById(R.id.file_name);
+			fileCheckBox = view.findViewById(R.id.file_checkbox);
+		}
+		
+		public void changeCheckBoxVisibility() {
+			if (fileCheckBox.getVisibility() == View.GONE) fileCheckBox.setVisibility(View.VISIBLE);
+			else fileCheckBox.setVisibility(View.GONE);
+		}
+		
+		public void changeCheckBoxSelection() {
+			if (fileCheckBox.isChecked()) fileCheckBox.setChecked(false);
+			else fileCheckBox.setChecked(true);
 		}
 	}
 	
@@ -85,7 +98,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 				public void onLongPress(MotionEvent e) {
 					View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
 					if (child != null && notesClickListener != null) {
-						notesClickListener.onLongClick(child, recyclerView.getChildAdapterPosition(child));
+						int position = recyclerView.getChildAdapterPosition(child);
+						notesClickListener.onLongClick(child, position);
 					}
 				}
 			});
@@ -96,8 +110,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 			View child = rv.findChildViewUnder(e.getX(), e.getY());
 			if (child != null && mNotesClickListener != null && mGestureDetector.onTouchEvent(e)) {
 				mNotesClickListener.onClick(child, rv.getChildAdapterPosition(child));
+				return true;
 			}
-			
 			return false;
 		}
 		

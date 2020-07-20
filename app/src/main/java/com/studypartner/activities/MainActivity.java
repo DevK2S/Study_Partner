@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			case R.id.nav_notes:
 				fab.show();
 				fab.setVisibility(View.VISIBLE);
-				fab.setImageResource(R.drawable.notes_add_icon);
+				fab.setImageResource(R.drawable.folder_add_icon);
 				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
 				mBottomAppBar.performShow();
 				if (mBottomNavigationView.getMenu().size() != 5) {

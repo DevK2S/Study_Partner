@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/mediumMargin"
-        android:src="@drawable/notes_add_icon"
+        android:src="@drawable/plus_icon"
         app:backgroundTint="@color/colorPrimary"
         app:tint="@color/primaryWhite"
         app:layout_constraintBottom_toBottomOf="parent"

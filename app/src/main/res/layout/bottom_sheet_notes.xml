@@ -1,53 +1,256 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:columnCount="5"
-    android:rowCount="5"
-   android:padding="75dp">
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:columnCount="3"
+    android:rowCount="3">
 
-    <ImageView
-        android:id="@+id/createNewFolder"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_row="2"
-        android:layout_column="2"
-        android:layout_gravity="center"
-        android:clickable="true"
-        android:src="@drawable/folder_add_icon" />
+    <LinearLayout
+        android:id="@+id/addFolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_row="0"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
 
-    <ImageView
-        android:src="@drawable/notes_add_icon"
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:scaleType="fitXY"
+            android:src="@drawable/folder_add_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create new folder"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/addFile"
-        android:layout_column="4"
-        android:layout_row="2"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
-        android:layout_gravity="center"
-        android:clickable="true"
-        />
-    <ImageView
-        android:src="@drawable/notes_add_icon"
-        android:id="@+id/addVideo"
-        android:layout_column="2"
-        android:layout_row="4"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
-        android:layout_gravity="center"
-        />
-    <ImageView
-        android:src="@drawable/notes_add_icon"
-        android:id="@+id/addImage"
-        android:layout_column="4"
-        android:layout_row="4"
-        android:layout_height="50dp"
-        android:layout_width="50dp"
-        android:layout_gravity="center"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_row="0"
+        android:layout_rowWeight="1"
+        android:scaleType="fitXY"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/file_add_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a file"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_row="0"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/video_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a video"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/addImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/image_add_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add an image"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/camera_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create an image"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_row="1"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/pen_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create a note"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_row="2"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/link_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attach a link"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addAudio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_columnWeight="1"
+        android:layout_row="2"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/music_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add an audio"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addVoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="2"
+        android:layout_columnWeight="1"
+        android:layout_row="2"
+        android:layout_rowWeight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/smallPadding">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/mic_icon_48"
+            android:tint="@color/alternativeIconTint" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create an audio"
+            android:textColor="@color/alternativeText" />
+    </LinearLayout>
 
 </GridLayout>
