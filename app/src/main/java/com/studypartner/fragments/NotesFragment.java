@@ -18,6 +18,8 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
@@ -63,7 +65,13 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		
 		View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 		
-		noteFolder = new File(String.valueOf(requireContext().getExternalFilesDir(null)), "Folders");
+		FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+		
+		if (firebaseUser != null && firebaseUser.getEmail() != null) {
+			noteFolder = new File(String.valueOf(requireContext().getExternalFilesDir(null)), firebaseUser.getEmail());
+		} else {
+			noteFolder = new File(String.valueOf(requireContext().getExternalFilesDir(null)));
+		}
 		
 		activity = (MainActivity) requireActivity();
 		activity.mBottomAppBar.bringToFront();
@@ -249,8 +257,13 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	}
 	
 	void addFolder() {
-		String newFolder = UUID.randomUUID().toString().substring(0, 3);
-		File file = new File(noteFolder, newFolder);
+		File file;
+		
+		do {
+			String newFolder = UUID.randomUUID().toString().substring(0, 5);
+			file = new File(noteFolder, newFolder);
+		} while (file.exists());
+		
 		if (file.mkdirs())
 			notes.add(new FileItem(file.getPath(), file.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
 		mNotesAdapter.notifyItemInserted(notes.size());

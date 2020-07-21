@@ -136,7 +136,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	public void removeData(int position) {
 		Log.d(TAG, "removeData: removing at position " + position);
 		mFileItems.remove(position);
-		notifyItemRemoved(position);
+		notifyDataSetChanged();
 		Log.d(TAG, "removeData: removed at position " + position);
 	}
 	

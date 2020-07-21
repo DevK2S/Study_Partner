@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
@@ -190,6 +192,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		
+		mToolbar.setTitle(getTitle());
+		
 		populateDataAndSetAdapter();
 		
 		return rootView;
@@ -344,8 +348,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	}
 	
 	void addFolder() {
-		String newFolder = UUID.randomUUID().toString().substring(0, 3);
-		File file = new File(noteFolder, newFolder);
+		File file;
+		
+		do {
+			String newFolder = UUID.randomUUID().toString().substring(0, 5);
+			file = new File(noteFolder, newFolder);
+		} while (file.exists());
+		
 		if (file.mkdirs())
 			notes.add(new FileItem(file.getPath(), file.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
 		mNotesAdapter.notifyItemInserted(notes.size());
@@ -464,5 +473,18 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		}
 		
 		actionMode = null;
+	}
+	
+	private String getTitle() {
+		
+		String title = "Notes";
+		
+		FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+		
+		if (firebaseUser != null && firebaseUser.getEmail() != null) {
+			title = noteFolder.getPath().substring(noteFolder.getPath().indexOf(firebaseUser.getEmail()) + firebaseUser.getEmail().length() + 1);
+		}
+		
+		return title.length() > 15 ? "..." + title.substring(title.length() - 12) : title;
 	}
 }
