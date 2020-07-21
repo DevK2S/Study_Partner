@@ -32,12 +32,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	
 	private Context mContext;
 	private ArrayList<FileItem> mFileItems;
+	private ArrayList<FileItem> mFileItemsCopy;
 	private SparseBooleanArray selectedItems;
 	private NotesClickListener listener;
 	
 	public NotesAdapter(Context context, ArrayList<FileItem> fileItems, NotesClickListener listener) {
 		this.mContext = context;
 		this.mFileItems = fileItems;
+		this.mFileItemsCopy = new ArrayList<>();
+		mFileItemsCopy.addAll(mFileItems);
 		this.listener = listener;
 		selectedItems = new SparseBooleanArray();
 	}
@@ -98,6 +101,23 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 				return true;
 			}
 		});
+	}
+	
+	public void filter (String query) {
+		
+		mFileItems.clear();
+		
+		if (!query.isEmpty()) {
+			for (FileItem item : mFileItemsCopy) {
+				if (item.getName().toLowerCase().contains(query.toLowerCase())) {
+					mFileItems.add(item);
+				}
+			}
+			
+		} else {
+			mFileItems.addAll(mFileItemsCopy);
+		}
+		notifyDataSetChanged();
 	}
 	
 	public void toggleSelection(int pos) {

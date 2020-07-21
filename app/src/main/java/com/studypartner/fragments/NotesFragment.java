@@ -3,12 +3,14 @@ package com.studypartner.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +34,14 @@ import java.util.Objects;
 import java.util.UUID;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class NotesFragment extends Fragment implements NotesAdapter.NotesClickListener {
 	private static final String TAG = "NotesFragment";
@@ -57,8 +63,15 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	}
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requireActivity().getSharedPreferences("NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
+		
+		setHasOptionsMenu(true);
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
 		
 		Connection.checkConnection(this);
@@ -109,7 +122,22 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SEARCH", MODE_PRIVATE);
+
+		if (sharedPreferences.getBoolean("NotesSearchExists", false)) {
+			File searchedFile = new File(sharedPreferences.getString("NotesSearch", null));
+			FileItem fileDesc = new FileItem(searchedFile.getPath(),searchedFile.getName(), FileItem.FileType.FILE_TYPE_FOLDER);
+			if (searchedFile.isDirectory()) {
+				Bundle bundle = new Bundle();
+				bundle.putParcelable("FileDes", fileDesc);
+				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_fileFragment, bundle);
+			}
+		}
+		
+		setHasOptionsMenu(true);
 		activity.mBottomAppBar.performShow();
+		activity.mBottomAppBar.setVisibility(View.VISIBLE);
 		activity.mBottomAppBar.bringToFront();
 		activity.fab.show();
 		activity.fab.bringToFront();
@@ -123,7 +151,34 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		}
 		fab.setEnabled(true);
 		Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).show();
+		setHasOptionsMenu(false);
 		super.onPause();
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		
+		inflater.inflate(R.menu.notes_menu, menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+		Log.d(TAG, "onOptionsItemSelected: starts");
+		switch (item.getItemId()) {
+			case R.id.notes_menu_refresh:
+				populateDataAndSetAdapter();
+				return true;
+			case R.id.notes_menu_search:
+				Bundle bundle = new Bundle();
+				FileItem[] files = new FileItem[notes.size()];
+				files = notes.toArray(files);
+				bundle.putParcelableArray("NotesArray", files);
+				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_notesSearchFragment, bundle);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	@Override
@@ -134,7 +189,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			FileItem fileDesc = notes.get(position);
 			Bundle bundle = new Bundle();
 			bundle.putParcelable("FileDes", fileDesc);
-			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_basicNotesFragment, bundle);
+			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_fileFragment, bundle);
 		}
 	}
 	
@@ -329,10 +384,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				@Override
 				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 					switch (item.getItemId()) {
-						case R.id.notes_action_refresh:
-							mNotesAdapter.notifyDataSetChanged();
-							mode.finish();
-							return true;
 						case R.id.notes_action_delete:
 							deleteRows();
 							mode.finish();

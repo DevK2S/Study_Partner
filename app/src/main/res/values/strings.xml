@@ -106,8 +106,12 @@
     <string name="bottom_sheet_attach_a_link">Attach a link</string>
     <string name="bottom_sheet_add_an_audio">Add an audio</string>
     <string name="bottom_sheet_create_an_audio">Create an audio</string>
+
     <string name="notes_item_menu_rename">Rename</string>
     <string name="notes_item_menu_delete">Delete</string>
     <string name="notes_item_menu_share">Share</string>
+
+    <string name="notes_menu_search">Search</string>
+    <string name="notes_menu_refresh">Refresh</string>
 
 </resources>
