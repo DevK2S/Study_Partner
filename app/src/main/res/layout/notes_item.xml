@@ -2,7 +2,6 @@
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/file_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,16 +14,45 @@
         android:background="@drawable/notes_row"
         android:padding="@dimen/smallPadding">
 
+        <TextView
+            android:id="@+id/file_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/mediumMargin"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:background="@android:color/transparent"
+            android:textColor="@color/primaryText"
+            android:textSize="@dimen/mediumText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/file_options"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/file_card"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/file_options"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginEnd="@dimen/smallMargin"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/file_options_cd"
+            android:src="@drawable/three_dots_icon"
+            android:tint="@color/iconTint"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/file_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:contentPadding="@dimen/smallPadding"
+            android:elevation="@dimen/largeElevation"
             app:cardCornerRadius="@dimen/smallMargin"
+            app:contentPadding="@dimen/smallPadding"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/file_image"
@@ -32,21 +60,10 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/file_type_image_cd"
                 android:src="@drawable/folder_icon"
-                android:tint="@color/colorPrimary"/>
+                android:tint="@color/colorPrimary" />
 
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/file_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/mediumMargin"
-            android:textSize="@dimen/mediumText"
-            android:textColor="@color/alternativeText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/file_card"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="File" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

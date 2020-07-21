@@ -7,6 +7,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,14 +27,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	public interface NotesClickListener {
 		void onClick(int position);
 		void onLongClick(int position);
+		void onOptionsClick(View view, int position);
 	}
 	
 	private Context mContext;
 	private ArrayList<FileItem> mFileItems;
 	private SparseBooleanArray selectedItems;
 	private NotesClickListener listener;
-	
-	private static int currentSelectedIndex = -1;
 	
 	public NotesAdapter(Context context, ArrayList<FileItem> fileItems, NotesClickListener listener) {
 		this.mContext = context;
@@ -55,7 +55,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	}
 	
 	@Override
-	public void onBindViewHolder(@NonNull NotesViewHolder holder, final int position) {
+	public void onBindViewHolder(@NonNull final NotesViewHolder holder, final int position) {
 		Log.d(TAG, "onBindViewHolder: starts");
 		
 		FileItem fileItem = mFileItems.get(position);
@@ -69,22 +69,31 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		}
 		
 		holder.itemView.setActivated(selectedItems.get(position, false));
-		applyClickEvents(holder, position);
+		
+		applyClickEvents(holder);
 		
 	}
 	
-	private void applyClickEvents(NotesViewHolder holder, final int position) {
+	private void applyClickEvents(final NotesViewHolder holder) {
+		holder.fileOptions.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "onClick: error here in applyclickevents");
+				listener.onOptionsClick(v,holder.getAdapterPosition());
+			}
+		});
+		
 		holder.fileLayout.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				listener.onClick(position);
+				listener.onClick(holder.getAdapterPosition());
 			}
 		});
 		
 		holder.fileLayout.setOnLongClickListener(new View.OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View view) {
-				listener.onLongClick(position);
+				listener.onLongClick(holder.getAdapterPosition());
 				view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
 				return true;
 			}
@@ -92,12 +101,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	}
 	
 	public void toggleSelection(int pos) {
-		currentSelectedIndex = pos;
 		if (selectedItems.get(pos, false)) {
 			selectedItems.delete(pos);
 		} else {
 			selectedItems.put(pos, true);
 		}
+		
 		notifyItemChanged(pos);
 	}
 	
@@ -105,7 +114,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		for (int i = 0; i < getItemCount(); i++)
 			selectedItems.put(i, true);
 		notifyDataSetChanged();
-		
 	}
 	
 	public void clearSelections() {
@@ -126,12 +134,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	}
 	
 	public void removeData(int position) {
+		Log.d(TAG, "removeData: removing at position " + position);
 		mFileItems.remove(position);
-		resetCurrentIndex();
-	}
-	
-	private void resetCurrentIndex() {
-		currentSelectedIndex = -1;
+		notifyItemRemoved(position);
+		Log.d(TAG, "removeData: removed at position " + position);
 	}
 	
 	@Override
@@ -143,6 +149,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		
 		TextView fileName;
 		ImageView fileImage;
+		ImageButton fileOptions;
 		CardView fileLayout;
 		
 		public NotesViewHolder(View view) {
@@ -151,6 +158,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 			fileName = view.findViewById(R.id.file_name);
 			fileImage = view.findViewById(R.id.file_image);
 			fileLayout = view.findViewById(R.id.file_layout);
+			fileOptions = view.findViewById(R.id.file_options);
 			
 			view.setOnClickListener(this);
 			view.setOnLongClickListener(this);

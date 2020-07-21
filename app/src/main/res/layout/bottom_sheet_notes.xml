@@ -25,13 +25,14 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:scaleType="fitXY"
+            android:contentDescription="@string/bottom_sheet_create_new_folder"
             android:src="@drawable/folder_add_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create new folder"
+            android:text="@string/bottom_sheet_create_new_folder"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -53,13 +54,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_add_a_file"
             android:src="@drawable/file_add_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add a file"
+            android:text="@string/bottom_sheet_add_a_file"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -80,13 +82,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_add_a_video"
             android:src="@drawable/video_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add a video"
+            android:text="@string/bottom_sheet_add_a_video"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -108,13 +111,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_add_an_image"
             android:src="@drawable/image_add_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add an image"
+            android:text="@string/bottom_sheet_add_an_image"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -135,13 +139,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_create_an_image"
             android:src="@drawable/camera_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create an image"
+            android:text="@string/bottom_sheet_create_an_image"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -162,13 +167,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_create_a_note"
             android:src="@drawable/pen_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create a note"
+            android:text="@string/bottom_sheet_create_a_note"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -189,13 +195,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_attach_a_link"
             android:src="@drawable/link_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Attach a link"
+            android:text="@string/bottom_sheet_attach_a_link"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -216,13 +223,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_add_an_audio"
             android:src="@drawable/music_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add an audio"
+            android:text="@string/bottom_sheet_add_an_audio"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 
@@ -243,13 +251,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:contentDescription="@string/bottom_sheet_create_an_audio"
             android:src="@drawable/mic_icon_48"
             android:tint="@color/alternativeIconTint" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create an audio"
+            android:text="@string/bottom_sheet_create_an_audio"
             android:textColor="@color/alternativeText" />
     </LinearLayout>
 

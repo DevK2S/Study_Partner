@@ -2,6 +2,8 @@ package com.studypartner.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -10,6 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.studypartner.R;
@@ -129,6 +135,106 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		enableActionMode(position);
 	}
 	
+	@Override
+	public void onOptionsClick(View view, final int position) {
+		PopupMenu popup = new PopupMenu(getContext(), view);
+		popup.inflate(R.menu.notes_item_menu);
+		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				switch (item.getItemId()) {
+					case R.id.notes_item_rename:
+						
+						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+						alertDialog.setMessage("Enter a new name");
+						
+						final FileItem fileItem = notes.get(position);
+						
+						final EditText input = new EditText(getContext());
+						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+								LinearLayout.LayoutParams.MATCH_PARENT,
+								LinearLayout.LayoutParams.MATCH_PARENT);
+						input.setLayoutParams(lp);
+						input.setText(fileItem.getName());
+						alertDialog.setView(input);
+						
+						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								String newName = input.getText().toString().trim();
+								File oldFile = new File(fileItem.getPath());
+								File newFile = new File(noteFolder, newName);
+								if (newName.equals(fileItem.getName()) || newName.equals("")) {
+									Log.d(TAG, "onClick: filename not changed");
+								} else if (newFile.exists()) {
+									Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+								} else {
+									if (oldFile.renameTo(newFile)) {
+										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+										notes.get(position).setName(newName);
+										mNotesAdapter.notifyItemChanged(position);
+									} else {
+										Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
+									}
+								}
+							}
+						});
+						
+						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.cancel();
+							}
+						});
+						
+						alertDialog.show();
+						return true;
+						
+					case R.id.notes_item_delete:
+						
+						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+						builder.setTitle("Delete File");
+						builder.setMessage("Are you sure you want to delete the file?");
+						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								File file = new File(notes.get(position).getPath());
+								deleteRecursive(file);
+								mNotesAdapter.notifyItemRemoved(position);
+								notes.remove(position);
+							}
+						});
+						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+							
+							}
+						});
+						builder.show();
+						return true;
+						
+					case R.id.notes_item_share:
+						if (notes.get(position).getType() != FileItem.FileType.FILE_TYPE_FOLDER) {
+							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+							File shareFile = new File(notes.get(position).getPath());
+							
+							if(shareFile.exists()) {
+								intentShareFile.setType("application/pdf");
+								intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + notes.get(position).getPath()));
+								intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File");
+								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing " + notes.get(position).getName());
+								startActivity(Intent.createChooser(intentShareFile, "Share File"));
+							}
+						} else {
+							Toast.makeText(activity, "Folder cannot be shared", Toast.LENGTH_SHORT).show();
+						}
+						return true;
+					default:
+						return false;
+				}
+			}
+		});
+		popup.show();
+	}
+	
 	private void populateDataAndSetAdapter() {
 		File[] files = noteFolder.listFiles();
 		
@@ -172,10 +278,10 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 					File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
 					deleteRecursive(file);
-					mNotesAdapter.removeData(selectedItemPositions.get(i));
+					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
+					notes.remove(selectedItemPositions.get(i).intValue());
 				}
 				
-				mNotesAdapter.notifyDataSetChanged();
 			}
 		});
 		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

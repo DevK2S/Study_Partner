@@ -88,9 +88,26 @@
     <string name="attendance_required_name">Name</string>
     <string name="attendance_minimum_attendance_criteria">Minimum Attendance Criteria</string>
     <string name="attendance_default_required_attendance">75%</string>
+
+    <string name="file_name">File Name</string>
     <string name="file_type_image_cd">File Type Image</string>
+    <string name="file_options_cd">Options</string>
+
     <string name="notes_action_delete">Delete</string>
     <string name="notes_action_refresh">Refresh</string>
     <string name="notes_action_select_all">Select All</string>
+
+    <string name="bottom_sheet_create_new_folder">Create new folder</string>
+    <string name="bottom_sheet_add_a_file">Add a file</string>
+    <string name="bottom_sheet_add_a_video">Add a video</string>
+    <string name="bottom_sheet_add_an_image">Add an image</string>
+    <string name="bottom_sheet_create_an_image">Create an image</string>
+    <string name="bottom_sheet_create_a_note">Create a note</string>
+    <string name="bottom_sheet_attach_a_link">Attach a link</string>
+    <string name="bottom_sheet_add_an_audio">Add an audio</string>
+    <string name="bottom_sheet_create_an_audio">Create an audio</string>
+    <string name="notes_item_menu_rename">Rename</string>
+    <string name="notes_item_menu_delete">Delete</string>
+    <string name="notes_item_menu_share">Share</string>
 
 </resources>

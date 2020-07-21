@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/notes_item_rename"
+        android:icon="@drawable/pen_icon"
+        android:orderInCategory="1"
+        android:title="@string/notes_item_menu_rename"/>
+
+    <item
+        android:id="@+id/notes_item_delete"
+        android:icon="@drawable/delete_icon"
+        android:orderInCategory="2"
+        android:title="@string/notes_item_menu_delete"/>
+
+    <item
+        android:id="@+id/notes_item_share"
+        android:icon="@drawable/share_icon"
+        android:orderInCategory="3"
+        android:title="@string/notes_item_menu_share"/>
+</menu>

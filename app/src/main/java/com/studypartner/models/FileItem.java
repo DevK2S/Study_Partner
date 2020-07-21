@@ -9,7 +9,8 @@ public class FileItem implements Parcelable {
 		FILE_TYPE_FOLDER,
 		FILE_TYPE_IMAGE,
 		FILE_TYPE_VIDEO,
-		FILE_TYPE_PDF,
+		FILE_TYPE_FILE,
+		FILE_TYPE_LINK,
 		FILE_TYPE_OTHER
 	}
 	
@@ -56,6 +57,10 @@ public class FileItem implements Parcelable {
 	
 	public FileType getType() {
 		return type;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	@Override
