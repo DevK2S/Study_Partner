@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -23,12 +26,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+import com.stfalcon.imageviewer.StfalconImageViewer;
+import com.stfalcon.imageviewer.loader.ImageLoader;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.Connection;
 import com.studypartner.utils.FileType;
+import com.studypartner.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -214,7 +221,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	}
 	
 	@Override
-	public void onClick(int position) {
+	public void onClick( int position) {
 		if (actionModeOn) {
 			enableActionMode(position);
 		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_FOLDER)) {
@@ -222,6 +229,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			Bundle bundle = new Bundle();
 			bundle.putParcelable("FileDes", fileDesc);
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_self, bundle);
+		}
+		else if(notes.get(position).getType().equals(FileType.FILE_TYPE_VIDEO))
+		{
+			FileUtils.showVideo(getContext(),notes.get(position));
+		}
+		else if(notes.get(position).getType().equals(FileType.FILE_TYPE_AUDIO))
+		{
+			FileUtils.playAudio(getContext(),notes.get(position));
 		}
 	}
 	
