@@ -33,13 +33,13 @@ import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.Connection;
 import com.studypartner.utils.FileType;
+import com.studypartner.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.UUID;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -63,8 +63,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	private final String ASCENDING_ORDER = "Ascending Order";
 	private final String DESCENDING_ORDER = "Descending Order";
 	
-	private String sortBy = SORT_BY_NAME;
-	private String sortOrder = ASCENDING_ORDER;
+	private String sortBy;
+	private String sortOrder;
 	
 	private RecyclerView recyclerView;
 	private FloatingActionButton fab;
@@ -265,8 +265,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					sortOrder = ASCENDING_ORDER;
 					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
 				}
-				sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
 				editor.putString("SORTING_ORDER", sortOrder).apply();
+				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			}
 		});
 		
@@ -324,7 +324,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						}
 						sortText.setText(sortBy);
 						editor.putString("SORTING_BY", sortBy).apply();
-						sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 						builder.dismiss();
 					}
 				});
@@ -350,6 +350,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			Bundle bundle = new Bundle();
 			bundle.putString("FilePath", fileDesc.getPath());
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_self, bundle);
+		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_VIDEO)) {
+			FileUtils.showVideo(requireContext(), notes.get(position));
+		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_AUDIO)) {
+			FileUtils.playAudio(requireContext(), notes.get(position));
 		}
 	}
 	
@@ -396,7 +400,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
 										notes.get(position).setName(newName);
 										mNotesAdapter.notifyItemChanged(position);
-										sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 									} else {
 										Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
 									}
@@ -443,7 +447,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
 							File shareFile = new File(notes.get(position).getPath());
 							
-							if(shareFile.exists()) {
+							if (shareFile.exists()) {
 								intentShareFile.setType("application/pdf");
 								intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + notes.get(position).getPath()));
 								intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File");
@@ -477,6 +481,24 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_self, bundle);
 			}
 		}
+		
+		SharedPreferences sortPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		
+		if (sortPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
+			sortBy = sortPreferences.getString("SORTING_BY", SORT_BY_NAME);
+			sortOrder = sortPreferences.getString("SORTING_ORDER", ASCENDING_ORDER);
+		}
+		
+		sortText.setText(sortBy);
+		
+		if (sortOrder.equals(ASCENDING_ORDER)) {
+			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
+		} else {
+			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.upward_arrow));
+		}
+		
+		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+		
 		setHasOptionsMenu(true);
 		
 		fab.show();
@@ -531,7 +553,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		mNotesAdapter = new NotesAdapter(getContext(), notes, this, true);
 		
-		sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		
 		recyclerView.setAdapter(mNotesAdapter);
 	}
@@ -539,8 +561,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	void addFolder() {
 		File file;
 		
+		int count = 0;
+		
 		do {
-			String newFolder = UUID.randomUUID().toString().substring(0, 5);
+			String newFolder = "New Folder";
+			if (count > 0) {
+				newFolder += " " + count;
+			}
+			++count;
 			file = new File(noteFolder, newFolder);
 		} while (file.exists());
 		
@@ -548,7 +576,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			notes.add(new FileItem(file.getPath()));
 		mNotesAdapter.notifyItemInserted(notes.size());
 		
-		sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}
 	
 	public void deleteRecursive(File fileOrDirectory) {
@@ -668,7 +696,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		String title = "Notes";
 		
-		FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+		FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 		
 		if (firebaseUser != null && firebaseUser.getEmail() != null) {
 			title = noteFolder.getPath().substring(noteFolder.getPath().indexOf(firebaseUser.getEmail()) + firebaseUser.getEmail().length() + 1);
@@ -677,7 +705,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		return title.length() > 15 ? "..." + title.substring(title.length() - 12) : title;
 	}
 	
-	private void sort (String text, boolean ascending) {
+	private void sort(String text, boolean ascending) {
 		switch (text) {
 			case SORT_BY_SIZE:
 				

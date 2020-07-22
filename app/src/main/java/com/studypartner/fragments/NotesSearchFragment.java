@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.SEARCH_SERVICE;
 
-public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesClickListener{
+public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesClickListener {
 	private static final String TAG = "NotesSearchFragment";
 	
 	public SearchView mSearchView;
@@ -42,7 +42,8 @@ public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesC
 	
 	private NotesAdapter mNotesAdapter;
 	
-	public NotesSearchFragment() {}
+	public NotesSearchFragment() {
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesC
 		if (getArguments() != null) {
 			FileItem[] files = (FileItem[]) getArguments().getParcelableArray("NotesArray");
 			assert files != null;
-			notes = new ArrayList<>( Arrays.asList(files));
+			notes = new ArrayList<>(Arrays.asList(files));
 		}
 		
 		notesCopy = new ArrayList<>(notes);
@@ -85,7 +86,7 @@ public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesC
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		
-		mNotesAdapter = new NotesAdapter(getContext(), notesCopy,this, false);
+		mNotesAdapter = new NotesAdapter(getContext(), notesCopy, this, false);
 		recyclerView.setAdapter(mNotesAdapter);
 	}
 	

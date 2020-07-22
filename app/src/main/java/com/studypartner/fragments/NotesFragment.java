@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.UUID;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -61,8 +60,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private final String ASCENDING_ORDER = "Ascending Order";
 	private final String DESCENDING_ORDER = "Descending Order";
 	
-	private String sortBy = SORT_BY_NAME;
-	private String sortOrder = ASCENDING_ORDER;
+	private String sortBy;
+	private String sortOrder;
 	
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
@@ -174,8 +173,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					sortOrder = ASCENDING_ORDER;
 					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
 				}
-				sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
 				editor.putString("SORTING_ORDER", sortOrder).apply();
+				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			}
 		});
 		
@@ -233,7 +232,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						}
 						sortText.setText(sortBy);
 						editor.putString("SORTING_BY", sortBy).apply();
-						sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 						builder.dismiss();
 					}
 				});
@@ -263,6 +262,23 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_fileFragment, bundle);
 			}
 		}
+		
+		SharedPreferences sortPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		
+		if (sortPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
+			sortBy = sortPreferences.getString("SORTING_BY", SORT_BY_NAME);
+			sortOrder = sortPreferences.getString("SORTING_ORDER", ASCENDING_ORDER);
+		}
+		
+		sortText.setText(sortBy);
+		
+		if (sortOrder.equals(ASCENDING_ORDER)) {
+			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
+		} else {
+			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.upward_arrow));
+		}
+		
+		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		
 		setHasOptionsMenu(true);
 		activity.mBottomAppBar.performShow();
@@ -364,7 +380,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
 										notes.get(position).setName(newName);
 										mNotesAdapter.notifyItemChanged(position);
-										sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 									} else {
 										Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
 									}
@@ -440,7 +456,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		
 		mNotesAdapter = new NotesAdapter(getContext(), notes, this, true);
 		
-		sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		
 		recyclerView.setAdapter(mNotesAdapter);
 	}
@@ -448,8 +464,14 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	void addFolder() {
 		File file;
 		
+		int count = 0;
+		
 		do {
-			String newFolder = UUID.randomUUID().toString().substring(0, 5);
+			String newFolder = "New Folder";
+			if (count > 0) {
+				newFolder += " " + count;
+			}
+			++count;
 			file = new File(noteFolder, newFolder);
 		} while (file.exists());
 		
@@ -457,7 +479,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			notes.add(new FileItem(file.getPath()));
 		mNotesAdapter.notifyItemInserted(notes.size());
 		
-		sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}
 	
 	public void deleteRecursive(File fileOrDirectory) {
