@@ -85,7 +85,7 @@ public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesC
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		
-		mNotesAdapter = new NotesAdapter(getContext(), notesCopy,this);
+		mNotesAdapter = new NotesAdapter(getContext(), notesCopy,this, false);
 		recyclerView.setAdapter(mNotesAdapter);
 	}
 	

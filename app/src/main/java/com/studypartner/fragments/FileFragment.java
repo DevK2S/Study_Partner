@@ -28,6 +28,7 @@ import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.Connection;
+import com.studypartner.utils.FileType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -216,7 +217,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	public void onClick(int position) {
 		if (actionModeOn) {
 			enableActionMode(position);
-		} else if (notes.get(position).getType().equals(FileItem.FileType.FILE_TYPE_FOLDER)) {
+		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_FOLDER)) {
 			FileItem fileDesc = notes.get(position);
 			Bundle bundle = new Bundle();
 			bundle.putParcelable("FileDes", fileDesc);
@@ -309,7 +310,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					
 					case R.id.notes_item_share:
 						
-						if (notes.get(position).getType() != FileItem.FileType.FILE_TYPE_FOLDER) {
+						if (notes.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
 							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
 							File shareFile = new File(notes.get(position).getPath());
 							
@@ -340,7 +341,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		if (sharedPreferences.getBoolean("NotesSearchExists", false)) {
 			File searchedFile = new File(sharedPreferences.getString("NotesSearch", null));
-			FileItem fileDesc = new FileItem(searchedFile.getPath(),searchedFile.getName(), FileItem.FileType.FILE_TYPE_FOLDER);
+			FileItem fileDesc = new FileItem(searchedFile.getPath());
 			if (searchedFile.isDirectory()) {
 				Bundle bundle = new Bundle();
 				bundle.putParcelable("FileDes", fileDesc);
@@ -396,10 +397,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (files != null && files.length > 0) {
 			notes = new ArrayList<>();
 			for (File f : files)
-				notes.add(new FileItem(f.getPath(), f.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
+				notes.add(new FileItem(f.getPath()));
 		}
 		
-		mNotesAdapter = new NotesAdapter(getContext(), notes, this);
+		mNotesAdapter = new NotesAdapter(getContext(), notes, this, true);
 		recyclerView.setAdapter(mNotesAdapter);
 	}
 	
@@ -412,7 +413,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		} while (file.exists());
 		
 		if (file.mkdirs())
-			notes.add(new FileItem(file.getPath(), file.getName(), FileItem.FileType.FILE_TYPE_FOLDER));
+			notes.add(new FileItem(file.getPath()));
 		mNotesAdapter.notifyItemInserted(notes.size());
 	}
 	

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
 import com.studypartner.models.FileItem;
+import com.studypartner.utils.FileType;
 
 import java.util.ArrayList;
 
@@ -36,13 +37,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	private SparseBooleanArray selectedItems;
 	private NotesClickListener listener;
 	
-	public NotesAdapter(Context context, ArrayList<FileItem> fileItems, NotesClickListener listener) {
+	private boolean isOptionsVisible;
+	
+	public NotesAdapter(Context context, ArrayList<FileItem> fileItems, NotesClickListener listener, boolean isOptionVisible) {
 		this.mContext = context;
 		this.mFileItems = fileItems;
 		this.mFileItemsCopy = new ArrayList<>();
 		mFileItemsCopy.addAll(mFileItems);
 		this.listener = listener;
 		selectedItems = new SparseBooleanArray();
+		
+		this.isOptionsVisible = isOptionVisible;
 	}
 	
 	public void setFileItems(ArrayList<FileItem> fileItems) {
@@ -64,14 +69,25 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		FileItem fileItem = mFileItems.get(position);
 		holder.fileName.setText(fileItem.getName());
 		
-		if (fileItem.getType() != FileItem.FileType.FILE_TYPE_FOLDER) {
+		if (!isOptionsVisible) {
+			holder.fileOptions.setVisibility(View.GONE);
+		} else {
+			holder.fileOptions.setVisibility(View.VISIBLE);
+		}
+		
+		if (fileItem.getType() == FileType.FILE_TYPE_IMAGE) {
 			Picasso.get()
 					.load(fileItem.getPath())
 					.error(R.drawable.image_error_icon)
 					.into(holder.fileImage);
 		}
 		
-		holder.itemView.setActivated(selectedItems.get(position, false));
+		if (selectedItems.get(position, false)) {
+			holder.fileOptions.setVisibility(View.GONE);
+			holder.itemView.setActivated(true);
+		} else {
+			holder.itemView.setActivated(false);
+		}
 		
 		applyClickEvents(holder);
 		
