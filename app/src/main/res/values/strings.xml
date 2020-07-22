@@ -92,6 +92,7 @@
     <string name="file_name">File Name</string>
     <string name="file_type_image_cd">File Type Image</string>
     <string name="file_options_cd">Options</string>
+    <string name="file_sort_button_cd">Sort Button</string>
 
     <string name="notes_action_delete">Delete</string>
     <string name="notes_action_refresh">Refresh</string>
@@ -113,5 +114,14 @@
 
     <string name="notes_menu_search">Search</string>
     <string name="notes_menu_refresh">Refresh</string>
+    <string name="file_background_rectangle_cd">Background Rectangle Image</string>
+    <string name="file_sort_order_cd">Sort Order</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="sort_by_name">Name</string>
+    <string name="sort_by_size">Size</string>
+    <string name="sort_by_date_created">Date Created</string>
+    <string name="sort_by_last_modified">Last Modified</string>
+    <string name="sort_by_ok">OK</string>
+    <string name="sort_by_cancel">Cancel</string>
 
 </resources>

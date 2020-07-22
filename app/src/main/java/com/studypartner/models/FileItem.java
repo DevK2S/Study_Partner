@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
 
 public class FileItem implements Parcelable {
 	
@@ -19,6 +20,7 @@ public class FileItem implements Parcelable {
 	private FileType type;
 	private String dateCreated, dateModified;
 	private boolean isStarred;
+	private long size;
 	
 	public FileItem() {
 	}
@@ -30,11 +32,24 @@ public class FileItem implements Parcelable {
 		this.type = FileUtils.getFileType(file);
 		this.dateModified = String.valueOf(file.lastModified());
 		this.isStarred = false;
+		this.size = getFolderSize(file);
 		try {
 			setCreationTime(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static long getFolderSize(File file) {
+		long size = 0;
+		if (file.isDirectory()) {
+			for (File f : Objects.requireNonNull(file.listFiles())) {
+				size += getFolderSize(f);
+			}
+		} else {
+			size = file.length();
+		}
+		return size;
 	}
 	
 	private void setCreationTime(File file) throws IOException {
@@ -49,6 +64,7 @@ public class FileItem implements Parcelable {
 		path = in.readString();
 		name = in.readString();
 		type = FileType.valueOf(in.readString());
+		size = in.readLong();
 		dateModified = in.readString();
 		dateCreated = in.readString();
 		isStarred = Boolean.parseBoolean(in.readString());
@@ -76,6 +92,10 @@ public class FileItem implements Parcelable {
 	
 	public FileType getType() {
 		return type;
+	}
+	
+	public long getSize() {
+		return size;
 	}
 	
 	public String getDateCreated() {
@@ -112,6 +132,7 @@ public class FileItem implements Parcelable {
 		parcel.writeString(path);
 		parcel.writeString(name);
 		parcel.writeString(type.name());
+		parcel.writeLong(size);
 		parcel.writeString(dateModified);
 		parcel.writeString(dateCreated);
 		parcel.writeString(String.valueOf(isStarred));
@@ -123,6 +144,7 @@ public class FileItem implements Parcelable {
 				"path='" + path + '\'' +
 				", name='" + name + '\'' +
 				", type=" + type +
+				", size=" + size + '\'' +
 				", dateCreated='" + dateCreated + '\'' +
 				", dateModified='" + dateModified + '\'' +
 				", isStarred=" + isStarred +

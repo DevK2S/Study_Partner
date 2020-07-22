@@ -69,12 +69,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		FileItem fileItem = mFileItems.get(position);
 		holder.fileName.setText(fileItem.getName());
 		
-		if (!isOptionsVisible) {
-			holder.fileOptions.setVisibility(View.GONE);
-		} else {
-			holder.fileOptions.setVisibility(View.VISIBLE);
-		}
-		
 		if (fileItem.getType() == FileType.FILE_TYPE_IMAGE) {
 			Picasso.get()
 					.load(fileItem.getPath())
@@ -82,11 +76,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 					.into(holder.fileImage);
 		}
 		
+		holder.fileLayout.setBackground(mContext.getDrawable(R.drawable.notes_item_background_odd));
+		
 		if (selectedItems.get(position, false)) {
-			holder.fileOptions.setVisibility(View.GONE);
 			holder.itemView.setActivated(true);
 		} else {
 			holder.itemView.setActivated(false);
+			if (position % 2 == 0) {
+				holder.fileLayout.setBackground(mContext.getDrawable(R.drawable.notes_item_background_even));
+			}
+		}
+		
+		if (selectedItems.size() > 0 || !isOptionsVisible) {
+			holder.fileOptions.setVisibility(View.GONE);
+		} else {
+			holder.fileOptions.setVisibility(View.VISIBLE);
 		}
 		
 		applyClickEvents(holder);
@@ -143,7 +147,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 			selectedItems.put(pos, true);
 		}
 		
-		notifyItemChanged(pos);
+		if (selectedItems.size() == 1) {
+			notifyDataSetChanged();
+		} else {
+			notifyItemChanged(pos);
+		}
 	}
 	
 	public void selectAll() {

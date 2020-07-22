@@ -11,7 +11,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/notes_item_background"
         android:padding="@dimen/smallPadding">
 
         <TextView
@@ -37,7 +36,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/file_options_cd"
             android:src="@drawable/three_dots_icon"
-            android:tint="@color/iconTint"
+            android:tint="@color/notes_item_icon_tint"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="@dimen/largeElevation"
-            android:background="@drawable/notes_item_background"
             app:cardCornerRadius="@dimen/smallMargin"
             app:contentPadding="@dimen/smallPadding"
             app:layout_constraintBottom_toBottomOf="parent"

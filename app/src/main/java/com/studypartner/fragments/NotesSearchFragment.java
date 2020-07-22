@@ -36,7 +36,7 @@ import static android.content.Context.SEARCH_SERVICE;
 public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesClickListener{
 	private static final String TAG = "NotesSearchFragment";
 	
-	private SearchView mSearchView;
+	public SearchView mSearchView;
 	
 	private ArrayList<FileItem> notes, notesCopy;
 	
@@ -97,6 +97,7 @@ public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesC
 	
 	@Override
 	public void onPause() {
+		mSearchView.clearFocus();
 		setHasOptionsMenu(false);
 		super.onPause();
 	}

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/largePadding">
+
+    <RadioGroup
+        android:id="@+id/sortByRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:checkedButton="@id/sortByNameRB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sortByTitle">
+
+        <RadioButton
+            android:id="@+id/sortByNameRB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/sort_by_name"
+            android:textColor="@color/subText"
+            android:textSize="@dimen/mediumText" />
+
+        <RadioButton
+            android:id="@+id/sortBySizeRB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/sort_by_size"
+            android:textColor="@color/subText"
+            android:textSize="@dimen/mediumText" />
+
+        <RadioButton
+            android:id="@+id/sortByCreationTimeRB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/sort_by_date_created"
+            android:textColor="@color/subText"
+            android:textSize="@dimen/mediumText" />
+
+        <RadioButton
+            android:id="@+id/sortByModifiedTimeRB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/sort_by_last_modified"
+            android:textColor="@color/subText"
+            android:textSize="@dimen/mediumText" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/sortByTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sort_by_title"
+        android:textAlignment="center"
+        android:textColor="@color/titleText"
+        android:textSize="@dimen/largeText"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/sortByOkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:background="@drawable/rounded_buttons"
+        android:backgroundTint="@color/roundedButtonsBg"
+        android:text="@string/sort_by_ok"
+        android:textColor="@color/alternativeText"
+        android:paddingStart="@dimen/smallPadding"
+        android:paddingEnd="@dimen/smallPadding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sortByRadioGroup" />
+
+    <Button
+        android:id="@+id/sortByCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:background="@drawable/rounded_buttons"
+        android:backgroundTint="@color/lightGrayText"
+        android:text="@string/sort_by_cancel"
+        android:textColor="@color/primaryText"
+        android:paddingStart="@dimen/smallPadding"
+        android:paddingEnd="@dimen/smallPadding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sortByRadioGroup" />
+</androidx.constraintlayout.widget.ConstraintLayout>

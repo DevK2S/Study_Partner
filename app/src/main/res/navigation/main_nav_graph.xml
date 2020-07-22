@@ -125,8 +125,9 @@
             android:label="@string/bottom_navigation_menu_notes"
             tools:layout="@layout/fragment_file">
             <argument
-                android:name="FileDes"
-                app:argType="com.studypartner.models.FileItem" />
+                android:name="FilePath"
+                app:argType="string"
+                android:defaultValue="null" />
             <action
                 android:id="@+id/action_fileFragment_self"
                 app:destination="@id/fileFragment"

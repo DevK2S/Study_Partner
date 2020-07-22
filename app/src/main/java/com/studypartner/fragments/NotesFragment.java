@@ -14,9 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -31,6 +35,8 @@ import com.studypartner.utils.FileType;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -47,9 +53,23 @@ import static android.content.Context.MODE_PRIVATE;
 public class NotesFragment extends Fragment implements NotesAdapter.NotesClickListener {
 	private static final String TAG = "NotesFragment";
 	
+	private final String SORT_BY_NAME = "By Name";
+	private final String SORT_BY_SIZE = "By Size";
+	private final String SORT_BY_CREATION_TIME = "By Creation Time";
+	private final String SORT_BY_MODIFIED_TIME = "By Modification Time";
+	
+	private final String ASCENDING_ORDER = "Ascending Order";
+	private final String DESCENDING_ORDER = "Descending Order";
+	
+	private String sortBy = SORT_BY_NAME;
+	private String sortOrder = ASCENDING_ORDER;
+	
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
 	private File noteFolder;
+	private LinearLayout mLinearLayout;
+	private TextView sortText;
+	private ImageButton sortOrderButton, sortByButton;
 	
 	private NotesAdapter mNotesAdapter;
 	
@@ -67,6 +87,21 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requireActivity().getSharedPreferences("NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
+		
+		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		
+		if (sharedPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
+			sortBy = sharedPreferences.getString("SORTING_BY", SORT_BY_NAME);
+			sortOrder = sharedPreferences.getString("SORTING_ORDER", ASCENDING_ORDER);
+		} else {
+			editor.putBoolean("SORTING_ORDER_EXISTS", true);
+			editor.putString("SORTING_BY", SORT_BY_NAME);
+			editor.putString("SORTING_ORDER", ASCENDING_ORDER);
+			editor.apply();
+			sortBy = SORT_BY_NAME;
+			sortOrder = ASCENDING_ORDER;
+		}
 		
 		setHasOptionsMenu(true);
 	}
@@ -86,7 +121,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		} else {
 			noteFolder = new File(String.valueOf(requireContext().getExternalFilesDir(null)));
 		}
-		
 		activity = (MainActivity) requireActivity();
 		activity.mBottomAppBar.bringToFront();
 		activity.fab.bringToFront();
@@ -110,10 +144,104 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		});
 		
 		recyclerView = rootView.findViewById(R.id.notesRecyclerView);
+		mLinearLayout = rootView.findViewById(R.id.notesLinearLayout);
+		sortText = rootView.findViewById(R.id.notesSortText);
+		sortOrderButton = rootView.findViewById(R.id.notesSortOrder);
+		sortByButton = rootView.findViewById(R.id.notesSortButton);
 		
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
+		
+		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		final SharedPreferences.Editor editor = sharedPreferences.edit();
+		
+		sortText.setText(sortBy);
+		
+		if (sortOrder.equals(ASCENDING_ORDER)) {
+			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
+		} else {
+			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.upward_arrow));
+		}
+		
+		sortOrderButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (sortOrder.equals(ASCENDING_ORDER)) {
+					sortOrder = DESCENDING_ORDER;
+					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.upward_arrow));
+				} else {
+					sortOrder = ASCENDING_ORDER;
+					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
+				}
+				sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+				editor.putString("SORTING_ORDER", sortOrder).apply();
+			}
+		});
+		
+		sortByButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
+				
+				View dialogView = getLayoutInflater().inflate(R.layout.notes_sort_layout, null);
+				
+				Button okButton = dialogView.findViewById(R.id.sortByOkButton);
+				Button cancelButton = dialogView.findViewById(R.id.sortByCancelButton);
+				final RadioGroup radioGroup = dialogView.findViewById(R.id.sortByRadioGroup);
+				radioGroup.clearCheck();
+				
+				switch (sortBy) {
+					case SORT_BY_SIZE:
+						radioGroup.check(R.id.sortBySizeRB);
+						break;
+					case SORT_BY_CREATION_TIME:
+						radioGroup.check(R.id.sortByCreationTimeRB);
+						break;
+					case SORT_BY_MODIFIED_TIME:
+						radioGroup.check(R.id.sortByModifiedTimeRB);
+						break;
+					default:
+						radioGroup.check(R.id.sortByNameRB);
+						break;
+				}
+				
+				cancelButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Log.d(TAG, "onClick: cancel pressed while changing subject");
+						builder.dismiss();
+					}
+				});
+				
+				okButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						switch (radioGroup.getCheckedRadioButtonId()) {
+							case R.id.sortBySizeRB:
+								sortBy = SORT_BY_SIZE;
+								break;
+							case R.id.sortByCreationTimeRB:
+								sortBy = SORT_BY_CREATION_TIME;
+								break;
+							case R.id.sortByModifiedTimeRB:
+								sortBy = SORT_BY_MODIFIED_TIME;
+								break;
+							default:
+								sortBy = SORT_BY_NAME;
+								break;
+						}
+						sortText.setText(sortBy);
+						editor.putString("SORTING_BY", sortBy).apply();
+						sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+						builder.dismiss();
+					}
+				});
+				
+				builder.setView(dialogView);
+				builder.show();
+			}
+		});
 		
 		populateDataAndSetAdapter();
 		
@@ -131,7 +259,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			FileItem fileDesc = new FileItem(searchedFile.getPath());
 			if (searchedFile.isDirectory()) {
 				Bundle bundle = new Bundle();
-				bundle.putParcelable("FileDes", fileDesc);
+				bundle.putString("FilePath", fileDesc.getPath());
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_fileFragment, bundle);
 			}
 		}
@@ -189,7 +317,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_FOLDER)) {
 			FileItem fileDesc = notes.get(position);
 			Bundle bundle = new Bundle();
-			bundle.putParcelable("FileDes", fileDesc);
+			bundle.putString("FilePath", fileDesc.getPath());
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_notes_to_fileFragment, bundle);
 		}
 	}
@@ -236,6 +364,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
 										notes.get(position).setName(newName);
 										mNotesAdapter.notifyItemChanged(position);
+										sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
 									} else {
 										Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
 									}
@@ -308,7 +437,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				notes.add(new FileItem(f.getPath()));
 		}
 		
+		
 		mNotesAdapter = new NotesAdapter(getContext(), notes, this, true);
+		
+		sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
+		
 		recyclerView.setAdapter(mNotesAdapter);
 	}
 	
@@ -323,6 +456,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		if (file.mkdirs())
 			notes.add(new FileItem(file.getPath()));
 		mNotesAdapter.notifyItemInserted(notes.size());
+		
+		sort(sortText.getText().toString(), sortOrder.equals(ASCENDING_ORDER));
 	}
 	
 	public void deleteRecursive(File fileOrDirectory) {
@@ -373,6 +508,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					mode.getMenuInflater().inflate(R.menu.menu_notes_action_mode, menu);
 					actionModeOn = true;
 					fab.setEnabled(false);
+					mLinearLayout.setVisibility(View.GONE);
 					Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).hide();
 					return true;
 				}
@@ -403,6 +539,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					actionModeOn = false;
 					actionMode = null;
 					fab.setEnabled(true);
+					mLinearLayout.setVisibility(View.VISIBLE);
 					Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).show();
 				}
 			});
@@ -435,5 +572,87 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		}
 		
 		actionMode = null;
+	}
+	
+	private void sort (String text, boolean ascending) {
+		switch (text) {
+			case SORT_BY_SIZE:
+				
+				if (ascending) {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return (int) ((o1.getSize() / 1048576) - (o2.getSize() / 1048576));
+						}
+					});
+				} else {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return (int) ((o2.getSize() / 1048576) - (o1.getSize() / 1048576));
+						}
+					});
+				}
+				
+				break;
+			case SORT_BY_CREATION_TIME:
+				
+				if (ascending) {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return o1.getDateCreated().compareTo(o2.getDateCreated());
+						}
+					});
+				} else {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return o2.getDateCreated().compareTo(o1.getDateCreated());
+						}
+					});
+				}
+				
+				break;
+			case SORT_BY_MODIFIED_TIME:
+				
+				if (ascending) {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return o1.getDateModified().compareTo(o2.getDateModified());
+						}
+					});
+				} else {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return o2.getDateModified().compareTo(o1.getDateModified());
+						}
+					});
+				}
+				
+				break;
+			case SORT_BY_NAME:
+				
+				if (ascending) {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return o1.getName().compareTo(o2.getName());
+						}
+					});
+				} else {
+					Collections.sort(notes, new Comparator<FileItem>() {
+						@Override
+						public int compare(FileItem o1, FileItem o2) {
+							return o2.getName().compareTo(o1.getName());
+						}
+					});
+				}
+				break;
+		}
+		
+		mNotesAdapter.notifyDataSetChanged();
 	}
 }

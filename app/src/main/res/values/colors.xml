@@ -51,4 +51,5 @@
     <color name="requiredAttendanceColor">#F0F812</color>
 
     <color name="notesItemActivated">#555555</color>
+    <color name="notesItemBackground">#F8F8F8</color>
 </resources>
