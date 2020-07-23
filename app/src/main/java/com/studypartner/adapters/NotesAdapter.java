@@ -82,8 +82,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		
 		if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
 			
-			holder.fileImage.setImageResource(R.drawable.folder_icon);
-//			holder.fileImage.setImageResource(R.drawable.folder_starred_icon);
+			if (fileItem.isStarred()) {
+				holder.fileImage.setImageResource(R.drawable.folder_starred_icon);
+			} else {
+				holder.fileImage.setImageResource(R.drawable.folder_icon);
+			}
+			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_IMAGE) {
 			
 			File image = new File(fileItem.getPath());

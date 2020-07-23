@@ -26,18 +26,21 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.Connection;
 import com.studypartner.utils.FileType;
-import com.studypartner.utils.ObjectSerializer;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.activity.OnBackPressedCallback;
@@ -87,9 +90,9 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requireActivity().getSharedPreferences("NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
+		requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
 		
-		SharedPreferences sortPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		SharedPreferences sortPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SORTING", MODE_PRIVATE);
 		SharedPreferences.Editor editor = sortPreferences.edit();
 		
 		if (sortPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
@@ -103,12 +106,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			sortBy = SORT_BY_NAME;
 			sortOrder = ASCENDING_ORDER;
 		}
-		
-		SharedPreferences starredPreference = requireActivity().getSharedPreferences("STARRED", MODE_PRIVATE);
-		
-//		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
-			starred = (ArrayList<FileItem>) ObjectSerializer.deserialize(starredPreference.getString("STARRED_ITEMS", null));
-//		}
 		
 		setHasOptionsMenu(true);
 	}
@@ -160,7 +157,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		
-		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SORTING", MODE_PRIVATE);
 		final SharedPreferences.Editor editor = sharedPreferences.edit();
 		
 		sortText.setText(sortBy);
@@ -259,7 +256,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	public void onResume() {
 		super.onResume();
 		
-		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SEARCH", MODE_PRIVATE);
+		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE);
 
 		if (sharedPreferences.getBoolean("NotesSearchExists", false)) {
 			File searchedFile = new File(sharedPreferences.getString("NotesSearch", null));
@@ -271,7 +268,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			}
 		}
 		
-		SharedPreferences sortPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		SharedPreferences sortPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SORTING", MODE_PRIVATE);
 		
 		if (sortPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
 			sortBy = sortPreferences.getString("SORTING_BY", SORT_BY_NAME);
@@ -284,6 +281,15 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
 		} else {
 			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.upward_arrow));
+		}
+		
+		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+		
+		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
+			Gson gson = new Gson();
+			String json = starredPreference.getString("STARRED_ITEMS", "");
+			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			starred = gson.fromJson(json, type);
 		}
 		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
@@ -354,7 +360,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	@Override
 	public void onOptionsClick(View view, final int position) {
 		PopupMenu popup = new PopupMenu(getContext(), view);
-		popup.inflate(R.menu.notes_item_menu_star);
+		if (starredIndex(position) != -1) {
+			popup.inflate(R.menu.notes_item_menu_unstar);
+		} else {
+			popup.inflate(R.menu.notes_item_menu_star);
+		}
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -413,6 +423,52 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						
 					case R.id.notes_item_star:
 						
+						int starredIndex = starredIndex(position);
+						if (starredIndex == -1) {
+							SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+							SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+							
+							if (!starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
+								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", true);
+								starred = new ArrayList<>();
+							}
+							notes.get(position).setStarred(true);
+							starred.add(notes.get(position));
+							Gson gson = new Gson();
+							starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+							starredPreferenceEditor.apply();
+							mNotesAdapter.notifyItemChanged(position);
+						} else {
+							Toast.makeText(activity, "You are some sort of wizard aren't you", Toast.LENGTH_SHORT).show();
+						}
+						
+						return true;
+						
+					case R.id.notes_item_unstar:
+						
+						int unstarredIndex = starredIndex(position);
+						if (unstarredIndex != -1) {
+							SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+							SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+							
+							for (int i = 0; i < starred.size(); i++) {
+								FileItem starItem = starred.get(i);
+								if (starItem.isStarred() && starItem.getPath().equals(notes.get(position).getPath())) {
+									starred.remove(i);
+									break;
+								}
+							}
+							notes.get(position).setStarred(false);
+							if (starred.size() == 0) {
+								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+							}
+							Gson gson = new Gson();
+							starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+							starredPreferenceEditor.apply();
+							mNotesAdapter.notifyItemChanged(position);
+						} else {
+							Toast.makeText(activity, "You are some sort of wizard aren't you", Toast.LENGTH_SHORT).show();
+						}
 						
 						return true;
 						
@@ -426,6 +482,19 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 							public void onClick(DialogInterface dialog, int which) {
 								File file = new File(notes.get(position).getPath());
 								deleteRecursive(file);
+								int starPosition = starredIndex(position);
+								if (starPosition != -1) {
+									starred.remove(starPosition);
+									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+									
+									if (starred.size() == 0) {
+										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+									}
+									Gson gson = new Gson();
+									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+									starredPreferenceEditor.apply();
+								}
 								mNotesAdapter.notifyItemRemoved(position);
 								notes.remove(position);
 							}
@@ -465,14 +534,27 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	}
 	
 	private void populateDataAndSetAdapter() {
+		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+		
+		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
+			Gson gson = new Gson();
+			String json = starredPreference.getString("STARRED_ITEMS", "");
+			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			starred = gson.fromJson(json, type);
+		}
+		
 		File[] files = noteFolder.listFiles();
 		
 		if (files != null && files.length > 0) {
 			notes = new ArrayList<>();
-			for (File f : files)
-				notes.add(new FileItem(f.getPath()));
+			for (File f : files) {
+				FileItem item = new FileItem(f.getPath());
+				if (isStarred(item)) {
+					item.setStarred(true);
+				}
+				notes.add(item);
+			}
 		}
-		
 		
 		mNotesAdapter = new NotesAdapter(requireActivity(), notes, this, true);
 		
@@ -481,7 +563,33 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		recyclerView.setAdapter(mNotesAdapter);
 	}
 	
-	void addFolder() {
+	private int starredIndex (int position) {
+		int index = -1;
+		if (starred != null) {
+			for (int i = 0; i < starred.size(); i++) {
+				FileItem starredItem = starred.get(i);
+				if (starredItem.getPath().equals(notes.get(position).getPath())) {
+					index = position;
+					break;
+				}
+			}
+		}
+		return index;
+	}
+	
+	private boolean isStarred (FileItem item) {
+		if (starred != null) {
+			for (int i = 0; i < starred.size(); i++) {
+				FileItem starredItem = starred.get(i);
+				if (starredItem.getPath().equals(item.getPath())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private void addFolder() {
 		File file;
 		
 		int count = 0;
@@ -502,7 +610,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}
 	
-	public void deleteRecursive(File fileOrDirectory) {
+	private void deleteRecursive(File fileOrDirectory) {
 		if (fileOrDirectory.isDirectory()) {
 			for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
 				deleteRecursive(child);
@@ -524,6 +632,21 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 					File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
 					deleteRecursive(file);
+					
+					int starPosition = starredIndex(selectedItemPositions.get(i));
+					if (starPosition != -1) {
+						starred.remove(starPosition);
+						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+						
+						if (starred.size() == 0) {
+							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+						}
+						Gson gson = new Gson();
+						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+						starredPreferenceEditor.apply();
+					}
+					
 					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
 					notes.remove(selectedItemPositions.get(i).intValue());
 				}
@@ -563,9 +686,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				@Override
 				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 					switch (item.getItemId()) {
-						case R.id.notes_action_star:
-							mode.finish();
-							return true;
 						case R.id.notes_action_delete:
 							deleteRows();
 							mode.finish();

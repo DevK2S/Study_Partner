@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.SearchView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
@@ -76,7 +77,7 @@ public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesC
 			}
 		});
 		
-		requireActivity().getSharedPreferences(requireActivity().getPackageName(), MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
+		requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
 		
 		((MainActivity) requireActivity()).mBottomAppBar.performHide();
 		((MainActivity) requireActivity()).mBottomAppBar.setVisibility(View.GONE);
@@ -149,7 +150,7 @@ public class NotesSearchFragment extends Fragment implements NotesAdapter.NotesC
 	public void onClick(int position) {
 		
 		FileItem fileDesc = notesCopy.get(position);
-		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SEARCH", MODE_PRIVATE);
+		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE);
 		sharedPreferences.edit().putBoolean("NotesSearchExists", true).apply();
 		sharedPreferences.edit().putString("NotesSearch", fileDesc.getPath()).apply();
 		mSearchView.clearFocus();

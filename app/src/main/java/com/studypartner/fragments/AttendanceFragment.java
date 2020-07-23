@@ -116,7 +116,7 @@ public class AttendanceFragment extends Fragment {
 		attendedProgressBar = rootView.findViewById(R.id.attendanceAttendedTotalProgressBar);
 		requiredProgressBar = rootView.findViewById(R.id.attendanceRequiredProgressBar);
 		
-		sharedPreferences = requireActivity().getSharedPreferences("RequiredPercentageSelected", Context.MODE_PRIVATE);
+		sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "RequiredPercentageSelected", Context.MODE_PRIVATE);
 		
 		loadingProgressBar.setVisibility(View.VISIBLE);
 		mainLayout.setEnabled(false);
