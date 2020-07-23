@@ -32,6 +32,7 @@ import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.Connection;
 import com.studypartner.utils.FileType;
+import com.studypartner.utils.ObjectSerializer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -78,6 +79,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private boolean actionModeOn = false;
 	
 	private ArrayList<FileItem> notes = new ArrayList<>();
+	private ArrayList<FileItem> starred = new ArrayList<>();
 	
 	public NotesFragment() {
 	}
@@ -87,12 +89,12 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		super.onCreate(savedInstanceState);
 		requireActivity().getSharedPreferences("NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
 		
-		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
+		SharedPreferences sortPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
+		SharedPreferences.Editor editor = sortPreferences.edit();
 		
-		if (sharedPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
-			sortBy = sharedPreferences.getString("SORTING_BY", SORT_BY_NAME);
-			sortOrder = sharedPreferences.getString("SORTING_ORDER", ASCENDING_ORDER);
+		if (sortPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
+			sortBy = sortPreferences.getString("SORTING_BY", SORT_BY_NAME);
+			sortOrder = sortPreferences.getString("SORTING_ORDER", ASCENDING_ORDER);
 		} else {
 			editor.putBoolean("SORTING_ORDER_EXISTS", true);
 			editor.putString("SORTING_BY", SORT_BY_NAME);
@@ -101,6 +103,12 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			sortBy = SORT_BY_NAME;
 			sortOrder = ASCENDING_ORDER;
 		}
+		
+		SharedPreferences starredPreference = requireActivity().getSharedPreferences("STARRED", MODE_PRIVATE);
+		
+//		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
+			starred = (ArrayList<FileItem>) ObjectSerializer.deserialize(starredPreference.getString("STARRED_ITEMS", null));
+//		}
 		
 		setHasOptionsMenu(true);
 	}
@@ -346,7 +354,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	@Override
 	public void onOptionsClick(View view, final int position) {
 		PopupMenu popup = new PopupMenu(getContext(), view);
-		popup.inflate(R.menu.notes_item_menu);
+		popup.inflate(R.menu.notes_item_menu_star);
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -363,7 +371,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								LinearLayout.LayoutParams.MATCH_PARENT,
 								LinearLayout.LayoutParams.MATCH_PARENT);
 						input.setLayoutParams(lp);
-						input.setText(fileItem.getName());
+						
+						if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
+							input.setText(fileItem.getName());
+						}
+						
 						alertDialog.setView(input);
 						
 						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -375,6 +387,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 									Log.d(TAG, "onClick: filename not changed");
 								} else if (newFile.exists()) {
 									Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+								} else if (newName.contains(".") || newName.contains("/")) {
+									Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
 								} else {
 									if (oldFile.renameTo(newFile)) {
 										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
@@ -395,6 +409,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						});
 						
 						alertDialog.show();
+						return true;
+						
+					case R.id.notes_item_star:
+						
+						
 						return true;
 						
 					case R.id.notes_item_delete:
@@ -436,6 +455,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 							Toast.makeText(activity, "Folder cannot be shared", Toast.LENGTH_SHORT).show();
 						}
 						return true;
+						
 					default:
 						return false;
 				}
@@ -454,7 +474,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		}
 		
 		
-		mNotesAdapter = new NotesAdapter(getContext(), notes, this, true);
+		mNotesAdapter = new NotesAdapter(requireActivity(), notes, this, true);
 		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		
@@ -543,6 +563,9 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				@Override
 				public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 					switch (item.getItemId()) {
+						case R.id.notes_action_star:
+							mode.finish();
+							return true;
 						case R.id.notes_action_delete:
 							deleteRows();
 							mode.finish();

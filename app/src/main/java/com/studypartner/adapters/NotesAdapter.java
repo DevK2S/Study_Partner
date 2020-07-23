@@ -1,6 +1,10 @@
 package com.studypartner.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
@@ -16,6 +20,7 @@ import com.studypartner.R;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.FileType;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -31,7 +36,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		void onOptionsClick(View view, int position);
 	}
 	
-	private Context mContext;
+	private Activity mActivity;
 	private ArrayList<FileItem> mFileItems;
 	private ArrayList<FileItem> mFileItemsCopy;
 	private SparseBooleanArray selectedItems;
@@ -39,14 +44,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	
 	private boolean isOptionsVisible;
 	
-	public NotesAdapter(Context context, ArrayList<FileItem> fileItems, NotesClickListener listener, boolean isOptionVisible) {
-		this.mContext = context;
+	public NotesAdapter(Activity activity, ArrayList<FileItem> fileItems, NotesClickListener listener, boolean isOptionVisible) {
+		this.mActivity = activity;
 		this.mFileItems = fileItems;
 		this.mFileItemsCopy = new ArrayList<>();
 		mFileItemsCopy.addAll(mFileItems);
 		this.listener = listener;
 		selectedItems = new SparseBooleanArray();
-		
 		this.isOptionsVisible = isOptionVisible;
 	}
 	
@@ -57,33 +61,70 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	@NonNull
 	@Override
 	public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View itemView = inflater.inflate(R.layout.notes_item, parent, false);
 		return new NotesAdapter.NotesViewHolder(itemView);
 	}
 	
 	@Override
 	public void onBindViewHolder(@NonNull final NotesViewHolder holder, final int position) {
-		Log.d(TAG, "onBindViewHolder: starts");
 		
-		FileItem fileItem = mFileItems.get(position);
-		holder.fileName.setText(fileItem.getName());
+		final FileItem fileItem = mFileItems.get(position);
 		
-		if (fileItem.getType() == FileType.FILE_TYPE_IMAGE) {
-			Picasso.get()
-					.load(fileItem.getPath())
-					.error(R.drawable.image_error_icon)
-					.into(holder.fileImage);
+		if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
+			holder.fileName.setText(fileItem.getName());
+		} else {
+			String name = fileItem.getName();
+			if (name.indexOf(".") > 0)
+				name = name.substring(0, name.lastIndexOf("."));
+			holder.fileName.setText(name);
 		}
 		
-		holder.fileLayout.setBackground(mContext.getDrawable(R.drawable.notes_item_background_odd));
+		if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
+			
+			holder.fileImage.setImageResource(R.drawable.folder_icon);
+//			holder.fileImage.setImageResource(R.drawable.folder_starred_icon);
+		} else if (fileItem.getType() == FileType.FILE_TYPE_IMAGE) {
+			
+			File image = new File(fileItem.getPath());
+			if (image.exists()) {
+				Picasso.get()
+						.load(image)
+						.into(holder.fileImage);
+//				holder.fileImage.setImageBitmap(BitmapFactory.decodeFile(image.getAbsolutePath()));
+			}
+			
+		} else if (fileItem.getType() == FileType.FILE_TYPE_VIDEO) {
+			
+			File video = new File(fileItem.getPath());
+			if (video.exists()) {
+				Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
+				if (thumbnail != null) {
+					holder.fileImage.setImageBitmap(thumbnail);
+				}
+			}
+			
+		} else if (fileItem.getType() == FileType.FILE_TYPE_AUDIO) {
+			
+			File audio = new File(fileItem.getPath());
+			if (audio.exists()) {
+				holder.fileImage.setImageResource(R.drawable.music_icon_48);
+			}
+			
+		} else {
+			
+			holder.fileImage.setImageResource(R.drawable.file_icon);
+			
+		}
+		
+		holder.fileLayout.setBackground(mActivity.getDrawable(R.drawable.notes_item_background_odd));
 		
 		if (selectedItems.get(position, false)) {
 			holder.itemView.setActivated(true);
 		} else {
 			holder.itemView.setActivated(false);
 			if (position % 2 == 0) {
-				holder.fileLayout.setBackground(mContext.getDrawable(R.drawable.notes_item_background_even));
+				holder.fileLayout.setBackground(mActivity.getDrawable(R.drawable.notes_item_background_even));
 			}
 		}
 		
@@ -124,7 +165,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	}
 	
 	public void filter (String query) {
-		
 		mFileItems.clear();
 		
 		if (!query.isEmpty()) {
@@ -141,13 +181,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	}
 	
 	public void toggleSelection(int pos) {
+		int oldSelectedItemSize = selectedItems.size();
+		
 		if (selectedItems.get(pos, false)) {
 			selectedItems.delete(pos);
 		} else {
 			selectedItems.put(pos, true);
 		}
 		
-		if (selectedItems.size() == 1) {
+		if (selectedItems.size() == 1 && selectedItems.size() > oldSelectedItemSize) {
 			notifyDataSetChanged();
 		} else {
 			notifyItemChanged(pos);
@@ -155,8 +197,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	}
 	
 	public void selectAll() {
-		for (int i = 0; i < getItemCount(); i++)
-			selectedItems.put(i, true);
+		for (int i = 0; i < getItemCount(); i++) {
+			if (!selectedItems.get(i, false)) {
+				selectedItems.put(i, true);
+			}
+		}
 		notifyDataSetChanged();
 	}
 	

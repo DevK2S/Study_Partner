@@ -25,7 +25,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/file_options"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/file_card"
+            app:layout_constraintStart_toEndOf="@+id/fileCl"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -42,13 +42,11 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/file_card"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fileCl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/largeElevation"
-            app:cardCornerRadius="@dimen/smallMargin"
-            app:contentPadding="@dimen/smallPadding"
+            android:background="@drawable/notes_item_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -57,11 +55,15 @@
                 android:id="@+id/file_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="@dimen/smallMargin"
+                android:elevation="@dimen/mediumElevation"
                 android:contentDescription="@string/file_type_image_cd"
-                android:src="@drawable/folder_icon"
-                android:tint="@color/notes_item_icon_tint" />
-
-        </androidx.cardview.widget.CardView>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

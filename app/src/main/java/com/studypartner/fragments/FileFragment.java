@@ -241,8 +241,9 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		sortByButton = rootView.findViewById(R.id.fileSortButton);
 		
 		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-		
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
+		recyclerView.setItemViewCacheSize(20);
+		recyclerView.setDrawingCacheEnabled(true);
 		
 		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("NOTES_SORTING", MODE_PRIVATE);
 		final SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -365,7 +366,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	@Override
 	public void onOptionsClick(View view, final int position) {
 		PopupMenu popup = new PopupMenu(getContext(), view);
-		popup.inflate(R.menu.notes_item_menu);
+		popup.inflate(R.menu.notes_item_menu_star);
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -382,24 +383,42 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 								LinearLayout.LayoutParams.MATCH_PARENT,
 								LinearLayout.LayoutParams.MATCH_PARENT);
+						lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
+						lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
 						input.setLayoutParams(lp);
-						input.setText(fileItem.getName());
+						
+						String extension = "";
+						if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
+							input.setText(fileItem.getName());
+						} else {
+							String name = fileItem.getName();
+							if (name.indexOf(".") > 0) {
+								extension = name.substring(name.lastIndexOf("."));
+								name = name.substring(0, name.lastIndexOf("."));
+							}
+							input.setText(name);
+						}
+						
 						alertDialog.setView(input);
 						
+						final String finalExtension = extension;
 						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								String newName = input.getText().toString().trim();
 								File oldFile = new File(fileItem.getPath());
-								File newFile = new File(noteFolder, newName);
+								File newFile = new File(noteFolder, newName + finalExtension);
 								if (newName.equals(fileItem.getName()) || newName.equals("")) {
 									Log.d(TAG, "onClick: filename not changed");
 								} else if (newFile.exists()) {
 									Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+								} else if (newName.contains(".") || newName.contains("/")) {
+									Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
 								} else {
 									if (oldFile.renameTo(newFile)) {
 										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
 										notes.get(position).setName(newName);
 										mNotesAdapter.notifyItemChanged(position);
+										populateDataAndSetAdapter();
 										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 									} else {
 										Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
@@ -407,7 +426,6 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 								}
 							}
 						});
-						
 						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								dialog.cancel();
@@ -415,7 +433,6 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						});
 						
 						alertDialog.show();
-						
 						return true;
 					
 					case R.id.notes_item_delete:
@@ -551,7 +568,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				notes.add(new FileItem(f.getPath()));
 		}
 		
-		mNotesAdapter = new NotesAdapter(getContext(), notes, this, true);
+		mNotesAdapter = new NotesAdapter(requireActivity(), notes, this, true);
 		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		

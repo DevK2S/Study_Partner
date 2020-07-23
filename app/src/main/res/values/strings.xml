@@ -95,7 +95,7 @@
     <string name="file_sort_button_cd">Sort Button</string>
 
     <string name="notes_action_delete">Delete</string>
-    <string name="notes_action_refresh">Refresh</string>
+    <string name="notes_action_star">Star</string>
     <string name="notes_action_select_all">Select All</string>
 
     <string name="bottom_sheet_new_folder">New Folder</string>
@@ -111,11 +111,15 @@
     <string name="notes_item_menu_rename">Rename</string>
     <string name="notes_item_menu_delete">Delete</string>
     <string name="notes_item_menu_share">Share</string>
+    <string name="notes_item_menu_star">Star</string>
+    <string name="notes_item_menu_unstar">Unstar</string>
 
     <string name="notes_menu_search">Search</string>
     <string name="notes_menu_refresh">Refresh</string>
+
     <string name="file_background_rectangle_cd">Background Rectangle Image</string>
     <string name="file_sort_order_cd">Sort Order</string>
+
     <string name="sort_by_title">Sort By</string>
     <string name="sort_by_name">Name</string>
     <string name="sort_by_size">Size</string>
