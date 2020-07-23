@@ -134,14 +134,18 @@
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"/>
+                app:popExitAnim="@anim/slide_out_right" />
+
             <action
                 android:id="@+id/action_fileFragment_to_notesSearchFragment"
                 app:destination="@id/notesSearchFragment"
                 app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left"
                 app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"/>
+                app:popExitAnim="@anim/slide_out_right" />
+            <action
+                android:id="@+id/action_fileFragment_to_mediaActivity"
+                app:destination="@id/mediaActivity" />
         </fragment>
 
         <fragment
@@ -153,6 +157,15 @@
                 android:name="NotesArray"
                 app:argType="com.studypartner.models.FileItem[]" />
         </fragment>
+        <activity
+            android:id="@+id/mediaActivity"
+            android:name="com.studypartner.activities.MediaActivity"
+            android:label="activity_media"
+            tools:layout="@layout/activity_media">
+            <argument
+                android:name="MediaPath"
+                app:argType="string" />
+        </activity>
     </navigation>
 
 </navigation>

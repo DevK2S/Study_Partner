@@ -1,10 +1,26 @@
 package com.studypartner.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.webkit.MimeTypeMap;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.media.Image;
+import android.media.MediaActionSound;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.webkit.MimeTypeMap;
+import android.widget.Toast;
+
+import com.studypartner.activities.MainActivity;
+
+import com.stfalcon.imageviewer.StfalconImageViewer;
+import com.studypartner.R;
+import com.studypartner.activities.MainActivity;
+import com.studypartner.activities.MediaActivity;
 import com.studypartner.models.FileItem;
 
 import java.io.File;
@@ -12,10 +28,10 @@ import java.util.HashMap;
 
 
 public class FileUtils {
-	
+
 	private static final String TAG = "FileUtil";
 	final static HashMap<String, FileType> types = new HashMap<>();
-	
+
 	static void createMap() {
 		types.put("image", FileType.FILE_TYPE_IMAGE);
 		types.put("applicaton", FileType.FILE_TYPE_APPLICATION);
@@ -23,7 +39,7 @@ public class FileUtils {
 		types.put("audio", FileType.FILE_TYPE_AUDIO);
 		types.put("video", FileType.FILE_TYPE_VIDEO);
 	}
-	
+
 	public static FileType getFileType(File file) {
 		FileType ft = FileType.FILE_TYPE_VIDEO;
 		if (file.isDirectory())
@@ -37,30 +53,31 @@ public class FileUtils {
 		}
 		return ft;
 	}
-	
-	
+
+
 	public static void showImage(FileItem image) {
-	
+
 	}
-	
-	public static void showVideo(Context context, FileItem video) {
-		Intent tostart = new Intent(Intent.ACTION_VIEW);
+
+	public static void showVideo(Activity activity, FileItem video) {
+		/*Intent tostart = new Intent(Intent.ACTION_VIEW);
 		tostart.setDataAndType(Uri.parse(video.getPath()), "video/*");
-		context.startActivity(tostart);
+		context.startActivity(tostart);*/
+
 	}
-	
-	
+
+
 	public static void playAudio(Context context, FileItem audio) {
-		Intent audioplay = new Intent(Intent.ACTION_VIEW);
+		/*Intent audioplay = new Intent(Intent.ACTION_VIEW);
 		audioplay.setDataAndType(Uri.parse(audio.getPath()), "audio/*");
-		context.startActivity(audioplay);
+		context.startActivity(audioplay);*/
 	}
-	
+
 	public static void openLink(Uri link) {
-	
+
 	}
-	
+
 	public static void openFile(FileItem file) {
-	
+
 	}
 }
