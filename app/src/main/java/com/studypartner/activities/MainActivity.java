@@ -20,7 +20,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
-import com.studypartner.utils.Connection;
 
 import java.io.File;
 import java.util.Objects;
@@ -108,9 +107,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		
 		//checking Permissions
 		if(isExternalStorageReadableWritable()) writeReadPermission();
-
-		Log.d(TAG, "onCreate: checking connection");
-		Connection.checkConnection(this);
 		
 		//setting hooks
 		

@@ -1,11 +1,13 @@
 package com.studypartner.utils;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.stfalcon.imageviewer.StfalconImageViewer;
@@ -32,15 +34,17 @@ public class FileUtils {
 	}
 	
 	public static FileType getFileType(File file) {
-		FileType ft = FileType.FILE_TYPE_VIDEO;
+		FileType ft = FileType.FILE_TYPE_OTHER;
 		if (file.isDirectory())
 			ft = FileType.FILE_TYPE_FOLDER;
 		else {
 			String extension = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(file.getPath()));
-			extension = extension.substring(0, extension.indexOf('/'));
-			createMap();
-			if (types.containsKey(extension))
-				ft = types.get(extension);
+			if (extension != null) {
+				extension = extension.substring(0, extension.indexOf('/'));
+				createMap();
+				if (types.containsKey(extension))
+					ft = types.get(extension);
+			}
 		}
 		return ft;
 	}
@@ -94,7 +98,16 @@ public class FileUtils {
 	
 	}
 	
-	public static void openFile(FileItem file) {
-	
+	public static void openFile(Context context, FileItem file) {
+		Intent target = new Intent(Intent.ACTION_VIEW);
+		target.setData(Uri.fromFile(new File(file.getPath())));
+		target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+		
+		Intent intent = Intent.createChooser(target, "Open File");
+		try {
+			context.startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			Toast.makeText(context, "No application found to open this file", Toast.LENGTH_SHORT).show();
+		}
 	}
 }

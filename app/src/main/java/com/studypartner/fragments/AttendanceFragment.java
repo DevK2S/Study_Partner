@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,22 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
@@ -35,15 +30,15 @@ import com.studypartner.adapters.AttendanceAdapter;
 import com.studypartner.models.AttendanceItem;
 import com.studypartner.utils.Connection;
 
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -51,16 +46,15 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class AttendanceFragment extends Fragment {
 	private static final String TAG = "AttendanceFragment";
 	
 	private final String REQUIRED_ATTENDANCE_CHOSEN = "requiredAttendanceChosen";
 	private final String REQUIRED_ATTENDANCE = "requiredAttendance";
 	
-	private DatabaseReference mDatabaseReference;
-	
 	private ConstraintLayout mainLayout, requiredAttendanceLayout;
-	private ProgressBar loadingProgressBar;
 	
 	private RecyclerView mRecyclerView;
 	private BottomAppBar mBottomAppBar;
@@ -72,7 +66,7 @@ public class AttendanceFragment extends Fragment {
 	private CircularProgressBar attendedProgressBar, requiredProgressBar, attendanceRequiredPercentageProgressBarSetter;
 	private SeekBar attendanceRequiredPercentageSeekBarSetter;
 	
-	private ArrayList<AttendanceItem> mAttendanceItemArrayList;
+	private ArrayList<AttendanceItem> mAttendanceItemArrayList = new ArrayList<>();
 	private AttendanceAdapter attendanceAdapter;
 	private SharedPreferences sharedPreferences;
 	
@@ -86,12 +80,7 @@ public class AttendanceFragment extends Fragment {
 	                         Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
 		
-		Connection.checkConnection(this);
-		
 		View rootView = inflater.inflate(R.layout.fragment_attendance, container, false);
-		
-		Log.d(TAG, "onCreateView: creating or using database at attendance");
-		mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("attendance").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 		
 		requiredAttendanceLayout = rootView.findViewById(R.id.attendanceRequiredAttendanceConstraintLayout);
 		
@@ -102,8 +91,6 @@ public class AttendanceFragment extends Fragment {
 		attendanceRequiredPercentageFabNext = rootView.findViewById(R.id.attendanceRequiredFab);
 		
 		mainLayout = rootView.findViewById(R.id.attendanceMainConstraintLayout);
-		
-		loadingProgressBar = rootView.findViewById(R.id.attendanceLoadingProgressBar);
 		
 		mRecyclerView = rootView.findViewById(R.id.attendanceRecyclerView);
 		mEmptyLayout = rootView.findViewById(R.id.attendanceItemEmptyAttendance);
@@ -118,42 +105,6 @@ public class AttendanceFragment extends Fragment {
 		
 		sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "RequiredPercentageSelected", Context.MODE_PRIVATE);
 		
-		loadingProgressBar.setVisibility(View.VISIBLE);
-		mainLayout.setEnabled(false);
-		updateButton.setEnabled(false);
-		addButton.setEnabled(false);
-		
-		mAttendanceItemArrayList = new ArrayList<>();
-		
-		mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-			@Override
-			public void onDataChange(@NonNull DataSnapshot snapshot) {
-				Log.d(TAG, "onDataChange: starts");
-				if (snapshot.exists()) {
-					mEmptyLayout.setVisibility(View.INVISIBLE);
-					for (DataSnapshot attendance : snapshot.getChildren()) {
-						Log.d(TAG, "onDataChange: adding attendance records");
-						AttendanceItem attendanceItem = attendance.getValue(AttendanceItem.class);
-						Log.d(TAG, "onDataChange: id " + attendanceItem.getId() + " sub name " + attendanceItem.getSubjectName());
-						mAttendanceItemArrayList.add(attendanceItem);
-						attendanceAdapter.notifyItemInserted(mAttendanceItemArrayList.size());
-					}
-					setTotalPercentages();
-				} else {
-					mEmptyLayout.setVisibility(View.VISIBLE);
-				}
-				loadingProgressBar.setVisibility(View.INVISIBLE);
-				mainLayout.setEnabled(true);
-				updateButton.setEnabled(true);
-				addButton.setEnabled(true);
-			}
-			
-			@Override
-			public void onCancelled(@NonNull DatabaseError error) {
-				
-			}
-		});
-		
 		MainActivity activity = (MainActivity) requireActivity();
 		mBottomAppBar = activity.mBottomAppBar;
 		mfab = activity.fab;
@@ -164,86 +115,6 @@ public class AttendanceFragment extends Fragment {
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
 				mNavController.navigate(R.id.action_nav_attendance_to_nav_home);
-			}
-		});
-		
-		attendanceAdapter = new AttendanceAdapter(getContext(), mAttendanceItemArrayList, new AttendanceAdapter.AttendanceItemClickListener() {
-			@Override
-			public void onAttendedPlusButtonClicked(final int position) {
-				mAttendanceItemArrayList.get(position).increaseAttendedClasses();
-				attendanceAdapter.notifyItemChanged(position);
-				setTotalPercentages();
-				mDatabaseReference.child(mAttendanceItemArrayList.get(position).getId()).setValue(mAttendanceItemArrayList.get(position)).addOnCompleteListener(new OnCompleteListener<Void>() {
-					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						if (task.isSuccessful()) {
-							Log.d(TAG, "onComplete: attended classes changed");
-						} else {
-							Log.d(TAG, "onComplete: attended classes could not be changed");
-						}
-					}
-				});
-			}
-			
-			@Override
-			public void onAttendedMinusButtonClicked(final int position) {
-				mAttendanceItemArrayList.get(position).decreaseAttendedClasses();
-				attendanceAdapter.notifyItemChanged(position);
-				setTotalPercentages();
-				mDatabaseReference.child(mAttendanceItemArrayList.get(position).getId()).setValue(mAttendanceItemArrayList.get(position)).addOnCompleteListener(new OnCompleteListener<Void>() {
-					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						if (task.isSuccessful()) {
-							Log.d(TAG, "onComplete: attended classes changed");
-						} else {
-							Log.d(TAG, "onComplete: attended classes could not be changed");
-						}
-					}
-				});
-			}
-			
-			@Override
-			public void onMissedPlusButtonClicked(final int position) {
-				mAttendanceItemArrayList.get(position).increaseMissedClasses();
-				attendanceAdapter.notifyItemChanged(position);
-				setTotalPercentages();
-				mDatabaseReference.child(mAttendanceItemArrayList.get(position).getId()).setValue(mAttendanceItemArrayList.get(position)).addOnCompleteListener(new OnCompleteListener<Void>() {
-					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						if (task.isSuccessful()) {
-							Log.d(TAG, "onComplete: missed classes changed");
-						} else {
-							Log.d(TAG, "onComplete: missed classes could not be changed");
-						}
-					}
-				});
-			}
-			
-			@Override
-			public void onMissedMinusButtonClicked(final int position) {
-				mAttendanceItemArrayList.get(position).decreaseMissedClasses();
-				attendanceAdapter.notifyItemChanged(position);
-				setTotalPercentages();
-				mDatabaseReference.child(mAttendanceItemArrayList.get(position).getId()).setValue(mAttendanceItemArrayList.get(position)).addOnCompleteListener(new OnCompleteListener<Void>() {
-					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						if (task.isSuccessful()) {
-							Log.d(TAG, "onComplete: missed classes changed");
-						} else {
-							Log.d(TAG, "onComplete: missed classes could not be changed");
-						}
-					}
-				});
-			}
-			
-			@Override
-			public void editButtonClicked(int position) {
-				editSubjectName(position);
-			}
-			
-			@Override
-			public void deleteButtonClicked(int position) {
-				deleteSubject(position);
 			}
 		});
 		
@@ -261,8 +132,6 @@ public class AttendanceFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				
-				Connection.checkConnection(AttendanceFragment.this);
-				
 				requiredPercentage = attendanceRequiredPercentageSeekBarSetter.getProgress();
 				sharedPreferences.edit().putBoolean(REQUIRED_ATTENDANCE_CHOSEN, true).apply();
 				sharedPreferences.edit().putFloat(REQUIRED_ATTENDANCE, (float) requiredPercentage).apply();
@@ -270,20 +139,22 @@ public class AttendanceFragment extends Fragment {
 				setTotalPercentages();
 				for (AttendanceItem item : mAttendanceItemArrayList) {
 					item.setRequiredPercentage(requiredPercentage);
-					
-					mDatabaseReference.child(item.getId()).setValue(item).addOnCompleteListener(new OnCompleteListener<Void>() {
-						@Override
-						public void onComplete(@NonNull Task<Void> task) {
-							if (task.isSuccessful()) {
-								Log.d(TAG, "onComplete: required percentage changed");
-								attendanceAdapter.notifyDataSetChanged();
-							} else {
-								Log.d(TAG, "onComplete: required percentage could not be changed");
-							}
-						}
-					});
 				}
 				
+				attendanceAdapter.notifyDataSetChanged();
+				
+				SharedPreferences attendancePreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "ATTENDANCE", MODE_PRIVATE);
+				SharedPreferences.Editor attendancePreferenceEditor = attendancePreference.edit();
+				Gson gson = new Gson();
+				
+				String json = gson.toJson(mAttendanceItemArrayList);
+				
+				if (!attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false) && mAttendanceItemArrayList.size() > 0) {
+					attendancePreferenceEditor.putBoolean("ATTENDANCE_ITEMS_EXISTS", true);
+				}
+				
+				attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+				attendancePreferenceEditor.apply();
 			}
 		});
 		
@@ -324,13 +195,17 @@ public class AttendanceFragment extends Fragment {
 			}
 		});
 		
+		populateDataAndSetAdapter();
+		
 		initializeViews();
 		
 		return rootView;
 	}
 	
 	private void changeLayout() {
+		
 		if (mainLayout.getVisibility() == View.VISIBLE) {
+			Connection.checkConnection(this);
 			mainLayout.animate()
 					.alpha(0.0f)
 					.setDuration(300)
@@ -372,6 +247,81 @@ public class AttendanceFragment extends Fragment {
 						}
 					});
 		}
+	}
+	
+	private void populateDataAndSetAdapter() {
+		
+		final SharedPreferences attendancePreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "ATTENDANCE", MODE_PRIVATE);
+		final SharedPreferences.Editor attendancePreferenceEditor = attendancePreference.edit();
+		final Gson gson = new Gson();
+		
+		if (attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false)) {
+			String json = attendancePreference.getString("ATTENDANCE_ITEMS", "");
+			Type type = new TypeToken<List<AttendanceItem>>() {}.getType();
+			mEmptyLayout.setVisibility(View.INVISIBLE);
+			mAttendanceItemArrayList = gson.fromJson(json, type);
+		} else {
+			mAttendanceItemArrayList = new ArrayList<>();
+			mEmptyLayout.setVisibility(View.VISIBLE);
+		}
+		
+		attendanceAdapter = new AttendanceAdapter(getContext(), mAttendanceItemArrayList, new AttendanceAdapter.AttendanceItemClickListener() {
+			@Override
+			public void onAttendedPlusButtonClicked(final int position) {
+				mAttendanceItemArrayList.get(position).increaseAttendedClasses();
+				attendanceAdapter.notifyItemChanged(position);
+				setTotalPercentages();
+				String json = gson.toJson(mAttendanceItemArrayList);
+				
+				attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+				attendancePreferenceEditor.apply();
+			}
+			
+			@Override
+			public void onAttendedMinusButtonClicked(final int position) {
+				mAttendanceItemArrayList.get(position).decreaseAttendedClasses();
+				attendanceAdapter.notifyItemChanged(position);
+				setTotalPercentages();
+				String json = gson.toJson(mAttendanceItemArrayList);
+				
+				attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+				attendancePreferenceEditor.apply();
+			}
+			
+			@Override
+			public void onMissedPlusButtonClicked(final int position) {
+				mAttendanceItemArrayList.get(position).increaseMissedClasses();
+				attendanceAdapter.notifyItemChanged(position);
+				setTotalPercentages();
+				String json = gson.toJson(mAttendanceItemArrayList);
+				
+				attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+				attendancePreferenceEditor.apply();
+			}
+			
+			@Override
+			public void onMissedMinusButtonClicked(final int position) {
+				mAttendanceItemArrayList.get(position).decreaseMissedClasses();
+				attendanceAdapter.notifyItemChanged(position);
+				setTotalPercentages();
+				String json = gson.toJson(mAttendanceItemArrayList);
+				
+				attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+				attendancePreferenceEditor.apply();
+			}
+			
+			@Override
+			public void editButtonClicked(int position) {
+				editSubjectName(position);
+			}
+			
+			@Override
+			public void deleteButtonClicked(int position) {
+				deleteSubject(position);
+			}
+		});
+		
+		mRecyclerView.setAdapter(attendanceAdapter);
 	}
 	
 	private void initializeViews() {
@@ -428,8 +378,6 @@ public class AttendanceFragment extends Fragment {
 	private void addSubject() {
 		Log.d(TAG, "addSubject: add subject clicked");
 		
-		Connection.checkConnection(this);
-		
 		final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 		
 		View dialogView = getLayoutInflater().inflate(R.layout.attendance_item_subject_name_dialog, null);
@@ -455,13 +403,23 @@ public class AttendanceFragment extends Fragment {
 					Log.d(TAG, "onClick: adding new subject");
 					
 					AttendanceItem newItem = new AttendanceItem(subjectName, requiredPercentage, 0, 0);
-					mEmptyLayout.setVisibility(View.GONE);
+					mEmptyLayout.setVisibility(View.INVISIBLE);
 					mAttendanceItemArrayList.add(newItem);
 					attendanceAdapter.notifyItemInserted(mAttendanceItemArrayList.size());
 					setTotalPercentages();
 					
-					DatabaseReference databaseReference = mDatabaseReference.child(newItem.getId());
-					databaseReference.setValue(newItem);
+					SharedPreferences attendancePreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "ATTENDANCE", MODE_PRIVATE);
+					SharedPreferences.Editor attendancePreferenceEditor = attendancePreference.edit();
+					Gson gson = new Gson();
+					
+					String json = gson.toJson(mAttendanceItemArrayList);
+					
+					if (!attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false)) {
+						attendancePreferenceEditor.putBoolean("ATTENDANCE_ITEMS_EXISTS", true);
+					}
+					
+					attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+					attendancePreferenceEditor.apply();
 				} else {
 					Toast.makeText(getContext(), "Subject name cannot be empty", Toast.LENGTH_SHORT).show();
 				}
@@ -475,8 +433,6 @@ public class AttendanceFragment extends Fragment {
 	
 	private void editSubjectName(final int position) {
 		Log.d(TAG, "editSubjectName: edit button clicked");
-		
-		Connection.checkConnection(this);
 		
 		final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 		
@@ -505,17 +461,17 @@ public class AttendanceFragment extends Fragment {
 				if (subjectName.length() > 0) {
 					mAttendanceItemArrayList.get(position).setSubjectName(subjectNameTextInput.getEditText().getText().toString());
 					builder.dismiss();
-					mDatabaseReference.child(mAttendanceItemArrayList.get(position).getId()).setValue(mAttendanceItemArrayList.get(position)).addOnCompleteListener(new OnCompleteListener<Void>() {
-						@Override
-						public void onComplete(@NonNull Task<Void> task) {
-							if (task.isSuccessful()) {
-								Log.d(TAG, "onComplete: subject name changed");
-								attendanceAdapter.notifyItemChanged(position);
-							} else {
-								Log.d(TAG, "onComplete: subject name could not be changed");
-							}
-						}
-					});
+					attendanceAdapter.notifyItemChanged(position);
+					
+					SharedPreferences attendancePreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "ATTENDANCE", MODE_PRIVATE);
+					SharedPreferences.Editor attendancePreferenceEditor = attendancePreference.edit();
+					Gson gson = new Gson();
+					
+					String json = gson.toJson(mAttendanceItemArrayList);
+					
+					attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+					attendancePreferenceEditor.apply();
+					
 				} else {
 					Toast.makeText(getContext(), "Subject name cannot be empty", Toast.LENGTH_SHORT).show();
 				}
@@ -529,40 +485,38 @@ public class AttendanceFragment extends Fragment {
 	private void deleteSubject(final int position) {
 		Log.d(TAG, "deleteSubject: delete button clicked");
 		
-		Connection.checkConnection(this);
-		
-		mBottomAppBar.performShow();
-		loadingProgressBar.setVisibility(View.VISIBLE);
-		mainLayout.setEnabled(false);
-		updateButton.setEnabled(false);
-		addButton.setEnabled(false);
-		
-		mDatabaseReference.child(mAttendanceItemArrayList.get(position).getId()).removeValue(new DatabaseReference.CompletionListener() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		builder.setTitle("Delete Subject");
+		builder.setMessage("Are you sure you want to delete attendance record for this subject?");
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
-			public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-				if (error == null) {
-					Log.d(TAG, "onComplete: data deleted");
-					
-					attendanceAdapter.notifyItemRemoved(position);
-					
-					mAttendanceItemArrayList.remove(position);
-					
-					setTotalPercentages();
-					
-					loadingProgressBar.setVisibility(View.INVISIBLE);
-					mainLayout.setEnabled(true);
-					updateButton.setEnabled(true);
-					addButton.setEnabled(true);
-					
-					if (mAttendanceItemArrayList.size() == 0) {
-						mEmptyLayout.setVisibility(View.VISIBLE);
-					}
-					
-				} else {
-					Log.d(TAG, "onComplete: data could not be deleted");
-					loadingProgressBar.setVisibility(View.INVISIBLE);
+			public void onClick(DialogInterface dialog, int which) {
+				mAttendanceItemArrayList.remove(position);
+				attendanceAdapter.notifyItemRemoved(position);
+				
+				setTotalPercentages();
+				
+				SharedPreferences attendancePreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "ATTENDANCE", MODE_PRIVATE);
+				SharedPreferences.Editor attendancePreferenceEditor = attendancePreference.edit();
+				Gson gson = new Gson();
+				
+				String json = gson.toJson(mAttendanceItemArrayList);
+				
+				if (mAttendanceItemArrayList.size() == 0) {
+					attendancePreferenceEditor.putBoolean("ATTENDANCE_ITEMS_EXISTS", false);
+					mEmptyLayout.setVisibility(View.VISIBLE);
 				}
+				
+				attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
+				attendancePreferenceEditor.apply();
 			}
 		});
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			
+			}
+		});
+		builder.show();
 	}
 }

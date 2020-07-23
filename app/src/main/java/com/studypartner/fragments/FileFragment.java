@@ -33,7 +33,6 @@ import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.FileItem;
-import com.studypartner.utils.Connection;
 import com.studypartner.utils.FileType;
 import com.studypartner.utils.FileUtils;
 
@@ -116,8 +115,6 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	                         Bundle savedInstanceState) {
 		
 		Log.d(TAG, "onCreateView: starts");
-		
-		Connection.checkConnection(this);
 		
 		final View rootView = inflater.inflate(R.layout.fragment_file, container, false);
 		
@@ -364,6 +361,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.mediaActivity, bundle);
 		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_AUDIO)) {
 			FileUtils.playAudio(requireContext(), notes.get(position));
+		} else {
+			FileUtils.openFile(requireContext(), notes.get(position));
 		}
 	}
 	

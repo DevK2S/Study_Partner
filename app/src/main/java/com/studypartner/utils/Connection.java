@@ -8,6 +8,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -46,7 +47,7 @@ public class Connection {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							dialog.cancel();
-							fragment.requireActivity().finishAndRemoveTask();
+							Toast.makeText(fragment.requireActivity(), "Some functions might not work properly without internet", Toast.LENGTH_SHORT).show();
 						}
 					})
 					.setNeutralButton("Reload", new DialogInterface.OnClickListener() {
@@ -84,7 +85,7 @@ public class Connection {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							dialog.cancel();
-							activity.finishAndRemoveTask();
+							Toast.makeText(activity, "Some functions might not work properly without internet", Toast.LENGTH_SHORT).show();
 						}
 					})
 					.setNeutralButton("Reload", new DialogInterface.OnClickListener() {

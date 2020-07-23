@@ -32,7 +32,6 @@ import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.FileItem;
-import com.studypartner.utils.Connection;
 import com.studypartner.utils.FileType;
 
 import java.io.File;
@@ -113,8 +112,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
-		
-		Connection.checkConnection(this);
 		
 		View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 		
