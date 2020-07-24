@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.squareup.picasso.Picasso;
 import com.studypartner.R;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.FileType;
@@ -64,6 +65,7 @@ public class MediaFragment extends Fragment {
 		if (mediaFileItem.getType().equals(FileType.FILE_TYPE_IMAGE)) {
 			mediaplayerView.setVisibility(View.GONE);
 			photoView.setVisibility(View.VISIBLE);
+			Picasso.get().load(mediapath).into(photoView);
 		} else {
 			photoView.setVisibility(View.GONE);
 			mediaplayerView.setVisibility(View.VISIBLE);
