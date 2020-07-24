@@ -2,6 +2,7 @@ package com.studypartner.activities;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
 
-import java.io.File;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -80,22 +80,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		TextView profileFullName = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
 		TextView profileEmail = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmail);
 		
-		if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
-			profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-		}
-		
-		if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
-			Log.d(TAG, "onResume: Downloading profile image");
-			Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
-					.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
-					.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
-					.into(profileImage);
+		if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+			
+			if (FirebaseAuth.getInstance().getCurrentUser().getDisplayName() != null) {
+				profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+			}
+			
+			if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
+				Log.d(TAG, "onResume: Downloading profile image");
+				Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
+						.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
+						.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
+						.into(profileImage);
+			} else {
+				Log.d(TAG, "onResume: Image url does not exist for user");
+				profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
+			}
+			
+			profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+			
 		} else {
-			Log.d(TAG, "onResume: Image url does not exist for user");
-			profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
+			startActivity(new Intent(MainActivity.this, LoginActivity.class));
+			finishAffinity();
+			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		}
-		
-		profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 		Log.d(TAG, "onResume: ends");
 	}
 	
@@ -355,12 +363,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		if (requestCode == 1) {
-			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Log.d(TAG, "onRequestPermissionsResult: creating folder");
-				File file = new File(getExternalFilesDir(null), "Folders");
-				if (!file.mkdirs())
-					Log.d(TAG, "onRequestPermissionsResult: folder could not be created");
-			} else {
+			if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setTitle("Read and Write Permissions");
 				builder.setMessage("Read and write permissions are required to store notes in the app");

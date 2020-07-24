@@ -22,12 +22,11 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_new_folder"
             android:src="@drawable/folder_add_icon_48"
-            android:tint="@color/alternativeIconTint" />
+            android:tint="@color/alternativeIconTint"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -44,14 +43,13 @@
         android:layout_columnWeight="1"
         android:layout_row="0"
         android:layout_rowWeight="1"
-        android:scaleType="fitXY"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_file"
             android:src="@drawable/file_add_icon_48"
             android:tint="@color/alternativeIconTint" />
@@ -76,8 +74,8 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_video"
             android:src="@drawable/video_icon_48"
             android:tint="@color/alternativeIconTint" />
@@ -103,8 +101,8 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_image"
             android:src="@drawable/image_add_icon_48"
             android:tint="@color/alternativeIconTint" />
@@ -129,8 +127,8 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_camera"
             android:src="@drawable/camera_icon_48"
             android:tint="@color/alternativeIconTint" />
@@ -155,8 +153,8 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_note"
             android:src="@drawable/pen_icon_48"
             android:tint="@color/alternativeIconTint" />
@@ -181,8 +179,8 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_link"
             android:src="@drawable/link_icon_48"
             android:tint="@color/alternativeIconTint" />
@@ -207,8 +205,8 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_audio"
             android:src="@drawable/music_icon_48"
             android:tint="@color/alternativeIconTint" />
@@ -233,8 +231,8 @@
         android:padding="@dimen/smallPadding">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/bottom_sheet_record"
             android:src="@drawable/mic_icon_48"
             android:tint="@color/alternativeIconTint" />

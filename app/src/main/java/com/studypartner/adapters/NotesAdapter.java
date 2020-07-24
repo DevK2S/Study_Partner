@@ -2,9 +2,6 @@ package com.studypartner.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
@@ -15,7 +12,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.studypartner.R;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.FileType;
@@ -92,28 +90,35 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 			
 			File image = new File(fileItem.getPath());
 			if (image.exists()) {
-				Picasso.get()
+				
+				Glide.with(mActivity.getBaseContext())
+						.asBitmap()
 						.load(image)
+						.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 						.into(holder.fileImage);
-//				holder.fileImage.setImageBitmap(BitmapFactory.decodeFile(image.getAbsolutePath()));
+				
 			}
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_VIDEO) {
 			
 			File video = new File(fileItem.getPath());
 			if (video.exists()) {
-				Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(video.getPath(), MediaStore.Video.Thumbnails.MICRO_KIND);
-				if (thumbnail != null) {
-					holder.fileImage.setImageBitmap(thumbnail);
-				}
+				
+				Glide.with(mActivity.getBaseContext())
+						.asBitmap()
+						.load(video)
+						.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+						.into(holder.fileImage);
+				
 			}
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_AUDIO) {
 			
-			File audio = new File(fileItem.getPath());
-			if (audio.exists()) {
-				holder.fileImage.setImageResource(R.drawable.music_icon_48);
-			}
+			holder.fileImage.setImageResource(R.drawable.music_icon_48);
+			
+		} else if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
+			
+			holder.fileImage.setImageResource(R.drawable.link_icon_48);
 			
 		} else {
 			
