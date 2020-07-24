@@ -1,9 +1,12 @@
 package com.studypartner.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,20 +41,26 @@ import com.studypartner.utils.FileUtils;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -65,6 +74,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	
 	private final String ASCENDING_ORDER = "Ascending Order";
 	private final String DESCENDING_ORDER = "Descending Order";
+	
+	private final int AUDIO_REQUEST_CODE = 111;
+	private final int AUDIO_PERMISSION_REQUEST_CODE = 11;
+	private File audioFile;
+	private final int VIDEO_REQUEST_CODE = 222;
+	private final int IMAGE_REQUEST_CODE = 333;
 	
 	private String sortBy;
 	private String sortOrder;
@@ -227,7 +242,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				addVoice.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Toast.makeText(getContext(), "Voice", Toast.LENGTH_SHORT).show();
+						if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+							ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_PERMISSION_REQUEST_CODE);
+						} else {
+							recordAudio();
+						}
 						bottomSheet.dismiss();
 					}
 				});
@@ -787,6 +806,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				@Override
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					mode.getMenuInflater().inflate(R.menu.menu_notes_action_mode, menu);
+					menu.removeItem(R.id.notes_action_unstar);
 					actionModeOn = true;
 					fab.hide();
 					mLinearLayout.setVisibility(View.GONE);
@@ -950,4 +970,58 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		mNotesAdapter.notifyDataSetChanged();
 	}
 	
+	private String fileName (FileType fileType) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.getDefault());
+		Date date = new Date();
+		
+		String file;
+		if (fileType == FileType.FILE_TYPE_IMAGE) {
+			file = "IMG";
+		} else if (fileType == FileType.FILE_TYPE_VIDEO) {
+			file = "VID";
+		} else if (fileType == FileType.FILE_TYPE_AUDIO) {
+			file = "AUD";
+		} else {
+			file = "DOC";
+		}
+		
+		file += "-" + dateFormat.format(date);
+		
+		return file;
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Log.d(TAG, "onActivityResult: " + AUDIO_REQUEST_CODE);
+		if (requestCode == AUDIO_REQUEST_CODE) {
+			if (resultCode == Activity.RESULT_OK) {
+				Toast.makeText(getContext(), "Audio saved successfully", Toast.LENGTH_SHORT).show();
+				notes.add(new FileItem(audioFile.getPath()));
+				mNotesAdapter.notifyItemInserted(notes.size() - 1);
+			} else {
+				Toast.makeText(getContext(), "Audio could not be saved", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == AUDIO_PERMISSION_REQUEST_CODE) {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				recordAudio();
+			}
+		}
+	}
+	
+	private void recordAudio () {
+		audioFile = new File(noteFolder, fileName(FileType.FILE_TYPE_AUDIO) + ".wav");
+		AndroidAudioRecorder.with(FileFragment.this)
+				.setColor(getResources().getColor(R.color.colorPrimary, requireActivity().getTheme()))
+				.setFilePath(audioFile.getPath())
+				.setRequestCode(AUDIO_REQUEST_CODE)
+				.setKeepDisplayOn(false)
+				.recordFromFragment();
+	}
 }

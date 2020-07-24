@@ -2,7 +2,6 @@ package com.studypartner.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -147,7 +146,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		holder.fileOptions.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "onClick: error here in applyclickevents");
 				listener.onOptionsClick(v,holder.getAdapterPosition());
 			}
 		});
