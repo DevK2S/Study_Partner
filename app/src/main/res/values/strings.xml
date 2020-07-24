@@ -95,7 +95,7 @@
     <string name="file_sort_button_cd">Sort Button</string>
 
     <string name="notes_action_delete">Delete</string>
-    <string name="notes_action_star">Star</string>
+    <string name="notes_action_unstar">Unstar</string>
     <string name="notes_action_select_all">Select All</string>
 
     <string name="bottom_sheet_new_folder">New Folder</string>

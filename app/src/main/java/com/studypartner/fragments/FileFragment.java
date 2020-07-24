@@ -356,8 +356,9 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_VIDEO) || notes.get(position).getType().equals(FileType.FILE_TYPE_AUDIO) || notes.get(position).getType() == FileType.FILE_TYPE_IMAGE) {
 			Bundle bundle = new Bundle();
 			bundle.putString("Media", notes.get(position).getPath());
-			((MainActivity) requireActivity()).mNavController.navigate(R.id.mediaActivity, bundle);
-		} else {
+			bundle.putBoolean("InStarred", false);
+			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_to_mediaActivity, bundle);
+		}  else {
 			FileUtils.openFile(requireContext(), notes.get(position));
 		}
 	}
@@ -568,6 +569,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				Bundle bundle = new Bundle();
 				bundle.putString("FilePath", fileDesc.getPath());
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_self, bundle);
+			} else if (fileDesc.getType() == FileType.FILE_TYPE_VIDEO || fileDesc.getType() == FileType.FILE_TYPE_IMAGE || fileDesc.getType() == FileType.FILE_TYPE_AUDIO) {
+				Bundle bundle = new Bundle();
+				bundle.putString("Media", fileDesc.getPath());
+				bundle.putBoolean("InStarred", false);
+				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_to_mediaActivity, bundle);
+			} else {
+				FileUtils.openFile(requireContext(), fileDesc);
 			}
 		}
 		
@@ -711,9 +719,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			file = new File(noteFolder, newFolder);
 		} while (file.exists());
 		
-		if (file.mkdirs())
+		if (file.mkdirs()) {
 			notes.add(new FileItem(file.getPath()));
-		mNotesAdapter.notifyItemInserted(notes.size());
+			mNotesAdapter.notifyItemInserted(notes.size());
+		}
 		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}

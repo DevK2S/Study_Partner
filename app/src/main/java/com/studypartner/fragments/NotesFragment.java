@@ -309,7 +309,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	
 	@Override
 	public void onPause() {
-		fab.setOnClickListener(null);
 		if (actionMode != null) {
 			actionMode.finish();
 		}
@@ -408,6 +407,26 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 									if (oldFile.renameTo(newFile)) {
 										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
 										notes.get(position).setName(newName);
+										
+										int starredIndex = starredIndex(position);
+										if (starredIndex != -1) {
+											SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+											SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+											
+											for (int i = 0; i < starred.size(); i++) {
+												FileItem starItem = starred.get(i);
+												if (starItem.isStarred() && starItem.getPath().equals(notes.get(position).getPath())) {
+													starred.get(i).setName(newName);
+													break;
+												}
+											}
+											
+											Gson gson = new Gson();
+											starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+											starredPreferenceEditor.apply();
+											mNotesAdapter.notifyItemChanged(position);
+										}
+										
 										mNotesAdapter.notifyItemChanged(position);
 										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 									} else {
@@ -456,13 +475,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 							SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 							SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
 							
-							for (int i = 0; i < starred.size(); i++) {
-								FileItem starItem = starred.get(i);
-								if (starItem.isStarred() && starItem.getPath().equals(notes.get(position).getPath())) {
-									starred.remove(i);
-									break;
-								}
-							}
+							starred.remove(unstarredIndex);
+							
 							notes.get(position).setStarred(false);
 							if (starred.size() == 0) {
 								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
@@ -489,7 +503,9 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								deleteRecursive(file);
 								int starPosition = starredIndex(position);
 								if (starPosition != -1) {
+									
 									starred.remove(starPosition);
+									
 									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
 									
@@ -500,6 +516,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 									starredPreferenceEditor.apply();
 								}
+								activity.mBottomAppBar.performShow();
 								mNotesAdapter.notifyItemRemoved(position);
 								notes.remove(position);
 							}
@@ -574,7 +591,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			for (int i = 0; i < starred.size(); i++) {
 				FileItem starredItem = starred.get(i);
 				if (starredItem.getPath().equals(notes.get(position).getPath())) {
-					index = position;
+					index = i;
 					break;
 				}
 			}
@@ -608,9 +625,10 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			file = new File(noteFolder, newFolder);
 		} while (file.exists());
 		
-		if (file.mkdirs())
+		if (file.mkdirs()) {
 			notes.add(new FileItem(file.getPath()));
-		mNotesAdapter.notifyItemInserted(notes.size());
+			mNotesAdapter.notifyItemInserted(notes.size());
+		}
 		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}
@@ -655,6 +673,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
 					notes.remove(selectedItemPositions.get(i).intValue());
 				}
+				activity.mBottomAppBar.performShow();
+				
 				
 			}
 		});
@@ -676,6 +696,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				@Override
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					mode.getMenuInflater().inflate(R.menu.menu_notes_action_mode, menu);
+					menu.removeItem(R.id.notes_action_unstar);
 					actionModeOn = true;
 					fab.setEnabled(false);
 					mLinearLayout.setVisibility(View.GONE);
@@ -709,6 +730,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					actionModeOn = false;
 					actionMode = null;
 					fab.setEnabled(true);
+					activity.mBottomAppBar.performShow();
 					mLinearLayout.setVisibility(View.VISIBLE);
 					Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).show();
 				}

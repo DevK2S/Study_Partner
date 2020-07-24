@@ -37,6 +37,96 @@
             app:exitAnim="@anim/slide_out_right"
             app:popUpTo="@id/nav_home"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_starred_to_notesSearchFragment"
+            app:destination="@id/notesSearchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_starred_to_mediaActivity"
+            app:destination="@id/mediaActivity"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_starred_to_nav_notes"
+            app:destination="@id/nav_notes"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_starred_to_fileFragment"
+            app:destination="@id/fileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_notes"
+        android:name="com.studypartner.fragments.NotesFragment"
+        android:label="@string/bottom_navigation_menu_notes"
+        tools:layout="@layout/fragment_notes">
+
+        <action
+            android:id="@+id/action_nav_notes_to_nav_home"
+            app:destination="@id/nav_home"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_notes_to_fileFragment"
+            app:destination="@id/fileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_nav_notes_to_notesSearchFragment"
+            app:destination="@id/notesSearchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/fileFragment"
+        android:name="com.studypartner.fragments.FileFragment"
+        android:label="@string/bottom_navigation_menu_notes"
+        tools:layout="@layout/fragment_file">
+        <argument
+            android:name="FilePath"
+            app:argType="string"
+            android:defaultValue="null" />
+        <action
+            android:id="@+id/action_fileFragment_self"
+            app:destination="@id/fileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_fileFragment_to_notesSearchFragment"
+            app:destination="@id/notesSearchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_fileFragment_to_mediaActivity"
+            app:destination="@id/mediaActivity"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -81,95 +171,30 @@
             app:popUpToInclusive="true"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/notesSearchFragment"
+        android:name="com.studypartner.fragments.NotesSearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_notes_search">
+        <argument
+            android:name="NotesArray"
+            app:argType="com.studypartner.models.FileItem[]" />
+    </fragment>
+
+    <activity
+        android:id="@+id/mediaActivity"
+        android:name="com.studypartner.activities.MediaActivity"
+        android:label="activity_media"
+        tools:layout="@layout/activity_media">
+        <argument
+            android:name="MediaPath"
+            app:argType="string" />
+    </activity>
+
     <activity
         android:id="@+id/nav_logout"
         android:name="com.studypartner.activities.LoginActivity"
         android:label="@string/navigation_menu_logout"
         tools:layout="@layout/activity_login"/>
-
-    <navigation android:id="@+id/nested_nav_notes"
-        app:startDestination="@id/nav_notes">
-
-        <fragment
-            android:id="@+id/nav_notes"
-            android:name="com.studypartner.fragments.NotesFragment"
-            android:label="@string/bottom_navigation_menu_notes"
-            tools:layout="@layout/fragment_notes">
-
-            <action
-                android:id="@+id/action_nav_notes_to_nav_home"
-                app:destination="@id/nav_home"
-                app:enterAnim="@anim/slide_in_left"
-                app:exitAnim="@anim/slide_out_right"
-                app:popUpTo="@id/nav_home"
-                app:popUpToInclusive="true" />
-            <action
-                android:id="@+id/action_nav_notes_to_fileFragment"
-                app:destination="@id/fileFragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"/>
-            <action
-                android:id="@+id/action_nav_notes_to_notesSearchFragment"
-                app:destination="@id/notesSearchFragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"/>
-        </fragment>
-
-        <fragment
-            android:id="@+id/fileFragment"
-            android:name="com.studypartner.fragments.FileFragment"
-            android:label="@string/bottom_navigation_menu_notes"
-            tools:layout="@layout/fragment_file">
-            <argument
-                android:name="FilePath"
-                app:argType="string"
-                android:defaultValue="null" />
-            <action
-                android:id="@+id/action_fileFragment_self"
-                app:destination="@id/fileFragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
-
-            <action
-                android:id="@+id/action_fileFragment_to_notesSearchFragment"
-                app:destination="@id/notesSearchFragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
-            <action
-                android:id="@+id/action_fileFragment_to_mediaActivity"
-                app:destination="@id/mediaActivity"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"/>
-        </fragment>
-
-        <fragment
-            android:id="@+id/notesSearchFragment"
-            android:name="com.studypartner.fragments.NotesSearchFragment"
-            android:label="Search"
-            tools:layout="@layout/fragment_notes_search">
-            <argument
-                android:name="NotesArray"
-                app:argType="com.studypartner.models.FileItem[]" />
-        </fragment>
-        <activity
-            android:id="@+id/mediaActivity"
-            android:name="com.studypartner.activities.MediaActivity"
-            android:label="activity_media"
-            tools:layout="@layout/activity_media">
-            <argument
-                android:name="MediaPath"
-                app:argType="string" />
-        </activity>
-    </navigation>
 
 </navigation>

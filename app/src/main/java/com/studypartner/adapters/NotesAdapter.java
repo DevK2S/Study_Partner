@@ -52,10 +52,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		this.isOptionsVisible = isOptionVisible;
 	}
 	
-	public void setFileItems(ArrayList<FileItem> fileItems) {
-		mFileItems = fileItems;
-	}
-	
 	@NonNull
 	@Override
 	public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -229,13 +225,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 			items.add(selectedItems.keyAt(i));
 		}
 		return items;
-	}
-	
-	public void removeData(int position) {
-		Log.d(TAG, "removeData: removing at position " + position);
-		mFileItems.remove(position);
-		notifyDataSetChanged();
-		Log.d(TAG, "removeData: removed at position " + position);
 	}
 	
 	@Override

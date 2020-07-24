@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	@Override
 	public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
 		Log.d(TAG, "onDestinationChanged: starts");
+		fab.setOnClickListener(null);
 		switch (destination.getId()) {
 			case R.id.nav_home:
 				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
@@ -303,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				Log.d(TAG, "onNavigationItemSelected: notes selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
 					Log.d(TAG, "onNavigationItemSelected: opening notes fragment");
-					mNavController.navigate(R.id.nested_nav_notes, null, leftToRightBuilder.build());
+					mNavController.navigate(R.id.nav_notes, null, leftToRightBuilder.build());
 				}
 				return true;
 				

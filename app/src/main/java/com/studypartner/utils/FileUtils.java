@@ -49,7 +49,6 @@ public class FileUtils {
 		return ft;
 	}
 	
-	
 	public static void showImage(Context context, FileItem image) {
 		File[] files = new File(image.getPath()).getParentFile().listFiles();
 		ArrayList<FileItem> images = new ArrayList<>();
@@ -83,9 +82,9 @@ public class FileUtils {
 	}
 	
 	public static void showVideo(Activity activity, FileItem video) {
-		/*Intent tostart = new Intent(Intent.ACTION_VIEW);
+		Intent tostart = new Intent(Intent.ACTION_VIEW);
 		tostart.setDataAndType(Uri.parse(video.getPath()), "video/*");
-		context.startActivity(tostart);*/
+		activity.startActivity(tostart);
 	}
 	
 	public static void playAudio(Context context, FileItem audio) {
