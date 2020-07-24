@@ -348,19 +348,15 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	public void onClick(int position) {
 		if (actionModeOn) {
 			enableActionMode(position);
-		} else if (notes.get(position).getType() == FileType.FILE_TYPE_IMAGE) {
-			FileUtils.showImage(requireContext(), notes.get(position));
 		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_FOLDER)) {
 			FileItem fileDesc = notes.get(position);
 			Bundle bundle = new Bundle();
 			bundle.putString("FilePath", fileDesc.getPath());
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_self, bundle);
-		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_VIDEO)) {
+		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_VIDEO) || notes.get(position).getType().equals(FileType.FILE_TYPE_AUDIO) || notes.get(position).getType() == FileType.FILE_TYPE_IMAGE) {
 			Bundle bundle = new Bundle();
 			bundle.putString("Media", notes.get(position).getPath());
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.mediaActivity, bundle);
-		} else if (notes.get(position).getType().equals(FileType.FILE_TYPE_AUDIO)) {
-			FileUtils.playAudio(requireContext(), notes.get(position));
 		} else {
 			FileUtils.openFile(requireContext(), notes.get(position));
 		}

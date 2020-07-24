@@ -41,8 +41,8 @@ public class MediaActivity extends AppCompatActivity {
 		int value = 0;
 		for (File f : files) {
 			FileItem newFile = new FileItem(f.getPath());
-			
-			if (newFile.getType() == FileType.FILE_TYPE_VIDEO) {
+
+			if (newFile.getType() == FileType.FILE_TYPE_VIDEO || newFile.getType() == FileType.FILE_TYPE_AUDIO || newFile.getType() == FileType.FILE_TYPE_IMAGE) {
 				mediafiles.add(newFile.getPath());
 				if (f.getName().equals(child.getName()))
 					value = mediafiles.size() - 1;
