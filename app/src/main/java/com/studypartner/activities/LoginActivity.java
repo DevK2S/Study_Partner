@@ -337,7 +337,9 @@ public class LoginActivity extends AppCompatActivity {
 							if (task.isSuccessful()) {
 								Log.d(TAG, "onComplete: email " + FirebaseAuth.getInstance().getCurrentUser().getEmail());
 								
-								FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+								if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+									FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+								}
 								
 								//Make users database
 								FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
@@ -420,6 +422,10 @@ public class LoginActivity extends AppCompatActivity {
 		
 		Log.d(TAG, "updateDetails: updating email");
 		FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("email").setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+		
+		if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+			FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+		}
 	}
 	
 	@Override
