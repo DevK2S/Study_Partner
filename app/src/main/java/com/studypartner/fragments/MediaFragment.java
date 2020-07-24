@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -65,7 +66,7 @@ public class MediaFragment extends Fragment {
 		if (mediaFileItem.getType().equals(FileType.FILE_TYPE_IMAGE)) {
 			mediaplayerView.setVisibility(View.GONE);
 			photoView.setVisibility(View.VISIBLE);
-			Picasso.get().load(mediapath).into(photoView);
+			Glide.with(getContext()).load(mediapath).into(photoView);
 		} else {
 			photoView.setVisibility(View.GONE);
 			mediaplayerView.setVisibility(View.VISIBLE);
