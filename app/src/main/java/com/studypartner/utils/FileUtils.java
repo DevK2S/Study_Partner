@@ -89,7 +89,7 @@ public class FileUtils {
 	
 	public static void playAudio(Context context, FileItem audio) {
 		Intent audioplay = new Intent(Intent.ACTION_VIEW);
-		audioplay.setDataAndType(Uri.parse(audio.getPath()), "audio/*");
+		audioplay.setDataAndType(Uri.parse(audio.getPath()), "video_controller/*");
 		context.startActivity(audioplay);
 	}
 	

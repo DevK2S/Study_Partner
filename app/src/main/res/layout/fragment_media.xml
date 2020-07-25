@@ -2,20 +2,36 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryBlack">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:controller_layout_id="@layout/video_controller"
+        app:hide_on_touch="true"
+        app:resize_mode="fit"
+        app:use_controller="true"
+        android:background="@color/primaryBlack" />
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/audio_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:controller_layout_id="@layout/audio_controller"
+        app:hide_on_touch="false"
+        app:use_controller="true"
+        app:show_timeout="0" />
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:background="@color/primaryBlack" />
 
 
 </FrameLayout>
