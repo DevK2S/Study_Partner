@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -15,7 +16,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/video_play_icon"
             android:background="@drawable/video_play_pause_background"
-            android:tint="@color/colorAccent"  />
+            android:tint="@color/colorAccent" />
 
         <ImageView
             android:id="@+id/exo_pause"
@@ -65,7 +66,8 @@
         <com.google.android.exoplayer2.ui.DefaultTimeBar
             android:id="@+id/exo_progress"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:played_color="#6272DA" />
 
     </LinearLayout>
 

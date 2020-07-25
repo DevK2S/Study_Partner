@@ -4,20 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/colorAccent">
+    android:background="@color/primaryBlack">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
         android:visibility="gone"
         android:animateLayoutChanges="true"
         app:controller_layout_id="@layout/video_controller"
-        app:fastforward_increment="10000"
         app:hide_on_touch="true"
         app:resize_mode="fit"
-        app:rewind_increment="5000"
         app:show_timeout="5000"
         app:use_controller="true" />
 
@@ -28,11 +25,10 @@
         android:visibility="gone"
         android:animateLayoutChanges="true"
         app:controller_layout_id="@layout/audio_controller"
-        app:hide_on_touch="true"
+        app:hide_on_touch="false"
         app:use_controller="true"
-        app:show_timeout="5000"
-        app:fastforward_increment="10000"
-        app:rewind_increment="5000"/>
+        app:show_timeout="0"
+        app:default_artwork="@color/colorPrimary" />
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_view"

@@ -95,15 +95,11 @@ public class FileUtils {
 	}
 	
 	public static void showVideo(Activity activity, FileItem video) {
-		Intent tostart = new Intent(Intent.ACTION_VIEW);
-		tostart.setDataAndType(Uri.parse(video.getPath()), "video/*");
-		activity.startActivity(tostart);
+
 	}
 	
 	public static void playAudio(Context context, FileItem audio) {
-		Intent audioplay = new Intent(Intent.ACTION_VIEW);
-		audioplay.setDataAndType(Uri.parse(audio.getPath()), "video_controller/*");
-		context.startActivity(audioplay);
+
 	}
 	
 	public static void openLink(Uri link) {
