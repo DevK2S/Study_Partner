@@ -27,7 +27,8 @@ public class MediaFragment extends Fragment {
 
 	private String mediapath;
 	private SimpleExoPlayer player;
-	PlayerView mediaplayerView;
+	PlayerView videoplayerView;
+	PlayerView audioplayerView;
 	FileItem mediaFileItem;
 	PhotoView photoView;
 
@@ -58,19 +59,20 @@ public class MediaFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		mediaplayerView = view.findViewById(R.id.video_view);
+		videoplayerView = view.findViewById(R.id.video_view);
+		audioplayerView = view.findViewById(R.id.audio_view);
 		mediapath = getArguments().getString("MediaPath");
 		mediaFileItem = new FileItem(mediapath);
 		photoView = view.findViewById(R.id.photo_view);
 		if (mediaFileItem.getType().equals(FileType.FILE_TYPE_IMAGE)) {
-			mediaplayerView.setVisibility(View.GONE);
+			videoplayerView.setVisibility(View.GONE);
+			audioplayerView.setVisibility(View.GONE);
 			photoView.setVisibility(View.VISIBLE);
 			Glide.with(requireContext())
 					.load(mediapath)
 					.into(photoView);
 		} else {
 			photoView.setVisibility(View.GONE);
-			mediaplayerView.setVisibility(View.VISIBLE);
 			initializePlayer();
 		}
 	}
@@ -82,8 +84,18 @@ public class MediaFragment extends Fragment {
 		mediaSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(mediapath));
 		player.setPlayWhenReady(false);
 		player.prepare(mediaSource);
-		if (mediaplayerView != null)
-			mediaplayerView.setPlayer(player);
+		if (mediaFileItem.getType().equals(FileType.FILE_TYPE_VIDEO)) {
+			audioplayerView.setVisibility(View.GONE);
+			videoplayerView.setVisibility(View.VISIBLE);
+			if (videoplayerView != null)
+				videoplayerView.setPlayer(player);
+		} else {
+			videoplayerView.setVisibility(View.GONE);
+			audioplayerView.setVisibility(View.VISIBLE);
+			if (audioplayerView != null)
+				audioplayerView.setPlayer(player);
+
+		}
 	}
 	
 	@Override

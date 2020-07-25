@@ -3,16 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/colorAccent">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorAccent"
         android:visibility="gone"
+        android:animateLayoutChanges="true"
+        app:controller_layout_id="@layout/video_controller"
+        app:fastforward_increment="10000"
+        app:hide_on_touch="true"
+        app:resize_mode="fit"
+        app:rewind_increment="5000"
         app:show_timeout="5000"
-        app:played_color="@color/colorPrimary"
-        app:scrubber_color="@color/colorPrimaryDark"
+        app:use_controller="true" />
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/audio_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:animateLayoutChanges="true"
+        app:controller_layout_id="@layout/audio_controller"
+        app:hide_on_touch="true"
+        app:use_controller="true"
+        app:show_timeout="5000"
         app:fastforward_increment="10000"
         app:rewind_increment="5000"/>
 
@@ -20,6 +38,8 @@
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:animateLayoutChanges="true"
+        android:background="@color/colorAccent"/>
 
 </FrameLayout>
