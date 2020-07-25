@@ -120,16 +120,27 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		if (firebaseUser != null && firebaseUser.getEmail() != null) {
 			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
 			if (!studyPartnerFolder.exists()) {
-				Log.d(TAG, "onCreateView: Study partner folder mkdirs returned " + studyPartnerFolder.mkdirs());
+				if (studyPartnerFolder.mkdirs()) {
+					noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
+				} else {
+					noteFolder = new File(requireContext().getExternalFilesDir(null), firebaseUser.getEmail());
+				}
+			} else {
+				noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
 			}
-			noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
 		} else {
 			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
 			if (!studyPartnerFolder.exists()) {
-				Log.d(TAG, "onCreateView: Study partner folder mkdirs returned " + studyPartnerFolder.mkdirs());
+				if (studyPartnerFolder.mkdirs()) {
+					noteFolder = studyPartnerFolder;
+				} else {
+					noteFolder = requireContext().getExternalFilesDir(null);
+				}
+			} else {
+				noteFolder = studyPartnerFolder;
 			}
-			noteFolder = new File(String.valueOf(studyPartnerFolder));
 		}
+		
 		activity = (MainActivity) requireActivity();
 		activity.mBottomAppBar.bringToFront();
 		activity.fab.bringToFront();

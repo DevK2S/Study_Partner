@@ -1093,16 +1093,33 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			
 		} else if (requestCode == DOC_REQUEST_CODE) {
 			
+//			if (resultCode == Activity.RESULT_OK) {
+//				assert data != null;
+//				ArrayList<Uri> docPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS)));
+//				for (Uri uri : docPaths) {
+//					String filePath = FileUtils.getFilePath(requireContext(), uri);
+//					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
+//					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+//				}
+//			} else if (resultCode != Activity.RESULT_CANCELED) {
+//				Toast.makeText(getContext(), "Document(s) could not be saved", Toast.LENGTH_SHORT).show();
+//			}
 			if (resultCode == Activity.RESULT_OK) {
 				assert data != null;
-				ArrayList<Uri> docPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS)));
-				for (Uri uri : docPaths) {
+				if (null != data.getClipData()) {
+					Log.d(TAG, "onActivityResult: document count = " + data.getClipData().getItemCount());
+					for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+						Uri uri = data.getClipData().getItemAt(i).getUri();
+						String filePath = FileUtils.getFilePath(requireContext(), uri);
+						notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
+						mNotesAdapter.notifyItemInserted(notes.size() - 1);
+					}
+				} else {
+					Uri uri = data.getData();
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
 				}
-			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Document(s) could not be saved", Toast.LENGTH_SHORT).show();
 			}
 			
 		} else if (requestCode == VIDEO_REQUEST_CODE) {
@@ -1189,9 +1206,24 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	}
 	
 	private void getDocument() {
-		FilePickerBuilder.getInstance()
-				.setActivityTitle("Select documents")
-				.pickFile(this, DOC_REQUEST_CODE);
+		String[] mimeTypes =
+				{"application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx
+						"application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
+						"application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
+						"text/plain",
+						"application/pdf",
+						"application/zip"};
+		
+		Intent getDocument = new Intent(Intent.ACTION_GET_CONTENT);
+		getDocument.addCategory(Intent.CATEGORY_OPENABLE);
+		getDocument.setType("*/*");
+		getDocument.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+		getDocument.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+		startActivityForResult(Intent.createChooser(getDocument,"ChooseFile"), DOC_REQUEST_CODE);
+		
+//		FilePickerBuilder.getInstance()
+//				.setActivityTitle("Select Documents")
+//				.pickFile(this,DOC_REQUEST_CODE);
 	}
 	
 	private void getVideo() {
