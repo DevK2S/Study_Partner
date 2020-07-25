@@ -41,10 +41,6 @@ import com.studypartner.utils.FileType;
 import com.studypartner.utils.FileUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -595,7 +591,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 							ArrayList<FileItem> fileItems = new ArrayList<>();
 							fileItems.add(notes.get(position));
 							if (shareFile.exists()) {
-								intentShareFile.setType(getFileType(fileItems));
+								intentShareFile.setType(FileUtils.getFileType(fileItems));
 								intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + notes.get(position).getPath()));
 								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application. Most compact app for all the needs of a college student");
 								startActivity(Intent.createChooser(intentShareFile, "Share File"));
@@ -763,43 +759,6 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		return false;
 	}
 	
-	private String getFileType(ArrayList<FileItem> fileItems) {
-		String fileType = "*/*";
-		boolean text = false, app = false, image = false, video = false, audio = false, other = false;
-		
-		for (FileItem item : fileItems) {
-			if (item.getType() == FileType.FILE_TYPE_FOLDER) {
-				return null;
-			} else if (item.getType() == FileType.FILE_TYPE_IMAGE) {
-				image = true;
-			} else if (item.getType() == FileType.FILE_TYPE_APPLICATION) {
-				app = true;
-			} else if (item.getType() == FileType.FILE_TYPE_TEXT) {
-				text = true;
-			} else if (item.getType() == FileType.FILE_TYPE_AUDIO) {
-				audio = true;
-			} else if (item.getType() == FileType.FILE_TYPE_VIDEO) {
-				video = true;
-			} else {
-				other = true;
-			}
-		}
-		
-		if (text && !(app && image && video && audio && other)) {
-			fileType = "text/*";
-		} else if (app && !(text && image && video && audio && other)) {
-			fileType = "application/*";
-		} else if (image && !(text && app && video && audio && other)) {
-			fileType = "image/*";
-		} else if (video && !(text && app && image && audio && other)) {
-			fileType = "video/*";
-		} else if (audio && !(text && app && image && video && other)) {
-			fileType = "audio/*";
-		}
-		
-		return fileType;
-	}
-	
 	private void addFolder() {
 		File file;
 		
@@ -875,6 +834,32 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		actionMode = null;
 	}
 	
+	private void shareRows() {
+		ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
+		ArrayList<Integer> positionsToBeRemoved = new ArrayList<>();
+		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+			if (FileUtils.getFileType(new File(notes.get(selectedItemPositions.get(i)).getPath())) == FileType.FILE_TYPE_FOLDER) {
+				positionsToBeRemoved.add(i);
+			}
+		}
+		
+		selectedItemPositions.removeAll(positionsToBeRemoved);
+		
+		ArrayList<FileItem> fileItems = new ArrayList<>();
+		ArrayList<Uri> fileItemsUri = new ArrayList<>();
+		
+		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+			fileItems.add(notes.get(selectedItemPositions.get(i)));
+			fileItemsUri.add(Uri.fromFile(new File(notes.get(selectedItemPositions.get(i)).getPath())));
+		}
+		
+		Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
+		intentShareFile.setType(FileUtils.getFileType(fileItems));
+		intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileItemsUri);
+		intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application. Most compact app for all the needs of a college student");
+		startActivity(Intent.createChooser(intentShareFile, "Share File"));
+	}
+	
 	private void enableActionMode(int position) {
 		if (actionMode == null) {
 			
@@ -900,6 +885,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					switch (item.getItemId()) {
 						case R.id.notes_action_delete:
 							deleteRows();
+							mode.finish();
+							return true;
+						case R.id.notes_action_share:
+							shareRows();
 							mode.finish();
 							return true;
 						case R.id.notes_action_select_all:
@@ -972,14 +961,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					Collections.sort(notes, new Comparator<FileItem>() {
 						@Override
 						public int compare(FileItem o1, FileItem o2) {
-							return (int) ((o1.getSize() / 1048576) - (o2.getSize() / 1048576));
+							return Long.compare(o1.getSize(), o2.getSize());
 						}
 					});
 				} else {
 					Collections.sort(notes, new Comparator<FileItem>() {
 						@Override
 						public int compare(FileItem o1, FileItem o2) {
-							return (int) ((o2.getSize() / 1048576) - (o1.getSize() / 1048576));
+							return Long.compare(o2.getSize(), o1.getSize());
 						}
 					});
 				}
@@ -1066,34 +1055,6 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		return file;
 	}
 	
-	private String copyFile(String inputFilePath, String outputDirectoryPath) {
-		
-		String fileName = new File(inputFilePath).getName();
-		
-		String outputFilePath = new File(outputDirectoryPath, fileName).getPath();
-		
-		Log.d(TAG, "copyFile: from " + inputFilePath + " to " + outputFilePath);
-		
-		try (InputStream in = new FileInputStream(inputFilePath)) {
-			
-			OutputStream out = new FileOutputStream(outputFilePath);
-			
-			byte[] buffer = new byte[1024];
-			
-			int read;
-			while ((read = in.read(buffer)) != -1) {
-				out.write(buffer, 0, read);
-			}
-			out.flush();
-			out.close();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return outputFilePath;
-	}
-	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -1114,7 +1075,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				ArrayList<Uri> imagePaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA)));
 				for (Uri uri : imagePaths) {
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
-					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {
@@ -1137,7 +1098,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				ArrayList<Uri> docPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS)));
 				for (Uri uri : docPaths) {
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
-					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {
@@ -1151,7 +1112,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				ArrayList<Uri> videoPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA)));
 				for (Uri uri : videoPaths) {
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
-					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {
@@ -1167,13 +1128,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					for (int i = 0; i < data.getClipData().getItemCount(); i++) {
 						Uri uri = data.getClipData().getItemAt(i).getUri();
 						String filePath = FileUtils.getFilePath(requireContext(), uri);
-						notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+						notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 						mNotesAdapter.notifyItemInserted(notes.size() - 1);
 					}
 				} else {
 					Uri uri = data.getData();
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
-					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {

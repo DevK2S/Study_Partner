@@ -697,6 +697,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					mode.getMenuInflater().inflate(R.menu.menu_notes_action_mode, menu);
 					menu.removeItem(R.id.notes_action_unstar);
+					menu.removeItem(R.id.notes_action_share);
 					actionModeOn = true;
 					fab.setEnabled(false);
 					mLinearLayout.setVisibility(View.GONE);
@@ -774,14 +775,14 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					Collections.sort(notes, new Comparator<FileItem>() {
 						@Override
 						public int compare(FileItem o1, FileItem o2) {
-							return (int) ((o1.getSize() / 1048576) - (o2.getSize() / 1048576));
+							return Long.compare(o1.getSize(), o2.getSize());
 						}
 					});
 				} else {
 					Collections.sort(notes, new Comparator<FileItem>() {
 						@Override
 						public int compare(FileItem o1, FileItem o2) {
-							return (int) ((o2.getSize() / 1048576) - (o1.getSize() / 1048576));
+							return Long.compare(o2.getSize(), o1.getSize());
 						}
 					});
 				}

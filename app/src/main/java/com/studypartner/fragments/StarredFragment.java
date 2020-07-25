@@ -524,18 +524,18 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
 				deleteRecursive(child);
 			}
-		} else {
-			int index = -1;
-			for (int i = 0; i < starred.size(); i++) {
-				FileItem item = starred.get(i);
-				if (item.getPath().equals(fileOrDirectory.getPath())) {
-					index = i;
-					break;
-				}
+		}
+		
+		int index = -1;
+		for (int i = 0; i < starred.size(); i++) {
+			FileItem item = starred.get(i);
+			if (item.getPath().equals(fileOrDirectory.getPath())) {
+				index = i;
+				break;
 			}
-			if (index != -1) {
-				starred.remove(index);
-			}
+		}
+		if (index != -1) {
+			starred.remove(index);
 		}
 		
 		Log.d(TAG, "deleteRecursive: " + fileOrDirectory.delete());
@@ -578,6 +578,32 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		actionMode = null;
 	}
 	
+	private void shareRows() {
+		ArrayList<Integer> selectedItemPositions = mStarredAdapter.getSelectedItems();
+		ArrayList<Integer> positionsToBeRemoved = new ArrayList<>();
+		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+			if (FileUtils.getFileType(new File(starred.get(selectedItemPositions.get(i)).getPath())) == FileType.FILE_TYPE_FOLDER) {
+				positionsToBeRemoved.add(i);
+			}
+		}
+		
+		selectedItemPositions.removeAll(positionsToBeRemoved);
+		
+		ArrayList<FileItem> fileItems = new ArrayList<>();
+		ArrayList<Uri> fileItemsUri = new ArrayList<>();
+		
+		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+			fileItems.add(starred.get(selectedItemPositions.get(i)));
+			fileItemsUri.add(Uri.fromFile(new File(starred.get(selectedItemPositions.get(i)).getPath())));
+		}
+		
+		Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
+		intentShareFile.setType(FileUtils.getFileType(fileItems));
+		intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileItemsUri);
+		intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application. Most compact app for all the needs of a college student");
+		startActivity(Intent.createChooser(intentShareFile, "Share File"));
+	}
+	
 	private void enableActionMode(int position) {
 		if (actionMode == null) {
 			
@@ -603,6 +629,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 					switch (item.getItemId()) {
 						case R.id.notes_action_unstar:
 							unstarRows();
+							mode.finish();
+							return true;
+						case R.id.notes_action_share:
+							shareRows();
 							mode.finish();
 							return true;
 						case R.id.notes_action_select_all:
@@ -663,14 +693,14 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 					Collections.sort(starred, new Comparator<FileItem>() {
 						@Override
 						public int compare(FileItem o1, FileItem o2) {
-							return (int) ((o1.getSize() / 1048576) - (o2.getSize() / 1048576));
+							return Long.compare(o1.getSize(), o2.getSize());
 						}
 					});
 				} else {
 					Collections.sort(starred, new Comparator<FileItem>() {
 						@Override
 						public int compare(FileItem o1, FileItem o2) {
-							return (int) ((o2.getSize() / 1048576) - (o1.getSize() / 1048576));
+							return Long.compare(o2.getSize(), o1.getSize());
 						}
 					});
 				}

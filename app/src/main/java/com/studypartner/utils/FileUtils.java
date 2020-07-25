@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -25,8 +26,10 @@ import com.studypartner.R;
 import com.studypartner.models.FileItem;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -141,6 +144,72 @@ public class FileUtils {
 			Toast.makeText(context, "No application found to open this file", Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	public static String copyFile (String inputFilePath, String outputDirectoryPath) {
+		
+		String fileName = new File(inputFilePath).getName();
+		
+		String outputFilePath = new File(outputDirectoryPath, fileName).getPath();
+		
+		Log.d(TAG, "copyFile: from " + inputFilePath + " to " + outputFilePath);
+		
+		try (InputStream in = new FileInputStream(inputFilePath)) {
+			
+			OutputStream out = new FileOutputStream(outputFilePath);
+			
+			byte[] buffer = new byte[1024];
+			
+			int read;
+			while ((read = in.read(buffer)) != -1) {
+				out.write(buffer, 0, read);
+			}
+			out.flush();
+			out.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return outputFilePath;
+	}
+	
+	public static String getFileType(ArrayList<FileItem> fileItems) {
+		String fileType = "*/*";
+		boolean text = false, app = false, image = false, video = false, audio = false, other = false;
+		
+		for (FileItem item : fileItems) {
+			if (item.getType() == FileType.FILE_TYPE_FOLDER) {
+				return null;
+			} else if (item.getType() == FileType.FILE_TYPE_IMAGE) {
+				image = true;
+			} else if (item.getType() == FileType.FILE_TYPE_APPLICATION) {
+				app = true;
+			} else if (item.getType() == FileType.FILE_TYPE_TEXT) {
+				text = true;
+			} else if (item.getType() == FileType.FILE_TYPE_AUDIO) {
+				audio = true;
+			} else if (item.getType() == FileType.FILE_TYPE_VIDEO) {
+				video = true;
+			} else {
+				other = true;
+			}
+		}
+		
+		if (text && !(app && image && video && audio && other)) {
+			fileType = "text/*";
+		} else if (app && !(text && image && video && audio && other)) {
+			fileType = "application/*";
+		} else if (image && !(text && app && video && audio && other)) {
+			fileType = "image/*";
+		} else if (video && !(text && app && image && audio && other)) {
+			fileType = "video/*";
+		} else if (audio && !(text && app && image && video && other)) {
+			fileType = "audio/*";
+		}
+		
+		return fileType;
+	}
+	
 	
 	@SuppressLint("NewApi")
 	public static String getFilePath(Context context, Uri uri) {

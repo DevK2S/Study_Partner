@@ -19,6 +19,7 @@ public class FileItem implements Parcelable {
 	private String name;
 	private FileType type;
 	private String dateCreated, dateModified;
+	private String linkUrl;
 	private boolean isStarred;
 	private long size;
 	
@@ -108,6 +109,14 @@ public class FileItem implements Parcelable {
 	
 	public boolean isStarred() {
 		return isStarred;
+	}
+	
+	public String getLinkUrl() {
+		return linkUrl;
+	}
+	
+	public void setLinkUrl(String linkUrl) {
+		this.linkUrl = linkUrl;
 	}
 	
 	public void setName(String name) {

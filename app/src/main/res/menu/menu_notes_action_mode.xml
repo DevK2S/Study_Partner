@@ -21,9 +21,17 @@
         tools:ignore="AlwaysShowAction" />
 
     <item
+        android:id="@+id/notes_action_share"
+        android:icon="@drawable/share_icon"
+        android:orderInCategory="3"
+        android:title="@string/notes_action_share"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction"/>
+
+    <item
         android:id="@+id/notes_action_select_all"
         android:icon="@drawable/select_all_icon"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:title="@string/notes_action_select_all"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
