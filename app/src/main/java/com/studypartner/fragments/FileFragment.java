@@ -26,6 +26,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +41,10 @@ import com.studypartner.utils.FileType;
 import com.studypartner.utils.FileUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +54,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.UUID;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -61,6 +67,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder;
+import droidninja.filepicker.FilePickerBuilder;
+import droidninja.filepicker.FilePickerConst;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -75,11 +83,17 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	private final String ASCENDING_ORDER = "Ascending Order";
 	private final String DESCENDING_ORDER = "Descending Order";
 	
-	private final int AUDIO_REQUEST_CODE = 111;
-	private final int AUDIO_PERMISSION_REQUEST_CODE = 11;
+	private final int RECORD_PERMISSION_REQUEST_CODE = 10;
+	private final int CAMERA_PERMISSION_REQUEST_CODE = 30;
+	
 	private File audioFile;
-	private final int VIDEO_REQUEST_CODE = 222;
-	private final int IMAGE_REQUEST_CODE = 333;
+	
+	private final int RECORD_REQUEST_CODE = 11;
+	private final int IMAGE_REQUEST_CODE = 22;
+	private final int CAMERA_IMAGE_REQUEST_CODE = 33;
+	private final int DOC_REQUEST_CODE = 44;
+	private final int VIDEO_REQUEST_CODE = 55;
+	private final int AUDIO_REQUEST_CODE = 66;
 	
 	private String sortBy;
 	private String sortOrder;
@@ -179,41 +193,57 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					@Override
 					public void onClick(View view) {
 						addFolder();
+						
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addFile != null;
 				addFile.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Toast.makeText(getContext(), "Files", Toast.LENGTH_SHORT).show();
+						getDocument();
+						
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addImage != null;
 				addImage.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Toast.makeText(getContext(), "Images", Toast.LENGTH_SHORT).show();
+						getImage();
+						
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addVideo != null;
 				addVideo.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Toast.makeText(getContext(), "Videos", Toast.LENGTH_SHORT).show();
+						getVideo();
+						
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addCamera != null;
 				addCamera.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Toast.makeText(getContext(), "Camera", Toast.LENGTH_SHORT).show();
+						if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+							ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+						} else {
+							
+							openCameraForImage();
+							
+						}
+						
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addNote != null;
 				addNote.setOnClickListener(new View.OnClickListener() {
 					@Override
@@ -222,6 +252,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addLink != null;
 				addLink.setOnClickListener(new View.OnClickListener() {
 					@Override
@@ -230,23 +261,29 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addAudio != null;
 				addAudio.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						Toast.makeText(getContext(), "Audio", Toast.LENGTH_SHORT).show();
+						getAudio();
+						
 						bottomSheet.dismiss();
 					}
 				});
+				
 				assert addVoice != null;
 				addVoice.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
 						if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-							ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, AUDIO_PERMISSION_REQUEST_CODE);
+							ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, RECORD_PERMISSION_REQUEST_CODE);
 						} else {
+							
 							recordAudio();
+							
 						}
+						
 						bottomSheet.dismiss();
 					}
 				});
@@ -377,7 +414,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			bundle.putString("Media", notes.get(position).getPath());
 			bundle.putBoolean("InStarred", false);
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_to_mediaActivity, bundle);
-		}  else {
+		} else {
 			FileUtils.openFile(requireContext(), notes.get(position));
 		}
 	}
@@ -555,12 +592,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						if (notes.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
 							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
 							File shareFile = new File(notes.get(position).getPath());
-							
+							ArrayList<FileItem> fileItems = new ArrayList<>();
+							fileItems.add(notes.get(position));
 							if (shareFile.exists()) {
-								intentShareFile.setType("application/pdf");
+								intentShareFile.setType(getFileType(fileItems));
 								intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + notes.get(position).getPath()));
-								intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File");
-								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing " + notes.get(position).getName());
+								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application. Most compact app for all the needs of a college student");
 								startActivity(Intent.createChooser(intentShareFile, "Share File"));
 							}
 						} else {
@@ -618,7 +655,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
 		}
 		
@@ -674,7 +712,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
 		}
 		
@@ -698,7 +737,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		recyclerView.setAdapter(mNotesAdapter);
 	}
 	
-	private int starredIndex (int position) {
+	private int starredIndex(int position) {
 		int index = -1;
 		if (starred != null) {
 			for (int i = 0; i < starred.size(); i++) {
@@ -712,7 +751,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		return index;
 	}
 	
-	private boolean isStarred (FileItem item) {
+	private boolean isStarred(FileItem item) {
 		if (starred != null) {
 			for (int i = 0; i < starred.size(); i++) {
 				FileItem starredItem = starred.get(i);
@@ -724,7 +763,44 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		return false;
 	}
 	
-	void addFolder() {
+	private String getFileType(ArrayList<FileItem> fileItems) {
+		String fileType = "*/*";
+		boolean text = false, app = false, image = false, video = false, audio = false, other = false;
+		
+		for (FileItem item : fileItems) {
+			if (item.getType() == FileType.FILE_TYPE_FOLDER) {
+				return null;
+			} else if (item.getType() == FileType.FILE_TYPE_IMAGE) {
+				image = true;
+			} else if (item.getType() == FileType.FILE_TYPE_APPLICATION) {
+				app = true;
+			} else if (item.getType() == FileType.FILE_TYPE_TEXT) {
+				text = true;
+			} else if (item.getType() == FileType.FILE_TYPE_AUDIO) {
+				audio = true;
+			} else if (item.getType() == FileType.FILE_TYPE_VIDEO) {
+				video = true;
+			} else {
+				other = true;
+			}
+		}
+		
+		if (text && !(app && image && video && audio && other)) {
+			fileType = "text/*";
+		} else if (app && !(text && image && video && audio && other)) {
+			fileType = "application/*";
+		} else if (image && !(text && app && video && audio && other)) {
+			fileType = "image/*";
+		} else if (video && !(text && app && image && audio && other)) {
+			fileType = "video/*";
+		} else if (audio && !(text && app && image && video && other)) {
+			fileType = "audio/*";
+		}
+		
+		return fileType;
+	}
+	
+	private void addFolder() {
 		File file;
 		
 		int count = 0;
@@ -746,7 +822,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}
 	
-	public void deleteRecursive(File fileOrDirectory) {
+	private void deleteRecursive(File fileOrDirectory) {
 		if (fileOrDirectory.isDirectory()) {
 			for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
 				deleteRecursive(child);
@@ -970,8 +1046,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		mNotesAdapter.notifyDataSetChanged();
 	}
 	
-	private String fileName (FileType fileType) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.getDefault());
+	private String fileName(FileType fileType) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
 		Date date = new Date();
 		
 		String file;
@@ -985,43 +1061,192 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			file = "DOC";
 		}
 		
-		file += "-" + dateFormat.format(date);
+		file += "_" + dateFormat.format(date) + UUID.randomUUID().toString().substring(0, 5);
 		
 		return file;
+	}
+	
+	private String copyFile(String inputFilePath, String outputDirectoryPath) {
+		
+		String fileName = new File(inputFilePath).getName();
+		
+		String outputFilePath = new File(outputDirectoryPath, fileName).getPath();
+		
+		Log.d(TAG, "copyFile: from " + inputFilePath + " to " + outputFilePath);
+		
+		try (InputStream in = new FileInputStream(inputFilePath)) {
+			
+			OutputStream out = new FileOutputStream(outputFilePath);
+			
+			byte[] buffer = new byte[1024];
+			
+			int read;
+			while ((read = in.read(buffer)) != -1) {
+				out.write(buffer, 0, read);
+			}
+			out.flush();
+			out.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return outputFilePath;
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Log.d(TAG, "onActivityResult: " + AUDIO_REQUEST_CODE);
-		if (requestCode == AUDIO_REQUEST_CODE) {
+		
+		if (requestCode == RECORD_REQUEST_CODE) {
+			
 			if (resultCode == Activity.RESULT_OK) {
-				Toast.makeText(getContext(), "Audio saved successfully", Toast.LENGTH_SHORT).show();
 				notes.add(new FileItem(audioFile.getPath()));
 				mNotesAdapter.notifyItemInserted(notes.size() - 1);
-			} else {
+			} else if (resultCode != Activity.RESULT_CANCELED) {
 				Toast.makeText(getContext(), "Audio could not be saved", Toast.LENGTH_SHORT).show();
 			}
+			
+		} else if (requestCode == IMAGE_REQUEST_CODE) {
+			
+			if (resultCode == Activity.RESULT_OK) {
+				assert data != null;
+				ArrayList<Uri> imagePaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA)));
+				for (Uri uri : imagePaths) {
+					String filePath = FileUtils.getFilePath(requireContext(), uri);
+					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+				}
+			} else if (resultCode != Activity.RESULT_CANCELED) {
+				Toast.makeText(getContext(), "Image(s) could not be saved", Toast.LENGTH_SHORT).show();
+			}
+			
+		} else if (requestCode == CAMERA_IMAGE_REQUEST_CODE) {
+			
+			if (resultCode == Activity.RESULT_OK) {
+				notes.add(new FileItem(ImagePicker.Companion.getFilePath(data)));
+				mNotesAdapter.notifyItemInserted(notes.size() - 1);
+			} else if (resultCode == ImagePicker.RESULT_ERROR) {
+				Toast.makeText(getContext(), "Image could not be saved", Toast.LENGTH_SHORT).show();
+			}
+			
+		} else if (requestCode == DOC_REQUEST_CODE) {
+			
+			if (resultCode == Activity.RESULT_OK) {
+				assert data != null;
+				ArrayList<Uri> docPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS)));
+				for (Uri uri : docPaths) {
+					String filePath = FileUtils.getFilePath(requireContext(), uri);
+					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+				}
+			} else if (resultCode != Activity.RESULT_CANCELED) {
+				Toast.makeText(getContext(), "Document(s) could not be saved", Toast.LENGTH_SHORT).show();
+			}
+			
+		} else if (requestCode == VIDEO_REQUEST_CODE) {
+			
+			if (resultCode == Activity.RESULT_OK) {
+				assert data != null;
+				ArrayList<Uri> videoPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA)));
+				for (Uri uri : videoPaths) {
+					String filePath = FileUtils.getFilePath(requireContext(), uri);
+					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+				}
+			} else if (resultCode != Activity.RESULT_CANCELED) {
+				Toast.makeText(getContext(), "Video(s) could not be saved", Toast.LENGTH_SHORT).show();
+			}
+			
+		} else if (requestCode == AUDIO_REQUEST_CODE) {
+			
+			if (resultCode == Activity.RESULT_OK) {
+				assert data != null;
+				if (null != data.getClipData()) {
+					Log.d(TAG, "onActivityResult: audio count = " + data.getClipData().getItemCount());
+					for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+						Uri uri = data.getClipData().getItemAt(i).getUri();
+						String filePath = FileUtils.getFilePath(requireContext(), uri);
+						notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+						mNotesAdapter.notifyItemInserted(notes.size() - 1);
+					}
+				} else {
+					Uri uri = data.getData();
+					String filePath = FileUtils.getFilePath(requireContext(), uri);
+					notes.add(new FileItem(copyFile(filePath, noteFolder.getPath())));
+					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+				}
+			} else if (resultCode != Activity.RESULT_CANCELED) {
+				Toast.makeText(getContext(), "Audio(s) could not be saved", Toast.LENGTH_SHORT).show();
+			}
+			
 		}
 	}
 	
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == AUDIO_PERMISSION_REQUEST_CODE) {
+		
+		if (requestCode == RECORD_PERMISSION_REQUEST_CODE) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 				recordAudio();
 			}
+		} else if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				openCameraForImage();
+			}
+		} else {
+			super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		}
 	}
 	
-	private void recordAudio () {
+	private void recordAudio() {
 		audioFile = new File(noteFolder, fileName(FileType.FILE_TYPE_AUDIO) + ".wav");
 		AndroidAudioRecorder.with(FileFragment.this)
 				.setColor(getResources().getColor(R.color.colorPrimary, requireActivity().getTheme()))
 				.setFilePath(audioFile.getPath())
-				.setRequestCode(AUDIO_REQUEST_CODE)
+				.setRequestCode(RECORD_REQUEST_CODE)
 				.setKeepDisplayOn(false)
 				.recordFromFragment();
+	}
+	
+	private void getImage() {
+		FilePickerBuilder.getInstance()
+				.setActivityTitle("Select images")
+				.enableImagePicker(true)
+				.enableCameraSupport(false)
+				.enableVideoPicker(false)
+				.pickPhoto(this, IMAGE_REQUEST_CODE);
+	}
+	
+	private void openCameraForImage() {
+		ImagePicker.Builder builder = new ImagePicker.Builder(this);
+		builder.crop();
+		builder.cameraOnly();
+		builder.compress(5 * 1024);
+		builder.saveDir(noteFolder);
+		builder.start(CAMERA_IMAGE_REQUEST_CODE);
+	}
+	
+	private void getDocument() {
+		FilePickerBuilder.getInstance()
+				.setActivityTitle("Select documents")
+				.pickFile(this, DOC_REQUEST_CODE);
+	}
+	
+	private void getVideo() {
+		FilePickerBuilder.getInstance()
+				.setActivityTitle("Select videos")
+				.enableImagePicker(false)
+				.enableCameraSupport(false)
+				.enableVideoPicker(true)
+				.pickPhoto(this, VIDEO_REQUEST_CODE);
+	}
+	
+	private void getAudio() {
+		Intent getAudio = new Intent("android.intent.action.MULTIPLE_PICK");
+		getAudio.setType("audio/*");
+		getAudio.setAction(Intent.ACTION_GET_CONTENT);
+		getAudio.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+		startActivityForResult(getAudio, AUDIO_REQUEST_CODE);
 	}
 }

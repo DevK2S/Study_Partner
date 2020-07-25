@@ -14,13 +14,6 @@ import androidx.fragment.app.Fragment;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
-/**
- * Project: Study Partner
- * By: Karan Gourisaria
- * Date: 13-07-2020
- * Time: 13:39
- */
-
 public class Connection {
 	private static final String TAG = "Connection";
 	

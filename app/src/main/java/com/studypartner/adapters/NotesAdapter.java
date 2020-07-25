@@ -64,14 +64,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		
 		final FileItem fileItem = mFileItems.get(position);
 		
-		if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
-			holder.fileName.setText(fileItem.getName());
-		} else {
-			String name = fileItem.getName();
-			if (name.indexOf(".") > 0)
-				name = name.substring(0, name.lastIndexOf("."));
-			holder.fileName.setText(name);
-		}
+		holder.fileName.setText(fileItem.getName());
 		
 		if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
 			
