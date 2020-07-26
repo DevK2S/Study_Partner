@@ -23,8 +23,7 @@ public class FileItem implements Parcelable {
 	private boolean isStarred;
 	private long size;
 	
-	public FileItem() {
-	}
+	public FileItem() {}
 	
 	public FileItem(String path) {
 		File file = new File(path);
@@ -117,18 +116,23 @@ public class FileItem implements Parcelable {
 	
 	public void setLinkUrl(String linkUrl) {
 		this.linkUrl = linkUrl;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
 	}
 	
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public void setDateModified(String dateModified) {
-		this.dateModified = dateModified;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
 	}
 	
 	public void setStarred(boolean starred) {
 		isStarred = starred;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
 	}
 	
 	@Override

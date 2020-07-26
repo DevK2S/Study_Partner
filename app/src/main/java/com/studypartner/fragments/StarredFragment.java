@@ -27,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.studypartner.BuildConfig;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
@@ -45,6 +46,7 @@ import java.util.Objects;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -481,16 +483,18 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						if (starred.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
 							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
 							File shareFile = new File(starred.get(position).getPath());
-
-							if(shareFile.exists()) {
-								intentShareFile.setType("application/pdf");
-								intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + starred.get(position).getPath()));
-								intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File");
-								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing " + starred.get(position).getName());
+							ArrayList<FileItem> fileItems = new ArrayList<>();
+							fileItems.add(starred.get(position));
+							if (shareFile.exists()) {
+								intentShareFile.setType(FileUtils.getFileType(fileItems));
+								intentShareFile.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(starred.get(position).getPath())));
+								intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+								intentShareFile.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application");
 								startActivity(Intent.createChooser(intentShareFile, "Share File"));
 							}
 						} else {
-							Toast.makeText(activity, "Folder cannot be shared", Toast.LENGTH_SHORT).show();
+							Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
 						}
 						return true;
 
@@ -594,13 +598,15 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		
 		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
 			fileItems.add(starred.get(selectedItemPositions.get(i)));
-			fileItemsUri.add(Uri.fromFile(new File(starred.get(selectedItemPositions.get(i)).getPath())));
+			fileItemsUri.add(FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(starred.get(selectedItemPositions.get(i)).getPath())));
 		}
 		
 		Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
 		intentShareFile.setType(FileUtils.getFileType(fileItems));
+		intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		intentShareFile.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 		intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileItemsUri);
-		intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application. Most compact app for all the needs of a college student");
+		intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application");
 		startActivity(Intent.createChooser(intentShareFile, "Share File"));
 	}
 	

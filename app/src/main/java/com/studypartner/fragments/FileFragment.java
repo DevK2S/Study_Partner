@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.studypartner.BuildConfig;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
@@ -58,6 +59,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -592,8 +594,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 							fileItems.add(notes.get(position));
 							if (shareFile.exists()) {
 								intentShareFile.setType(FileUtils.getFileType(fileItems));
-								intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + notes.get(position).getPath()));
-								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application. Most compact app for all the needs of a college student");
+								intentShareFile.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(notes.get(position).getPath())));
+								intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+								intentShareFile.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application");
 								startActivity(Intent.createChooser(intentShareFile, "Share File"));
 							}
 						} else {
@@ -850,13 +854,15 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
 			fileItems.add(notes.get(selectedItemPositions.get(i)));
-			fileItemsUri.add(Uri.fromFile(new File(notes.get(selectedItemPositions.get(i)).getPath())));
+			fileItemsUri.add(FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(notes.get(selectedItemPositions.get(i)).getPath())));
 		}
 		
 		Intent intentShareFile = new Intent(Intent.ACTION_SEND_MULTIPLE);
 		intentShareFile.setType(FileUtils.getFileType(fileItems));
+		intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		intentShareFile.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 		intentShareFile.putParcelableArrayListExtra(Intent.EXTRA_STREAM, fileItemsUri);
-		intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application. Most compact app for all the needs of a college student");
+		intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application");
 		startActivity(Intent.createChooser(intentShareFile, "Share File"));
 	}
 	
