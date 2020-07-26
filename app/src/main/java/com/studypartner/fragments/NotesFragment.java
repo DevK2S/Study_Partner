@@ -82,6 +82,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	
 	private ArrayList<FileItem> notes = new ArrayList<>();
 	private ArrayList<FileItem> starred = new ArrayList<>();
+	private ArrayList<FileItem> links = new ArrayList<>();
 	
 	public NotesFragment() {
 	}
@@ -89,6 +90,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
 		
 		SharedPreferences sortPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SORTING", MODE_PRIVATE);
@@ -306,7 +308,39 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			String json = starredPreference.getString("STARRED_ITEMS", "");
 			Type type = new TypeToken<List<FileItem>>() {}.getType();
 			starred = gson.fromJson(json, type);
+			
+			if (starred == null) starred = new ArrayList<>();
 		}
+		
+		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+		for (FileItem starItem : starred) {
+			File starFile = new File(starItem.getPath());
+			if (!starFile.exists()) {
+				starredToBeRemoved.add(starItem);
+			}
+		}
+		starred.removeAll(starredToBeRemoved);
+		
+		SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+		
+		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
+			Gson gson = new Gson();
+			String json = linkPreference.getString("LINK_ITEMS", "");
+			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			links = gson.fromJson(json, type);
+			
+			if (links == null) links = new ArrayList<>();
+		}
+		
+		ArrayList<FileItem> linkToBeRemoved = new ArrayList<>();
+		for (FileItem linkItem : links) {
+			File linkParent = new File(linkItem.getPath()).getParentFile();
+			assert linkParent != null;
+			if (!linkParent.exists()) {
+				linkToBeRemoved.add(linkItem);
+			}
+		}
+		links.removeAll(linkToBeRemoved);
 		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		
@@ -418,25 +452,43 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 									if (oldFile.renameTo(newFile)) {
 										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
 										notes.get(position).setName(newName);
+										notes.get(position).setPath(newFile.getPath());
 										
 										int starredIndex = starredIndex(position);
 										if (starredIndex != -1) {
 											SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 											SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
 											
-											for (int i = 0; i < starred.size(); i++) {
-												FileItem starItem = starred.get(i);
-												if (starItem.isStarred() && starItem.getPath().equals(notes.get(position).getPath())) {
-													starred.get(i).setName(newName);
-													break;
-												}
-											}
+											starred.get(starredIndex).setName(newName);
 											
 											Gson gson = new Gson();
 											starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 											starredPreferenceEditor.apply();
-											mNotesAdapter.notifyItemChanged(position);
 										}
+										
+										for (FileItem starItem : starred) {
+											if (starItem.getPath().contains(oldFile.getPath())) {
+												starItem.setPath(starItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
+											}
+										}
+										for (FileItem linkItem : links) {
+											if (linkItem.getPath().contains(oldFile.getPath())) {
+												linkItem.setPath(linkItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
+											}
+										}
+										
+										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+										
+										Gson gson = new Gson();
+										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+										linkPreferenceEditor.apply();
+										
+										SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+										SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+										
+										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+										starredPreferenceEditor.apply();
 										
 										mNotesAdapter.notifyItemChanged(position);
 										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
@@ -512,6 +564,44 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 							public void onClick(DialogInterface dialog, int which) {
 								File file = new File(notes.get(position).getPath());
 								deleteRecursive(file);
+								
+								if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
+									ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+									for (FileItem linkItem : links) {
+										if (linkItem.getPath().contains(file.getPath())) {
+											linksToBeRemoved.add(linkItem);
+										}
+									}
+									links.removeAll(linksToBeRemoved);
+									
+									SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+									SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+									
+									if (links.size() == 0) {
+										linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+									}
+									Gson gson = new Gson();
+									linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+									linkPreferenceEditor.apply();
+									
+									ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+									for (FileItem starItem : starred) {
+										if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+											starredToBeRemoved.add(starItem);
+										}
+									}
+									starred.removeAll(starredToBeRemoved);
+									
+									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+									
+									if (starred.size() == 0) {
+										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+									}
+									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+									starredPreferenceEditor.apply();
+								}
+								
 								int starPosition = starredIndex(position);
 								if (starPosition != -1) {
 									
@@ -574,7 +664,39 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			String json = starredPreference.getString("STARRED_ITEMS", "");
 			Type type = new TypeToken<List<FileItem>>() {}.getType();
 			starred = gson.fromJson(json, type);
+			
+			if (starred == null) starred = new ArrayList<>();
 		}
+		
+		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+		for (FileItem starItem : starred) {
+			File starFile = new File(starItem.getPath());
+			if (!starFile.exists()) {
+				starredToBeRemoved.add(starItem);
+			}
+		}
+		starred.removeAll(starredToBeRemoved);
+		
+		SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+		
+		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
+			Gson gson = new Gson();
+			String json = linkPreference.getString("LINK_ITEMS", "");
+			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			links = gson.fromJson(json, type);
+			
+			if (links == null) links = new ArrayList<>();
+		}
+		
+		ArrayList<FileItem> linkToBeRemoved = new ArrayList<>();
+		for (FileItem linkItem : links) {
+			File linkParent = new File(linkItem.getPath()).getParentFile();
+			assert linkParent != null;
+			if (!linkParent.exists()) {
+				linkToBeRemoved.add(linkItem);
+			}
+		}
+		links.removeAll(linkToBeRemoved);
 		
 		File[] files = noteFolder.listFiles();
 		
@@ -654,52 +776,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		Log.d(TAG, "deleteRecursive: " + fileOrDirectory.delete());
 	}
 	
-	private void deleteRows() {
-		final ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Delete Files");
-		builder.setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " files?");
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-					File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
-					deleteRecursive(file);
-					
-					int starPosition = starredIndex(selectedItemPositions.get(i));
-					if (starPosition != -1) {
-						starred.remove(starPosition);
-						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-						
-						if (starred.size() == 0) {
-							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-						}
-						Gson gson = new Gson();
-						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-						starredPreferenceEditor.apply();
-					}
-					
-					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
-					notes.remove(selectedItemPositions.get(i).intValue());
-				}
-				activity.mBottomAppBar.performShow();
-				
-				
-			}
-		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			
-			}
-		});
-		builder.show();
-		
-		actionMode = null;
-	}
-	
 	private void enableActionMode(int position) {
 		if (actionMode == null) {
 			
@@ -774,6 +850,89 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			actionMode.setTitle(String.valueOf(count));
 			actionMode.invalidate();
 		}
+		
+		actionMode = null;
+	}
+	
+	private void deleteRows() {
+		final ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
+		
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		builder.setTitle("Delete Files");
+		builder.setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " files?");
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+					File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
+					deleteRecursive(file);
+					
+					if (notes.get(selectedItemPositions.get(i)).getType() == FileType.FILE_TYPE_FOLDER) {
+						ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+						for (FileItem linkItem : links) {
+							if (linkItem.getPath().contains(file.getPath())) {
+								linksToBeRemoved.add(linkItem);
+							}
+						}
+						links.removeAll(linksToBeRemoved);
+						
+						SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+						SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+						
+						if (links.size() == 0) {
+							linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+						}
+						Gson gson = new Gson();
+						linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+						linkPreferenceEditor.apply();
+						
+						ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+						for (FileItem starItem : starred) {
+							if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+								starredToBeRemoved.add(starItem);
+							}
+						}
+						starred.removeAll(starredToBeRemoved);
+						
+						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+						
+						if (starred.size() == 0) {
+							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+						}
+						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+						starredPreferenceEditor.apply();
+					}
+					
+					int starPosition = starredIndex(selectedItemPositions.get(i));
+					if (starPosition != -1) {
+						starred.remove(starPosition);
+						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+						
+						if (starred.size() == 0) {
+							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+						}
+						Gson gson = new Gson();
+						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+						starredPreferenceEditor.apply();
+					}
+					
+					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
+					notes.remove(selectedItemPositions.get(i).intValue());
+				}
+				activity.mBottomAppBar.performShow();
+				
+				
+			}
+		});
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			
+			}
+		});
+		builder.show();
 		
 		actionMode = null;
 	}

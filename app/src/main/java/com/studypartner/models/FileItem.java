@@ -19,7 +19,6 @@ public class FileItem implements Parcelable {
 	private String name;
 	private FileType type;
 	private String dateCreated, dateModified;
-	private String linkUrl;
 	private boolean isStarred;
 	private long size;
 	
@@ -110,17 +109,6 @@ public class FileItem implements Parcelable {
 		return isStarred;
 	}
 	
-	public String getLinkUrl() {
-		return linkUrl;
-	}
-	
-	public void setLinkUrl(String linkUrl) {
-		this.linkUrl = linkUrl;
-		File file = new File(path);
-		this.dateModified = String.valueOf(file.lastModified());
-		this.size = getFolderSize(file);
-	}
-	
 	public void setName(String name) {
 		this.name = name;
 		File file = new File(path);
@@ -129,7 +117,21 @@ public class FileItem implements Parcelable {
 	}
 	
 	public void setStarred(boolean starred) {
-		isStarred = starred;
+		this.isStarred = starred;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
+	}
+	
+	public void setType(FileType type) {
+		this.type = type;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
+	}
+	
+	public void setPath(String path) {
+		this.path = path;
 		File file = new File(path);
 		this.dateModified = String.valueOf(file.lastModified());
 		this.size = getFolderSize(file);

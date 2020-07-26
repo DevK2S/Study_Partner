@@ -129,4 +129,12 @@
     <string name="sort_by_ok">OK</string>
     <string name="sort_by_cancel">Cancel</string>
 
+    <string name="notes_add_note_name">Name</string>
+    <string name="notes_add_note_content">Content</string>
+    <string name="notes_add_note_ok">OK</string>
+    <string name="notes_add_note_cancel">Cancel</string>
+    <string name="notes_add_link_title">Enter Link</string>
+    <string name="notes_add_link_ok">OK</string>
+    <string name="notes_add_link_cancel">Cancel</string>
+
 </resources>

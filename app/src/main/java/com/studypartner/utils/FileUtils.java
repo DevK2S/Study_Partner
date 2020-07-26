@@ -1,9 +1,10 @@
 package com.studypartner.utils;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,15 +13,12 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.util.Patterns;
 import android.webkit.MimeTypeMap;
-import android.widget.ImageView;
+import android.webkit.URLUtil;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-import com.stfalcon.imageviewer.StfalconImageViewer;
-import com.stfalcon.imageviewer.loader.ImageLoader;
 import com.studypartner.BuildConfig;
-import com.studypartner.R;
 import com.studypartner.models.FileItem;
 
 import java.io.BufferedOutputStream;
@@ -30,14 +28,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
-import okhttp3.ResponseBody;
+import okhttp3.HttpUrl;
 
 import static com.studypartner.BuildConfig.DEBUG;
 
@@ -45,7 +42,6 @@ import static com.studypartner.BuildConfig.DEBUG;
 public class FileUtils {
 	public static final String DOCUMENTS_DIR = "documents";
 	public static final String AUTHORITY =  "${applicationId}.provider";
-	public static final String HIDDEN_PREFIX = ".";
 	
 	private static final String TAG = "FileUtil";
 	final static HashMap<String, FileType> types = new HashMap<>();
@@ -74,48 +70,39 @@ public class FileUtils {
 		return ft;
 	}
 	
-	public static void showImage(Context context, FileItem image) {
-		File[] files = new File(image.getPath()).getParentFile().listFiles();
-		ArrayList<FileItem> images = new ArrayList<>();
+	public static boolean isValidUrl (String link) {
+	
+		if (link.trim().isEmpty()) 	return false;
+		else if (!URLUtil.isNetworkUrl(link)) return false;
+		else if (!Patterns.WEB_URL.matcher(link).matches()) return false;
+		else return HttpUrl.parse(link) != null;
 		
-		int position = 0;
+	}
+	
+	public static void openLink(final Context context, final FileItem link) {
 		
-		if (files != null) {
-			for (File file : files) {
-				FileItem item = new FileItem(file.getPath());
-				if (item.getType() == FileType.FILE_TYPE_IMAGE) {
-					if (item.getPath().equals(image.getPath())) {
-						position = images.size();
-					}
-					images.add(item);
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setTitle("Open Link");
+		builder.setMessage("Do you want to open the link?");
+		builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (isValidUrl(link.getName())) {
+					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link.getName()));
+					context.startActivity(Intent.createChooser(browserIntent,"Select the app to open the link"));
+				} else {
+					Toast.makeText(context, "Link is invalid", Toast.LENGTH_SHORT).show();
 				}
 			}
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
 			
-			new StfalconImageViewer.Builder<>(context, images, new ImageLoader<FileItem>() {
-				@Override
-				public void loadImage(ImageView imageView, FileItem image) {
-					Picasso.get()
-							.load(new File(image.getPath()))
-							.into(imageView);
-				}
-			})
-					.withStartPosition(position)
-					.withBackgroundColorResource(R.color.colorAccent)
-					.withContainerPadding(R.dimen.smallPadding)
-					.show();
-		}
-	}
-	
-	public static void showVideo(Activity activity, FileItem video) {
-
-	}
-	
-	public static void playAudio(Context context, FileItem audio) {
-
-	}
-	
-	public static void openLink(Uri link) {
-	
+			}
+		});
+		builder.show();
+		
 	}
 	
 	public static void openFile(Context context, FileItem file) {
@@ -219,110 +206,11 @@ public class FileUtils {
 		return fileType;
 	}
 	
-	
-	/**
-	 * Gets the extension of a file name, like ".png" or ".jpg".
-	 *
-	 * @param uri
-	 * @return Extension including the dot("."); "" if there is no extension;
-	 * null if uri was null.
-	 */
-	public static String getExtension(String uri) {
-		if (uri == null) {
-			return null;
-		}
-		
-		int dot = uri.lastIndexOf(".");
-		if (dot >= 0) {
-			return uri.substring(dot);
-		} else {
-			// No extension.
-			return "";
-		}
-	}
-	
 	/**
 	 * @return Whether the URI is a local one.
 	 */
 	public static boolean isLocal(String url) {
 		return url != null && !url.startsWith("http://") && !url.startsWith("https://");
-	}
-	
-	/**
-	 * @return True if Uri is a MediaStore Uri.
-	 * @author paulburke
-	 */
-	public static boolean isMediaUri(Uri uri) {
-		return "media".equalsIgnoreCase(uri.getAuthority());
-	}
-	
-	/**
-	 * Convert File into Uri.
-	 *
-	 * @param file
-	 * @return uri
-	 */
-	public static Uri getUri(File file) {
-		return (file != null) ? Uri.fromFile(file) : null;
-	}
-	
-	/**
-	 * Returns the path only (without file name).
-	 *
-	 * @param file
-	 * @return
-	 */
-	public static File getPathWithoutFilename(File file) {
-		if (file != null) {
-			if (file.isDirectory()) {
-				// no file to be split off. Return everything
-				return file;
-			} else {
-				String filename = file.getName();
-				String filepath = file.getAbsolutePath();
-				
-				// Construct path without file name.
-				String pathwithoutname = filepath.substring(0,
-						filepath.length() - filename.length());
-				if (pathwithoutname.endsWith("/")) {
-					pathwithoutname = pathwithoutname.substring(0, pathwithoutname.length() - 1);
-				}
-				return new File(pathwithoutname);
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * @return The MIME type for the given file.
-	 */
-	public static String getMimeType(File file) {
-		
-		String extension = getExtension(file.getName());
-		
-		if (extension.length() > 0)
-			return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.substring(1));
-		
-		return "application/octet-stream";
-	}
-	
-	/**
-	 * @return The MIME type for the give Uri.
-	 */
-	public static String getMimeType(Context context, Uri uri) {
-		File file = new File(getFilePath(context, uri));
-		return getMimeType(file);
-	}
-	
-	/**
-	 * @return The MIME type for the give String Uri.
-	 */
-	public static String getMimeType(Context context, String url) {
-		String type = context.getContentResolver().getType(Uri.parse(url));
-		if (type == null) {
-			type = "application/octet-stream";
-		}
-		return type;
 	}
 	
 	/**
@@ -461,7 +349,7 @@ public class FileUtils {
 						if (path != null) {
 							return path;
 						}
-					} catch (Exception e) {}
+					} catch (Exception ignored) {}
 				}
 				
 				// path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
@@ -536,112 +424,6 @@ public class FileUtils {
 		return null;
 	}
 	
-	/**
-	 * Get the file size in a human-readable string.
-	 *
-	 * @param size
-	 * @return
-	 * @author paulburke
-	 */
-	public static String getReadableFileSize(int size) {
-		final int BYTES_IN_KILOBYTES = 1024;
-		final DecimalFormat dec = new DecimalFormat("###.#");
-		final String KILOBYTES = " KB";
-		final String MEGABYTES = " MB";
-		final String GIGABYTES = " GB";
-		float fileSize = 0;
-		String suffix = KILOBYTES;
-		
-		if (size > BYTES_IN_KILOBYTES) {
-			fileSize = size / BYTES_IN_KILOBYTES;
-			if (fileSize > BYTES_IN_KILOBYTES) {
-				fileSize = fileSize / BYTES_IN_KILOBYTES;
-				if (fileSize > BYTES_IN_KILOBYTES) {
-					fileSize = fileSize / BYTES_IN_KILOBYTES;
-					suffix = GIGABYTES;
-				} else {
-					suffix = MEGABYTES;
-				}
-			}
-		}
-		return String.valueOf(dec.format(fileSize) + suffix);
-	}
-	
-	/**
-	 * Get the Intent for selecting content to be used in an Intent Chooser.
-	 *
-	 * @return The intent for opening a file with Intent.createChooser()
-	 */
-	public static Intent createGetContentIntent() {
-		// Implicitly allow the user to select a particular kind of data
-		final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-		// The MIME data type filter
-		intent.setType("*/*");
-		// Only return URIs that can be opened with ContentResolver
-		intent.addCategory(Intent.CATEGORY_OPENABLE);
-		return intent;
-	}
-	
-	
-	/**
-	 * Creates View intent for given file
-	 *
-	 * @param file
-	 * @return The intent for viewing file
-	 */
-	public static Intent getViewIntent(Context context, File file) {
-		//Uri uri = Uri.fromFile(file);
-		Uri uri = FileProvider.getUriForFile(context, AUTHORITY, file);
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		String url = file.toString();
-		if (url.contains(".doc") || url.contains(".docx")) {
-			// Word document
-			intent.setDataAndType(uri, "application/msword");
-		} else if (url.contains(".pdf")) {
-			// PDF file
-			intent.setDataAndType(uri, "application/pdf");
-		} else if (url.contains(".ppt") || url.contains(".pptx")) {
-			// Powerpoint file
-			intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
-		} else if (url.contains(".xls") || url.contains(".xlsx")) {
-			// Excel file
-			intent.setDataAndType(uri, "application/vnd.ms-excel");
-		} else if (url.contains(".zip") || url.contains(".rar")) {
-			// WAV audio file
-			intent.setDataAndType(uri, "application/x-wav");
-		} else if (url.contains(".rtf")) {
-			// RTF file
-			intent.setDataAndType(uri, "application/rtf");
-		} else if (url.contains(".wav") || url.contains(".mp3")) {
-			// WAV audio file
-			intent.setDataAndType(uri, "audio/x-wav");
-		} else if (url.contains(".gif")) {
-			// GIF file
-			intent.setDataAndType(uri, "image/gif");
-		} else if (url.contains(".jpg") || url.contains(".jpeg") || url.contains(".png")) {
-			// JPG file
-			intent.setDataAndType(uri, "image/jpeg");
-		} else if (url.contains(".txt")) {
-			// Text file
-			intent.setDataAndType(uri, "text/plain");
-		} else if (url.contains(".3gp") || url.contains(".mpg") || url.contains(".mpeg") ||
-				url.contains(".mpe") || url.contains(".mp4") || url.contains(".avi")) {
-			// Video files
-			intent.setDataAndType(uri, "video/*");
-		} else {
-			intent.setDataAndType(uri, "*/*");
-		}
-		
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-		intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-		return intent;
-	}
-	
-	public static File getDownloadsDir() {
-		return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-	}
-	
 	public static File getDocumentCacheDir(@NonNull Context context) {
 		File dir = new File(context.getCacheDir(), DOCUMENTS_DIR);
 		if (!dir.exists()) {
@@ -702,55 +484,6 @@ public class FileUtils {
 		return file;
 	}
 	
-	/**
-	 * Writes response body to disk
-	 *
-	 * @param body ResponseBody
-	 * @param path file path
-	 * @return File
-	 */
-	public static File writeResponseBodyToDisk(ResponseBody body, String path) {
-		try {
-			File target = new File(path);
-			
-			InputStream inputStream = null;
-			OutputStream outputStream = null;
-			
-			try {
-				byte[] fileReader = new byte[4096];
-				
-				inputStream = body.byteStream();
-				outputStream = new FileOutputStream(target);
-				
-				while (true) {
-					int read = inputStream.read(fileReader);
-					
-					if (read == -1) {
-						break;
-					}
-					
-					outputStream.write(fileReader, 0, read);
-				}
-				
-				outputStream.flush();
-				
-				return target;
-			} catch (IOException e) {
-				return null;
-			} finally {
-				if (inputStream != null) {
-					inputStream.close();
-				}
-				
-				if (outputStream != null) {
-					outputStream.close();
-				}
-			}
-		} catch (IOException e) {
-			return null;
-		}
-	}
-	
 	private static void saveFileFromUri(Context context, Uri uri, String destinationPath) {
 		InputStream is = null;
 		BufferedOutputStream bos = null;
@@ -774,55 +507,14 @@ public class FileUtils {
 		}
 	}
 	
-	public static byte[] readBytesFromFile(String filePath) {
-		
-		FileInputStream fileInputStream = null;
-		byte[] bytesArray = null;
-		
-		try {
-			
-			File file = new File(filePath);
-			bytesArray = new byte[(int) file.length()];
-			
-			//read file into bytes[]
-			fileInputStream = new FileInputStream(file);
-			fileInputStream.read(bytesArray);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (fileInputStream != null) {
-				try {
-					fileInputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-		}
-		
-		return bytesArray;
-		
-	}
-	
-	public static File createTempImageFile(Context context, String fileName) throws IOException {
-		// Create an image file name
-		File storageDir = new File(context.getCacheDir(), DOCUMENTS_DIR);
-		return File.createTempFile(fileName, ".jpg", storageDir);
-	}
-	
 	public static String getFileName(@NonNull Context context, Uri uri) {
 		String mimeType = context.getContentResolver().getType(uri);
 		String filename = null;
 		
-		if (mimeType == null && context != null) {
+		if (mimeType == null) {
 			String path = getFilePath(context, uri);
-			if (path == null) {
-				filename = getName(uri.toString());
-			} else {
-				File file = new File(path);
-				filename = file.getName();
-			}
+			File file = new File(path);
+			filename = file.getName();
 		} else {
 			Cursor returnCursor = context.getContentResolver().query(uri, null,
 					null, null, null);
@@ -835,13 +527,5 @@ public class FileUtils {
 		}
 		
 		return filename;
-	}
-	
-	public static String getName(String filename) {
-		if (filename == null) {
-			return null;
-		}
-		int index = filename.lastIndexOf('/');
-		return filename.substring(index + 1);
 	}
 }
