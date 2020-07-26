@@ -475,8 +475,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
 		for (FileItem starItem : starred) {
 			File starFile = new File(starItem.getPath());
-			if (!starFile.exists()) {
-				starredToBeRemoved.add(starItem);
+			if (starItem.getType() == FileType.FILE_TYPE_LINK) {
+				if (starFile.getParentFile() == null || !starFile.getParentFile().exists()) {
+					starredToBeRemoved.add(starItem);
+				}
+			} else {
+				if (!starFile.exists()) {
+					starredToBeRemoved.add(starItem);
+				}
 			}
 		}
 		starred.removeAll(starredToBeRemoved);
@@ -575,7 +581,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	
 	@Override
 	public void onOptionsClick(View view, final int position) {
-		PopupMenu popup = new PopupMenu(getContext(), view);
+		final PopupMenu popup = new PopupMenu(getContext(), view);
 		if (starredIndex(position) != -1) {
 			popup.inflate(R.menu.notes_item_menu_unstar);
 		} else {
@@ -584,6 +590,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER || notes.get(position).getType() == FileType.FILE_TYPE_LINK) {
 			popup.getMenu().removeItem(R.id.notes_item_share);
+		}
+		
+		if (notes.get(position).getType() == FileType.FILE_TYPE_LINK) {
+			popup.getMenu().getItem(0).setTitle("Edit Link");
 		}
 		
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -739,6 +749,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", true);
 								starred = new ArrayList<>();
 							}
+							Log.d(TAG, "onMenuItemClick: starring position " + position);
+							
 							notes.get(position).setStarred(true);
 							starred.add(notes.get(position));
 							Gson gson = new Gson();
@@ -911,8 +923,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
 		for (FileItem starItem : starred) {
 			File starFile = new File(starItem.getPath());
-			if (!starFile.exists()) {
-				starredToBeRemoved.add(starItem);
+			if (starItem.getType() == FileType.FILE_TYPE_LINK) {
+				if (starFile.getParentFile() == null || !starFile.getParentFile().exists()) {
+					starredToBeRemoved.add(starItem);
+				}
+			} else {
+				if (!starFile.exists()) {
+					starredToBeRemoved.add(starItem);
+				}
 			}
 		}
 		starred.removeAll(starredToBeRemoved);

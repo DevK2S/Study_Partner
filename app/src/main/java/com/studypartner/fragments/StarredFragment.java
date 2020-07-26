@@ -397,6 +397,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			popup.getMenu().removeItem(R.id.notes_item_share);
 		}
 		
+		if (starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
+			popup.getMenu().getItem(0).setTitle("Edit Link");
+		}
+		
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -692,8 +696,14 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
 		for (FileItem starItem : starred) {
 			File starFile = new File(starItem.getPath());
-			if (!starFile.exists()) {
-				starredToBeRemoved.add(starItem);
+			if (starItem.getType() == FileType.FILE_TYPE_LINK) {
+				if (starFile.getParentFile() == null || !starFile.getParentFile().exists()) {
+					starredToBeRemoved.add(starItem);
+				}
+			} else {
+				if (!starFile.exists()) {
+					starredToBeRemoved.add(starItem);
+				}
 			}
 		}
 		starred.removeAll(starredToBeRemoved);

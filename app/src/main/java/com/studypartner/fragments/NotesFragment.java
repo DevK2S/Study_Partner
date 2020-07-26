@@ -315,8 +315,14 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
 		for (FileItem starItem : starred) {
 			File starFile = new File(starItem.getPath());
-			if (!starFile.exists()) {
-				starredToBeRemoved.add(starItem);
+			if (starItem.getType() == FileType.FILE_TYPE_LINK) {
+				if (starFile.getParentFile() == null || !starFile.getParentFile().exists()) {
+					starredToBeRemoved.add(starItem);
+				}
+			} else {
+				if (!starFile.exists()) {
+					starredToBeRemoved.add(starItem);
+				}
 			}
 		}
 		starred.removeAll(starredToBeRemoved);
@@ -671,8 +677,14 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
 		for (FileItem starItem : starred) {
 			File starFile = new File(starItem.getPath());
-			if (!starFile.exists()) {
-				starredToBeRemoved.add(starItem);
+			if (starItem.getType() == FileType.FILE_TYPE_LINK) {
+				if (starFile.getParentFile() == null || !starFile.getParentFile().exists()) {
+					starredToBeRemoved.add(starItem);
+				}
+			} else {
+				if (!starFile.exists()) {
+					starredToBeRemoved.add(starItem);
+				}
 			}
 		}
 		starred.removeAll(starredToBeRemoved);
