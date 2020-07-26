@@ -14,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -339,9 +344,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			case R.id.nav_logout:
 				Log.d(TAG, "onNavigationItemSelected: logging out");
 				FirebaseAuth.getInstance().signOut();
-				mNavController.navigate(R.id.nav_logout);
-				finishAffinity();
-				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+				
+				GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+						.requestIdToken(getString(R.string.default_web_client_id))
+						.requestEmail()
+						.build();
+				GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+				googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						if (task.isSuccessful()) {
+							mNavController.navigate(R.id.nav_logout);
+							finishAffinity();
+							overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+						} else {
+							Toast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
 				return true;
 				
 			default:

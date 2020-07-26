@@ -5,6 +5,14 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
+    signingConfigs {
+        config {
+            storeFile file('H:\\studypartnerkeystore.jks')
+            storePassword 'studypartner12345'
+            keyAlias 'studypartnerkeystorealias'
+            keyPassword 'studypartner12345'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "30.0.1"
 
@@ -26,6 +34,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
