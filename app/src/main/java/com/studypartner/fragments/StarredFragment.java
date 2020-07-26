@@ -89,6 +89,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
 		
 		SharedPreferences sortPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SORTING", MODE_PRIVATE);
@@ -163,6 +164,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		sortOrderButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
 				if (sortOrder.equals(ASCENDING_ORDER)) {
 					sortOrder = DESCENDING_ORDER;
 					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.upward_arrow));
@@ -170,6 +172,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 					sortOrder = ASCENDING_ORDER;
 					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
 				}
+				
 				editor.putString("SORTING_ORDER", sortOrder).apply();
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			}
@@ -178,6 +181,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		sortByButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
 				final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 				
 				View dialogView = getLayoutInflater().inflate(R.layout.notes_sort_layout, null);
@@ -188,15 +192,19 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				radioGroup.clearCheck();
 				
 				switch (sortBy) {
+					
 					case SORT_BY_SIZE:
 						radioGroup.check(R.id.sortBySizeRB);
 						break;
+						
 					case SORT_BY_CREATION_TIME:
 						radioGroup.check(R.id.sortByCreationTimeRB);
 						break;
+					
 					case SORT_BY_MODIFIED_TIME:
 						radioGroup.check(R.id.sortByModifiedTimeRB);
 						break;
+					
 					default:
 						radioGroup.check(R.id.sortByNameRB);
 						break;
