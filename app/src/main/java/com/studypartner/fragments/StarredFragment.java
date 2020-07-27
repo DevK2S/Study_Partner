@@ -68,6 +68,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	private String sortBy;
 	private String sortOrder;
 	
+	private LinearLayout mEmptyLayout;
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
 	private LinearLayout mLinearLayout;
@@ -140,6 +141,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			}
 		});
 		
+		mEmptyLayout = rootView.findViewById(R.id.starredEmptyLayout);
 		recyclerView = rootView.findViewById(R.id.starredRecyclerView);
 		mLinearLayout = rootView.findViewById(R.id.starredLinearLayout);
 		sortText = rootView.findViewById(R.id.starredSortText);
@@ -546,6 +548,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						activity.mBottomAppBar.performShow();
 						if (starred.size() == 0) {
 							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+							mEmptyLayout.setVisibility(View.VISIBLE);
 						}
 						Gson gson = new Gson();
 						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
@@ -630,6 +633,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 										
 										if (starred.size() == 0) {
 											starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+											mEmptyLayout.setVisibility(View.VISIBLE);
 										}
 										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 										starredPreferenceEditor.apply();
@@ -736,6 +740,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			}
 		}
 		links.removeAll(linkToBeRemoved);
+		
+		if (starred.isEmpty()) {
+			mEmptyLayout.setVisibility(View.VISIBLE);
+		}
 
 		mStarredAdapter = new NotesAdapter(requireActivity(), starred, this, true);
 
@@ -868,6 +876,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				
 				if (starred.size() == 0) {
 					starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+					mEmptyLayout.setVisibility(View.VISIBLE);
 				}
 				Gson gson = new Gson();
 				starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));

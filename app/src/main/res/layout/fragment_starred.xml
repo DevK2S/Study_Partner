@@ -81,6 +81,50 @@
             app:layout_constraintTop_toTopOf="@+id/starredBackgroundRectangle"
             app:layout_constraintVertical_bias="0.0"  />
 
+        <LinearLayout
+            android:id="@+id/starredEmptyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/mediumPadding"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingTop="@dimen/mediumPadding"
+            android:visibility="gone"
+            android:layout_marginBottom="?attr/actionBarSize"
+            app:layout_constraintBottom_toBottomOf="@+id/starredBackgroundRectangle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/starredBackgroundRectangle" >
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:contentDescription="@string/starred_empty_icon_cd"
+                android:scaleType="centerCrop"
+                android:src="@drawable/starred_outline_icon"
+                android:tint="@color/iconTint" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/mediumMargin"
+                android:text="@string/starred_empty"
+                android:textAlignment="center"
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/largeText" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/smallMargin"
+                android:text="@string/starred_empty_sub"
+                android:textAlignment="center"
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/mediumText" />
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.core.widget.NestedScrollView>

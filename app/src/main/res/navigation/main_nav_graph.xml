@@ -158,12 +158,12 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_settings"
-        android:name="com.studypartner.fragments.SettingsFragment"
-        android:label="@string/navigation_menu_settings"
-        tools:layout="@layout/fragment_settings" >
+        android:id="@+id/nav_about_us"
+        android:name="com.studypartner.fragments.AboutUsFragment"
+        android:label="@string/navigation_menu_about_us"
+        tools:layout="@layout/fragment_about_us" >
         <action
-            android:id="@+id/action_nav_settings_to_nav_home"
+            android:id="@+id/action_nav_about_us_to_nav_home"
             app:destination="@id/nav_home"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
