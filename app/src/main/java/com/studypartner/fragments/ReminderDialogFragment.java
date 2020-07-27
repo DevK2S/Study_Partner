@@ -54,9 +54,7 @@ public class ReminderDialogFragment extends DialogFragment {
     Boolean edit = false;
     private ArrayList<ReminderItem> mReminderList = new ArrayList<>();
 
-    public ReminderDialogFragment() {
-
-    }
+    public ReminderDialogFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +64,7 @@ public class ReminderDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.reminder_dialog, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_reminder_dialog, container, false);
         int positionToEdit = -1;
         if (getArguments() != null) {
             edit = true;
@@ -224,11 +222,13 @@ public class ReminderDialogFragment extends DialogFragment {
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, 0);
-        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(requireContext(), AlertReceiver.class);
         Log.d(TAG, "createNotificaiton: item " + item.toString());
-        intent.putExtra("Item", item);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, 0);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("Item", item);
+        intent.putExtra("Item", bundle);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
         Log.d("Test", String.valueOf(c.getTime()));
     }

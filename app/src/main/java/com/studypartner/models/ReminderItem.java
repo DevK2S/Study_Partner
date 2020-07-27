@@ -110,11 +110,12 @@ public class ReminderItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(Title);
-        parcel.writeString(des);
         parcel.writeString(date);
         parcel.writeString(time);
+        parcel.writeString(Title);
+        parcel.writeString(des);
         parcel.writeInt(notifyId);
+        parcel.writeInt(position);
     }
 
     @Override

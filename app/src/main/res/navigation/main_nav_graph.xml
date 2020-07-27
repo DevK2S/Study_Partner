@@ -149,8 +149,8 @@
     <fragment
         android:id="@+id/reminderDialogFragment"
         android:name="com.studypartner.fragments.ReminderDialogFragment"
-        android:label="ReminderDialogFragment"
-        tools:layout="@layout/reminder_dialog">
+        android:label="@string/navigation_menu_reminders"
+        tools:layout="@layout/fragment_reminder_dialog">
         <action
             android:id="@+id/action_reminderDialogFragment_to_nav_reminder"
             app:destination="@id/nav_reminder" />

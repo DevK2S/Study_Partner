@@ -7,10 +7,10 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.os.Build;
 
-import androidx.core.app.NotificationCompat;
-
 import com.studypartner.R;
 import com.studypartner.models.ReminderItem;
+
+import androidx.core.app.NotificationCompat;
 
 class NotificationHelper extends ContextWrapper {
     public static final String channelID = "channelID";
@@ -39,7 +39,9 @@ class NotificationHelper extends ContextWrapper {
 
     public NotificationCompat.Builder getChannelNotification(ReminderItem item) {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
-                .setContentTitle("Alarm!")
-                .setContentText("Your AlarmManager is working.");
+                .setContentTitle(item.getTitle())
+                .setContentText(item.getDes())
+                .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                .setSmallIcon(R.drawable.app_logo);
     }
 }

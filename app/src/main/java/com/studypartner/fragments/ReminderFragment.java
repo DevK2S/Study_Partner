@@ -17,17 +17,15 @@ import com.google.gson.reflect.TypeToken;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.ReminderAdapter;
-import com.studypartner.models.AttendanceItem;
 import com.studypartner.models.ReminderItem;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 

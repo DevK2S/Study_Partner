@@ -161,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigateUp();
 				} else if (mNavController.getCurrentDestination().getId() == R.id.notesSearchFragment) {
 					mNavController.navigateUp();
+				} else if (mNavController.getCurrentDestination().getId() == R.id.reminderDialogFragment) {
+					mNavController.navigateUp();
 				} else {
 					Log.d(TAG, "onClick: opening drawer");
 					mDrawerLayout.openDrawer(GravityCompat.START);
