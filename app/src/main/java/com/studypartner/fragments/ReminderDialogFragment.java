@@ -126,6 +126,7 @@ public class ReminderDialogFragment extends DialogFragment {
                     }
                 }, year, month, day);
                 //updateDisplay();
+                DatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 10000);
                 DatePicker.setTitle("Pick a Date");
                 DatePicker.show();
             }
@@ -154,7 +155,6 @@ public class ReminderDialogFragment extends DialogFragment {
                         TimeEditText.setText(time);
                     }
                 }, hour, minute, false);
-
                 TimePicker.show();
             }
         });
