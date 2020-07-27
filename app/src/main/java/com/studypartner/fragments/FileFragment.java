@@ -100,6 +100,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	private String sortBy;
 	private String sortOrder;
 	
+	private LinearLayout mEmptyLayout;
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
 	private File noteFolder;
@@ -313,6 +314,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			}
 		});
 		
+		mEmptyLayout = rootView.findViewById(R.id.fileEmptyLayout);
 		recyclerView = rootView.findViewById(R.id.fileRecyclerView);
 		mLinearLayout = rootView.findViewById(R.id.fileLinearLayout);
 		sortText = rootView.findViewById(R.id.fileSortText);
@@ -581,14 +583,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	
 	@Override
 	public void onOptionsClick(View view, final int position) {
-		final PopupMenu popup = new PopupMenu(getContext(), view);
+		PopupMenu popup = new PopupMenu(getContext(), view);
 		if (starredIndex(position) != -1) {
 			popup.inflate(R.menu.notes_item_menu_unstar);
 		} else {
 			popup.inflate(R.menu.notes_item_menu_star);
 		}
 		
-		if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER || notes.get(position).getType() == FileType.FILE_TYPE_LINK) {
+		if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
 			popup.getMenu().removeItem(R.id.notes_item_share);
 		}
 		
@@ -870,6 +872,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 								}
 								mNotesAdapter.notifyItemRemoved(position);
 								notes.remove(position);
+								
+								if (notes.isEmpty()) {
+									mEmptyLayout.setVisibility(View.VISIBLE);
+								}
 							}
 						});
 						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -883,7 +889,15 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					
 					case R.id.notes_item_share:
 						
-						if (notes.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
+						if (notes.get(position).getType() == FileType.FILE_TYPE_LINK) {
+							
+							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+							intentShareFile.setType("text/plain");
+							intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application\n" + notes.get(position).getName());
+							startActivity(Intent.createChooser(intentShareFile, "Share File"));
+							
+						} else if (notes.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
+							
 							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
 							File shareFile = new File(notes.get(position).getPath());
 							ArrayList<FileItem> fileItems = new ArrayList<>();
@@ -895,6 +909,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 								intentShareFile.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application");
 								startActivity(Intent.createChooser(intentShareFile, "Share File"));
+								
 							}
 						} else {
 							Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
@@ -977,6 +992,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				}
 				notes.add(link);
 			}
+		}
+		
+		if (notes.isEmpty()) {
+			mEmptyLayout.setVisibility(View.VISIBLE);
 		}
 		
 		mNotesAdapter = new NotesAdapter(requireActivity(), notes, this, true);
@@ -1231,6 +1250,9 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
 					notes.remove(selectedItemPositions.get(i).intValue());
 				}
+				if (notes.isEmpty()) {
+					mEmptyLayout.setVisibility(View.VISIBLE);
+				}
 				
 			}
 		});
@@ -1366,6 +1388,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			if (resultCode == Activity.RESULT_OK) {
 				notes.add(new FileItem(audioFile.getPath()));
 				mNotesAdapter.notifyItemInserted(notes.size() - 1);
+				
+				if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+					mEmptyLayout.setVisibility(View.GONE);
+				}
+				
+				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
 				Toast.makeText(getContext(), "Audio could not be saved", Toast.LENGTH_SHORT).show();
 			}
@@ -1379,7 +1407,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+					
+					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+						mEmptyLayout.setVisibility(View.GONE);
+					}
 				}
+				
+				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
 				Toast.makeText(getContext(), "Image(s) could not be saved", Toast.LENGTH_SHORT).show();
 			}
@@ -1389,23 +1423,18 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			if (resultCode == Activity.RESULT_OK) {
 				notes.add(new FileItem(ImagePicker.Companion.getFilePath(data)));
 				mNotesAdapter.notifyItemInserted(notes.size() - 1);
+				
+				if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+					mEmptyLayout.setVisibility(View.GONE);
+				}
+				
+				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode == ImagePicker.RESULT_ERROR) {
 				Toast.makeText(getContext(), "Image could not be saved", Toast.LENGTH_SHORT).show();
 			}
 			
 		} else if (requestCode == DOC_REQUEST_CODE) {
 			
-//			if (resultCode == Activity.RESULT_OK) {
-//				assert data != null;
-//				ArrayList<Uri> docPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS)));
-//				for (Uri uri : docPaths) {
-//					String filePath = FileUtils.getFilePath(requireContext(), uri);
-//					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
-//					mNotesAdapter.notifyItemInserted(notes.size() - 1);
-//				}
-//			} else if (resultCode != Activity.RESULT_CANCELED) {
-//				Toast.makeText(getContext(), "Document(s) could not be saved", Toast.LENGTH_SHORT).show();
-//			}
 			if (resultCode == Activity.RESULT_OK) {
 				assert data != null;
 				if (null != data.getClipData()) {
@@ -1415,12 +1444,24 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						String filePath = FileUtils.getFilePath(requireContext(), uri);
 						notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 						mNotesAdapter.notifyItemInserted(notes.size() - 1);
+						
+						if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+							mEmptyLayout.setVisibility(View.GONE);
+						}
 					}
+					
+					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				} else {
 					Uri uri = data.getData();
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+					
+					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+						mEmptyLayout.setVisibility(View.GONE);
+					}
+					
+					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				}
 			}
 			
@@ -1433,7 +1474,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+					
+					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+						mEmptyLayout.setVisibility(View.GONE);
+					}
 				}
+				
+				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
 				Toast.makeText(getContext(), "Video(s) could not be saved", Toast.LENGTH_SHORT).show();
 			}
@@ -1449,12 +1496,24 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						String filePath = FileUtils.getFilePath(requireContext(), uri);
 						notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 						mNotesAdapter.notifyItemInserted(notes.size() - 1);
+						
+						if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+							mEmptyLayout.setVisibility(View.GONE);
+						}
 					}
+					
+					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				} else {
 					Uri uri = data.getData();
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+					
+					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+						mEmptyLayout.setVisibility(View.GONE);
+					}
+					
+					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {
 				Toast.makeText(getContext(), "Audio(s) could not be saved", Toast.LENGTH_SHORT).show();
@@ -1480,9 +1539,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (file.mkdirs()) {
 			notes.add(new FileItem(file.getPath()));
 			mNotesAdapter.notifyItemInserted(notes.size());
+			
+			if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+				mEmptyLayout.setVisibility(View.GONE);
+			}
+			
+			sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		}
-		
-		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}
 	
 	private void getDocument() {
@@ -1500,10 +1563,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		getDocument.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 		getDocument.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 		startActivityForResult(Intent.createChooser(getDocument,"ChooseFile"), DOC_REQUEST_CODE);
-
-//		FilePickerBuilder.getInstance()
-//				.setActivityTitle("Select Documents")
-//				.pickFile(this,DOC_REQUEST_CODE);
+		
 	}
 	
 	private void getImage() {
@@ -1622,6 +1682,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						fos.close();
 						notes.add(new FileItem(file.getPath()));
 						mNotesAdapter.notifyItemInserted(notes.size() - 1);
+						
+						if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+							mEmptyLayout.setVisibility(View.GONE);
+						}
+						
+						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 					} catch (Exception e) {
 						Toast.makeText(requireContext(), "Could not create the note " + e.getMessage(), Toast.LENGTH_SHORT).show();
 						e.printStackTrace();
@@ -1690,6 +1756,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					
 					notes.add(item);
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
+					
+					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+						mEmptyLayout.setVisibility(View.GONE);
+					}
+					
+					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 					
 					SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
 					SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();

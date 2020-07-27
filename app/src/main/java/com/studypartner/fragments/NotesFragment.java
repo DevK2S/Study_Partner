@@ -2,9 +2,7 @@ package com.studypartner.fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -66,6 +64,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private String sortBy;
 	private String sortOrder;
 	
+	private LinearLayout mEmptyLayout;
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
 	private File noteFolder;
@@ -165,6 +164,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			}
 		});
 		
+		mEmptyLayout = rootView.findViewById(R.id.notesEmptyLayout);
 		recyclerView = rootView.findViewById(R.id.notesRecyclerView);
 		mLinearLayout = rootView.findViewById(R.id.notesLinearLayout);
 		sortText = rootView.findViewById(R.id.notesSortText);
@@ -420,6 +420,9 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		} else {
 			popup.inflate(R.menu.notes_item_menu_star);
 		}
+		
+		popup.getMenu().removeItem(R.id.notes_item_share);
+		
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -626,6 +629,10 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								activity.mBottomAppBar.performShow();
 								mNotesAdapter.notifyItemRemoved(position);
 								notes.remove(position);
+								
+								if (notes.isEmpty()) {
+									mEmptyLayout.setVisibility(View.VISIBLE);
+								}
 							}
 						});
 						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -635,23 +642,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 							}
 						});
 						builder.show();
-						return true;
-						
-					case R.id.notes_item_share:
-						if (notes.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
-							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
-							File shareFile = new File(notes.get(position).getPath());
-							
-							if(shareFile.exists()) {
-								intentShareFile.setType("application/pdf");
-								intentShareFile.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + notes.get(position).getPath()));
-								intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing File");
-								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing " + notes.get(position).getName());
-								startActivity(Intent.createChooser(intentShareFile, "Share File"));
-							}
-						} else {
-							Toast.makeText(activity, "Folder cannot be shared", Toast.LENGTH_SHORT).show();
-						}
 						return true;
 						
 					default:
@@ -723,6 +713,10 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			}
 		}
 		
+		if (notes.isEmpty()) {
+			mEmptyLayout.setVisibility(View.VISIBLE);
+		}
+		
 		mNotesAdapter = new NotesAdapter(requireActivity(), notes, this, true);
 		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
@@ -772,10 +766,15 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		
 		if (file.mkdirs()) {
 			notes.add(new FileItem(file.getPath()));
+			
+			if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+				mEmptyLayout.setVisibility(View.GONE);
+			}
+			
 			mNotesAdapter.notifyItemInserted(notes.size());
+			
+			sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		}
-		
-		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 	}
 	
 	private void deleteRecursive(File fileOrDirectory) {
@@ -933,9 +932,12 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
 					notes.remove(selectedItemPositions.get(i).intValue());
 				}
+				
+				if (notes.isEmpty()) {
+					mEmptyLayout.setVisibility(View.VISIBLE);
+				}
+				
 				activity.mBottomAppBar.performShow();
-				
-				
 			}
 		});
 		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
