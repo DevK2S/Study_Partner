@@ -14,6 +14,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,6 +26,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
+import com.studypartner.utils.Connection;
 
 import java.util.Objects;
 
@@ -131,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
 		mNavController.addOnDestinationChangedListener(this);
 		
-		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_attendance, R.id.nav_starred, R.id.nav_notes, R.id.nav_reminder, R.id.nav_profile, R.id.nav_settings, R.id.nav_logout)
+		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_attendance, R.id.nav_starred, R.id.nav_notes, R.id.nav_reminder, R.id.nav_profile, R.id.nav_about_us, R.id.nav_logout)
 				.setDrawerLayout(mDrawerLayout)
 				.build();
 		
@@ -243,16 +249,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 				break;
 			case R.id.nav_profile:
+			case R.id.nav_about_us:
 				mBottomAppBar.setVisibility(View.GONE);
 				fab.setVisibility(View.GONE);
 				fab.hide();
-				break;
-			case R.id.nav_settings:
-				mBottomAppBar.setVisibility(View.GONE);
-				fab.setVisibility(View.VISIBLE);
-				fab.show();
-				fab.setImageResource(R.drawable.settings_icon);
-				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 				break;
 			default:
 				break;
@@ -320,14 +320,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				}
 				return true;
 				
-			case R.id.nav_settings:
-				Log.d(TAG, "onNavigationItemSelected: settings selected");
-				if (mNavController.getCurrentDestination().getId() != R.id.nav_settings) {
-					Log.d(TAG, "onNavigationItemSelected: opening settings fragment");
-					mNavController.navigate(R.id.nav_settings, null, leftToRightBuilder.build());
-				}
-				return true;
-				
 			case R.id.nav_profile:
 				Log.d(TAG, "onNavigationItemSelected: profile selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_profile) {
@@ -339,9 +331,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			case R.id.nav_logout:
 				Log.d(TAG, "onNavigationItemSelected: logging out");
 				FirebaseAuth.getInstance().signOut();
-				mNavController.navigate(R.id.nav_logout);
-				finishAffinity();
-				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+				
+				GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+						.requestIdToken(getString(R.string.default_web_client_id))
+						.requestEmail()
+						.build();
+				GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+				googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						if (task.isSuccessful()) {
+							mNavController.navigate(R.id.nav_logout);
+							finishAffinity();
+							overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+						} else {
+							Toast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
+				return true;
+				
+			case R.id.nav_feedback:
+				
+				Connection.feedback(this);
+				return true;
+				
+			case R.id.nav_report_bug:
+				Connection.reportBug(this);
+				return true;
+				
+			case R.id.nav_about_us:
+				Log.d(TAG, "onNavigationItemSelected: about us selected");
+				if (mNavController.getCurrentDestination().getId() != R.id.nav_about_us) {
+					Log.d(TAG, "onNavigationItemSelected: opening about us fragment");
+					mNavController.navigate(R.id.nav_about_us, null, leftToRightBuilder.build());
+				}
 				return true;
 				
 			default:

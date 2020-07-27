@@ -305,7 +305,6 @@ public class ProfileFragment extends Fragment {
 			}
 		});
 		
-		
 		profileImageView = rootView.findViewById(R.id.profileScreenImageView);
 		cameraButton = rootView.findViewById(R.id.profileScreenImageButton);
 		
@@ -314,6 +313,7 @@ public class ProfileFragment extends Fragment {
 		currentUser = FirebaseAuth.getInstance().getCurrentUser();
 		
 		disableViews();
+		
 		mDatabaseReference.child("usernames").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot snapshot) {

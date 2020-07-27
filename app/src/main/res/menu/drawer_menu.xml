@@ -39,15 +39,17 @@
 
             <group android:checkableBehavior="single">
 
-                <item android:id="@+id/nav_settings"
-                    android:title="@string/navigation_menu_settings"
-                    android:icon="@drawable/settings_icon"/>
+                <item android:id="@+id/nav_feedback"
+                    android:title="@string/navigation_menu_feedback"
+                    android:icon="@drawable/feedback_icon"/>
 
-                <item
-                    android:id="@+id/nav_dark_mode"
-                    android:title="@string/navigation_menu_dark_mode"
-                    android:icon="@drawable/dark_mode_icon" />
+                <item android:id="@+id/nav_report_bug"
+                    android:title="@string/navigation_menu_report_bug"
+                    android:icon="@drawable/report_bug_icon"/>
 
+                <item android:id="@+id/nav_about_us"
+                    android:title="@string/navigation_menu_about_us"
+                    android:icon="@drawable/about_us_icon"/>
             </group>
 
         </menu>

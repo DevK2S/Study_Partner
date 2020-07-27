@@ -68,6 +68,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	private String sortBy;
 	private String sortOrder;
 	
+	private LinearLayout mEmptyLayout;
 	private FloatingActionButton fab;
 	private RecyclerView recyclerView;
 	private LinearLayout mLinearLayout;
@@ -89,6 +90,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
 		
 		SharedPreferences sortPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SORTING", MODE_PRIVATE);
@@ -139,6 +141,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			}
 		});
 		
+		mEmptyLayout = rootView.findViewById(R.id.starredEmptyLayout);
 		recyclerView = rootView.findViewById(R.id.starredRecyclerView);
 		mLinearLayout = rootView.findViewById(R.id.starredLinearLayout);
 		sortText = rootView.findViewById(R.id.starredSortText);
@@ -163,6 +166,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		sortOrderButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
 				if (sortOrder.equals(ASCENDING_ORDER)) {
 					sortOrder = DESCENDING_ORDER;
 					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.upward_arrow));
@@ -170,6 +174,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 					sortOrder = ASCENDING_ORDER;
 					sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
 				}
+				
 				editor.putString("SORTING_ORDER", sortOrder).apply();
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			}
@@ -178,6 +183,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		sortByButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
 				final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 				
 				View dialogView = getLayoutInflater().inflate(R.layout.notes_sort_layout, null);
@@ -188,15 +194,19 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				radioGroup.clearCheck();
 				
 				switch (sortBy) {
+					
 					case SORT_BY_SIZE:
 						radioGroup.check(R.id.sortBySizeRB);
 						break;
+						
 					case SORT_BY_CREATION_TIME:
 						radioGroup.check(R.id.sortByCreationTimeRB);
 						break;
+					
 					case SORT_BY_MODIFIED_TIME:
 						radioGroup.check(R.id.sortByModifiedTimeRB);
 						break;
+					
 					default:
 						radioGroup.check(R.id.sortByNameRB);
 						break;
@@ -397,6 +407,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			popup.getMenu().removeItem(R.id.notes_item_share);
 		}
 		
+		if (starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
+			popup.getMenu().getItem(0).setTitle("Edit Link");
+		}
+		
 		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -534,6 +548,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						activity.mBottomAppBar.performShow();
 						if (starred.size() == 0) {
 							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+							mEmptyLayout.setVisibility(View.VISIBLE);
 						}
 						Gson gson = new Gson();
 						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
@@ -618,6 +633,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 										
 										if (starred.size() == 0) {
 											starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+											mEmptyLayout.setVisibility(View.VISIBLE);
 										}
 										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 										starredPreferenceEditor.apply();
@@ -692,8 +708,14 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
 		for (FileItem starItem : starred) {
 			File starFile = new File(starItem.getPath());
-			if (!starFile.exists()) {
-				starredToBeRemoved.add(starItem);
+			if (starItem.getType() == FileType.FILE_TYPE_LINK) {
+				if (starFile.getParentFile() == null || !starFile.getParentFile().exists()) {
+					starredToBeRemoved.add(starItem);
+				}
+			} else {
+				if (!starFile.exists()) {
+					starredToBeRemoved.add(starItem);
+				}
 			}
 		}
 		starred.removeAll(starredToBeRemoved);
@@ -718,6 +740,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			}
 		}
 		links.removeAll(linkToBeRemoved);
+		
+		if (starred.isEmpty()) {
+			mEmptyLayout.setVisibility(View.VISIBLE);
+		}
 
 		mStarredAdapter = new NotesAdapter(requireActivity(), starred, this, true);
 
@@ -850,6 +876,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				
 				if (starred.size() == 0) {
 					starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+					mEmptyLayout.setVisibility(View.VISIBLE);
 				}
 				Gson gson = new Gson();
 				starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));

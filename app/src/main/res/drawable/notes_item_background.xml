@@ -4,13 +4,13 @@
     <item android:state_activated="true">
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/smallMargin"/>
-            <solid android:color="@color/notesItemBackground"/>
+            <solid android:color="@color/colorAccent"/>
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="@dimen/smallMargin"/>
-            <solid android:color="@color/notesItemBackground"/>
+            <solid android:color="@android:color/transparent"/>
         </shape>
     </item>
 </selector>
