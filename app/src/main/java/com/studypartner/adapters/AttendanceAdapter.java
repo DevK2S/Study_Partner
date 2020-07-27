@@ -147,35 +147,35 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		
 		@Override
 		public void onClick(View v) {
-			
+
 			if (v.getId() == attendedPlusButton.getId()) {
-				
+
 				Log.d(TAG, "onClick: attended plus clicked");
 				mClickListener.onAttendedPlusButtonClicked(getAdapterPosition());
-				
+
 			} else if (v.getId() == attendedMinusButton.getId()) {
-				
+
 				Log.d(TAG, "onClick: attended minus clicked");
 				mClickListener.onAttendedMinusButtonClicked(getAdapterPosition());
-				
+
 			} else if (v.getId() == missedPlusButton.getId()) {
-				
+
 				Log.d(TAG, "onClick: missed plus clicked");
 				mClickListener.onMissedPlusButtonClicked(getAdapterPosition());
-				
+
 			} else if (v.getId() == missedMinusButton.getId()) {
-				
+
 				Log.d(TAG, "onClick: missed minus clicked");
 				mClickListener.onMissedMinusButtonClicked(getAdapterPosition());
-				
+
 			} else if (v.getId() == editButton.getId()) {
 				Log.d(TAG, "onClick: edit button clicked");
 				mClickListener.editButtonClicked(getAdapterPosition());
-				
+
 			} else if (v.getId() == deleteButton.getId()) {
 				Log.d(TAG, "onClick: delete button clicked");
 				mClickListener.deleteButtonClicked(getAdapterPosition());
-				
+
 			}
 		}
 	}
