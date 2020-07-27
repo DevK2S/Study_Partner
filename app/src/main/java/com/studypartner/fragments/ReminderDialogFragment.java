@@ -166,8 +166,16 @@ public class ReminderDialogFragment extends DialogFragment {
                 int notifyId;
                 // ReminderItem item = new ReminderItem( String.valueOf(TitleEditText.getText()),String.valueOf(ContentEditText.getText()),time,date);
                 if (edit) {
+                    AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
+                    Intent intent = new Intent(requireContext(), AlertReceiver.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("Item", mReminderList.get(finalPositionToEdit));
+                    intent.putExtra("Item", bundle);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmManager.cancel(pendingIntent);
                     mReminderList.get(finalPositionToEdit).Edit(String.valueOf(TitleEditText.getText()), String.valueOf(ContentEditText.getText()), String.valueOf(DateEditText.getText()), String.valueOf(TimeEditText.getText()));
                     notifyId = mReminderList.get(finalPositionToEdit).getnotifyId();
+                    createNotificaiton(mReminderList.get(finalPositionToEdit));
                 } else {
                     ReminderItem item = new ReminderItem(String.valueOf(TitleEditText.getText()), String.valueOf(ContentEditText.getText()), time, date);
                     notifyId = item.getnotifyId();
