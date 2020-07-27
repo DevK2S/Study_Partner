@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/attendanceItemAttendanceCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/mediumMargin"
+    android:backgroundTint="@color/colorPrimary"
+    app:cardCornerRadius="40dp"
+    app:cardElevation="@dimen/mediumElevation"
+    app:contentPadding="@dimen/mediumPadding">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ReminderItemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/reminderItemEditButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:src="@drawable/pen_icon"
+            android:tint="@color/alternativeIconTint"
+            app:layout_constraintEnd_toStartOf="@id/reminderItemDeleteButton"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/reminder_item_edit_button" />
+
+        <ImageButton
+            android:id="@+id/reminderItemDeleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:contentDescription="@string/reminderitem_delete_button"
+            android:src="@drawable/delete_icon"
+            android:tint="@color/alternativeIconTint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/reminderItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:textAllCaps="true"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/largeText"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Java" />
+
+        <TextView
+            android:id="@+id/reminderItemDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/reminderItemTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

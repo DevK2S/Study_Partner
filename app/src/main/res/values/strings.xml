@@ -138,6 +138,8 @@
     <string name="notes_add_link_title">Enter Link</string>
     <string name="notes_add_link_ok">OK</string>
     <string name="notes_add_link_cancel">Cancel</string>
+    <string name="reminderitem_delete_button">Reminder Item Delete</string>
+    <string name="reminder_item_edit_button">Reminder Item Edit</string>
 
     <string name="starred_empty_icon_cd">Starred Empty Icon</string>
     <string name="starred_empty">Star important files to view them quickly</string>

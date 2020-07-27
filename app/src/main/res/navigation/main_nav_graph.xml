@@ -133,14 +133,27 @@
         android:id="@+id/nav_reminder"
         android:name="com.studypartner.fragments.ReminderFragment"
         android:label="@string/navigation_menu_reminders"
-        tools:layout="@layout/fragment_reminder" >
+        tools:layout="@layout/fragment_reminder">
         <action
             android:id="@+id/action_nav_reminder_to_nav_home"
             app:destination="@id/nav_home"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_right"
             app:popUpTo="@id/nav_home"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_reminder_to_reminderDialogFragment"
+            app:destination="@id/reminderDialogFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reminderDialogFragment"
+        android:name="com.studypartner.fragments.ReminderDialogFragment"
+        android:label="ReminderDialogFragment"
+        tools:layout="@layout/reminder_dialog">
+        <action
+            android:id="@+id/action_reminderDialogFragment_to_nav_reminder"
+            app:destination="@id/nav_reminder" />
     </fragment>
 
     <fragment
@@ -195,6 +208,6 @@
         android:id="@+id/nav_logout"
         android:name="com.studypartner.activities.LoginActivity"
         android:label="@string/navigation_menu_logout"
-        tools:layout="@layout/activity_login"/>
+        tools:layout="@layout/activity_login" />
 
 </navigation>
