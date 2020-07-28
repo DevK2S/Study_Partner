@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
@@ -52,15 +51,15 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		View rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
 		
 		final MainActivity activity = (MainActivity) requireActivity();
-		mfab = activity.fab;
+		mfab = rootView.findViewById(R.id.reminderFab);
+		activity.fab.hide();
+		activity.mBottomAppBar.performHide();
+		activity.mBottomAppBar.setVisibility(View.GONE);
+		
 		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override
 			public void handleOnBackPressed() {
 				Log.d(TAG, "handleOnBackPressed: starts");
-				MainActivity activity = (MainActivity) requireActivity();
-				activity.mBottomAppBar.setVisibility(View.VISIBLE);
-				activity.mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_CENTER);
-				activity.fab.setVisibility(View.VISIBLE);
 				activity.mNavController.navigate(R.id.action_nav_reminder_to_nav_home);
 			}
 		});
@@ -97,10 +96,10 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		
 		Calendar calendar = Calendar.getInstance();
 		Calendar today = Calendar.getInstance();
-		
-		ArrayList<ReminderItem> remindersToBeRemoved = new ArrayList<>();
-		
-		for (ReminderItem item : mReminderList) {
+
+		for (int position = 0; position < mReminderList.size(); position++) {
+			
+			ReminderItem item = mReminderList.get(position);
 			
 			int year = Integer.parseInt(item.getDate().substring(6));
 			int month = Integer.parseInt(item.getDate().substring(3, 5)) - 1;
@@ -112,11 +111,11 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 				hour = hour + 12;
 			calendar.set(year, month, day, hour, minute);
 			if (calendar.compareTo(today) < 0) {
-				remindersToBeRemoved.add(item);
+				mReminderList.get(position).setActive(false);
 			}
 		}
 		
-		mReminderList.removeAll(remindersToBeRemoved);
+		Log.d(TAG, "populateDataAndSetAdapter: " + mReminderList.toString());
 		
 		if (mReminderList.size() == 0) {
 			reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", false);
@@ -193,5 +192,10 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 	@Override
 	public void onClick(int position) {
 		editReminder(position);
+	}
+	
+	@Override
+	public void onLongClick(int position) {
+		deleteReminder(position);
 	}
 }

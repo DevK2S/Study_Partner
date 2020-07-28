@@ -235,6 +235,7 @@ public class ReminderDialogFragment extends DialogFragment {
 						alarmManager.cancel(pendingIntent);
 						
 						mReminderList.get(finalPositionToEdit).edit(title, content, time, date);
+						mReminderList.get(finalPositionToEdit).setActive(true);
 						
 						Log.d("TAG", "onClick: " + mReminderList.get(finalPositionToEdit).toString());
 						

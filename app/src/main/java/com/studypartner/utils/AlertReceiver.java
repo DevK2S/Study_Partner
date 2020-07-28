@@ -17,10 +17,15 @@ public class AlertReceiver extends BroadcastReceiver {
         assert bundle != null;
         ReminderItem item = bundle.getParcelable("BUNDLE_REMINDER_ITEM");
         assert item != null;
-      
-        NotificationHelper notificationHelper = new NotificationHelper(context);
-        NotificationCompat.Builder builder = notificationHelper.getChannelNotification(item);
-        notificationHelper.getManager().notify(item.getnotifyId(), builder.build());
+        boolean cancel = intent.getBooleanExtra("CANCEL", false);
         
+        NotificationHelper notificationHelper = new NotificationHelper(context);
+    
+        if (cancel) {
+            notificationHelper.getManager().cancel(item.getNotifyId());
+        } else {
+            NotificationCompat.Builder builder = notificationHelper.getChannelNotification(context,item);
+            notificationHelper.getManager().notify(item.getNotifyId(), builder.build());
+        }
     }
 }

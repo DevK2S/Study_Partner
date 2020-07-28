@@ -21,9 +21,9 @@
         android:roundIcon="@drawable/app_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".activities.MediaActivity" />
-        <activity
-            android:name=".activities.MainActivity">
+        <activity android:name=".activities.MainActivity">
             <nav-graph android:value="@navigation/main_nav_graph" />
         </activity>
         <activity android:name=".activities.CreateAccountActivity" />
@@ -46,6 +46,7 @@
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -55,7 +56,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-        <receiver android:name=".utils.AlertReceiver" />
+
+        <receiver android:name=".utils.AlertReceiver"
+            android:exported="false"/>
 
     </application>
 

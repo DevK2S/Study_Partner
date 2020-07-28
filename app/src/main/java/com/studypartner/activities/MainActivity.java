@@ -185,6 +185,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		rightToLeftBuilder.setPopEnterAnim(R.anim.slide_in_right);
 		rightToLeftBuilder.setPopExitAnim(R.anim.slide_out_left);
 		rightToLeftBuilder.setLaunchSingleTop(true);
+		
+		Intent intent = getIntent();
+		Bundle bundle = intent.getBundleExtra("EXTRA_REMINDER_ITEM");
+		if (bundle != null) {
+			Log.d(TAG, "onCreate: starting reminder");
+			mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
+		}
 	}
 	
 	@Override
@@ -244,11 +251,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				mBottomAppBar.bringToFront();
 				break;
 			case R.id.nav_reminder:
+				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 				mBottomAppBar.setVisibility(View.GONE);
 				fab.show();
 				fab.setVisibility(View.VISIBLE);
 				fab.setImageResource(R.drawable.reminder_add_icon);
-				mBottomAppBar.setFabAlignmentMode(BottomAppBar.FAB_ALIGNMENT_MODE_END);
 				break;
 			case R.id.nav_profile:
 			case R.id.nav_about_us:
