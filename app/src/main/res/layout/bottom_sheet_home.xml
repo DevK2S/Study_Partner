@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="@dimen/mediumPadding"
+    android:paddingBottom="@dimen/mediumPadding"
+    android:paddingStart="@dimen/mediumPadding"
+    android:paddingEnd="@dimen/mediumPadding"
+    android:background="@color/bottomSheetBackground"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/fileCl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/notes_item_background">
+
+            <ImageView
+                android:id="@+id/bottomSheetTitleImage"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="@dimen/smallMargin"
+                android:elevation="@dimen/mediumElevation"
+                android:contentDescription="@string/bottom_sheet_notes_image_cd"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/bottomSheetTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:textAlignment="center"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/mediumText"
+            tools:text="IMG_13344355.png" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/homeBottomSheetOpen"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/bottom_sheet_notes_image_cd"
+            android:src="@drawable/open_with_icon"
+            android:tint="@color/alternativeIconTint"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/mediumText"
+            tools:text="Open With"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/homeBottomSheetStar"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/smallMargin"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/bottom_sheet_notes_image_cd"
+            android:src="@drawable/starred_outline_icon"
+            android:tint="@color/alternativeIconTint"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/mediumText"
+            tools:text="Add to starred"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/homeBottomSheetDelete"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/smallMargin"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/bottom_sheet_notes_image_cd"
+            android:src="@drawable/delete_icon"
+            android:tint="@color/alternativeIconTint"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/mediumText"
+            tools:text="Delete"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/homeBottomSheetShare"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/smallMargin"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/bottom_sheet_notes_image_cd"
+            android:src="@drawable/send_icon"
+            android:tint="@color/alternativeIconTint"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/mediumText"
+            tools:text="Send"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/homeBottomSheetDetails"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/smallMargin"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/bottom_sheet_notes_image_cd"
+            android:src="@drawable/about_us_icon"
+            android:tint="@color/alternativeIconTint"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mediumMargin"
+            android:textColor="@color/alternativeText"
+            android:textSize="@dimen/mediumText"
+            tools:text="Details"/>
+    </LinearLayout>
+
+</LinearLayout>

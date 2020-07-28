@@ -6,26 +6,25 @@ import android.os.Parcelable;
 public class ReminderItem implements Parcelable {
     private String time;
     private String date;
-    private String Title;
-    private String des;
+    private String title;
+    private String description;
     private int notifyId;
     private int position;
 
-    public ReminderItem() {
-    }
+    public ReminderItem() {}
 
-    public ReminderItem(String Title, String des, String time, String date) {
-        this.Title = Title;
+    public ReminderItem(String title, String description, String time, String date) {
+        this.title = title;
+        this.description = description;
         this.time = time;
         this.date = date;
-        this.des = des;
     }
     
     protected ReminderItem(Parcel in) {
-        time = in.readString();
+        title = in.readString();
+        description = in.readString();
         date = in.readString();
-        Title = in.readString();
-        des = in.readString();
+        time = in.readString();
         notifyId = in.readInt();
         position = in.readInt();
     }
@@ -47,30 +46,30 @@ public class ReminderItem implements Parcelable {
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public void setDate(String setdate) {
         date = setdate;
     }
 
-    public void setDes(String setDes) {
-        des = setDes;
+    public void setDescription(String setDes) {
+        description = setDes;
     }
 
     public void setTime(String setTime) {
         time = setTime;
     }
 
-    public void Edit(String editTitle, String editDes, String editDate, String editTime) {
-        Title = editTitle;
-        des = editDes;
-        date = editDate;
-        time = editTime;
+    public void edit (String editTitle, String editDescription, String editTime, String editDate) {
+        this.title = editTitle;
+        this.description = editDescription;
+        this.date = editDate;
+        this.time = editTime;
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public String getTime() {
@@ -81,8 +80,8 @@ public class ReminderItem implements Parcelable {
         return date;
     }
 
-    public String getDes() {
-        return des;
+    public String getDescription() {
+        return description;
     }
 
     public int getPosition() {
@@ -110,22 +109,23 @@ public class ReminderItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeString(description);
         parcel.writeString(date);
         parcel.writeString(time);
-        parcel.writeString(Title);
-        parcel.writeString(des);
         parcel.writeInt(notifyId);
         parcel.writeInt(position);
     }
-
+    
     @Override
     public String toString() {
         return "ReminderItem{" +
-                "time='" + time + '\'' +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
                 ", date='" + date + '\'' +
-                ", Title='" + Title + '\'' +
-                ", des='" + des + '\'' +
+                ", time='" + time + '\'' +
                 ", notifyId=" + notifyId +
+                ", position=" + position +
                 '}';
     }
 }

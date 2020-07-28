@@ -12,11 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -33,212 +35,343 @@ import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
-
 public class ReminderDialogFragment extends DialogFragment {
-
-    private TextInputLayout TitleLayout;
-    private TextInputLayout ContentLayout;
-    private TextInputEditText TitleEditText;
-    private TextInputEditText ContentEditText;
-    private TextView DateEditText;
-    private TextView TimeEditText;
-    private NavController mNavController;
-    private DatePickerDialog DatePicker;
-    private TimePickerDialog TimePicker;
-    private FloatingActionButton okButton;
-    String time;
-    String date;
-    Boolean edit = false;
-    private ArrayList<ReminderItem> mReminderList = new ArrayList<>();
-
-    public ReminderDialogFragment() {}
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_reminder_dialog, container, false);
-        int positionToEdit = -1;
-        if (getArguments() != null) {
-            edit = true;
-            positionToEdit = Integer.parseInt(String.valueOf(getArguments().getString("ItemPosition")));
-        }
-
-        TitleEditText = rootView.findViewById(R.id.titleEditText);
-        ContentEditText = rootView.findViewById(R.id.contentEditText);
-        DateEditText = rootView.findViewById(R.id.Date);
-        TimeEditText = rootView.findViewById(R.id.editTextTime);
-        okButton = rootView.findViewById(R.id.okButton);
-        mNavController = NavHostFragment.findNavController(this);
-        final Calendar cldr = Calendar.getInstance();
-        if (edit) {
-            editShow(positionToEdit);
-        } else {
-            TimeEditText.setText("00:00 AM");
-            DateEditText.setText("Pick a Date");
-        }
-
-        final SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
-        final Gson gson = new Gson();
-        final SharedPreferences.Editor reminderPreferenceEditor = reminderPreference.edit();
-
-        if (reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
-            String json = reminderPreference.getString("REMINDER_ITEMS", "");
-            Type type = new TypeToken<ArrayList<ReminderItem>>() {
-            }.getType();
-            mReminderList = gson.fromJson(json, type);
-        } else {
-            mReminderList = new ArrayList<>();
-        }
-
-        requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                dismiss();
-                mNavController.navigate(R.id.action_reminderDialogFragment_to_nav_reminder);
-            }
-        });
-
-        DateEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
-                DatePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(android.widget.DatePicker datePicker, int i, int i1, int i2) {
-                        String spm = "";
-                        String spd = "";
-                        if (i1 < 9)
-                            spm = "0";
-                        if (i2 < 10)
-                            spd = "0";
-                        date = spd + Integer.toString(i2) + "-" + spm + Integer.toString(i1 + 1) + "-" + Integer.toString(i);
-                        DateEditText.setText(date);
-                    }
-                }, year, month, day);
-                //updateDisplay();
-                DatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 10000);
-                DatePicker.setTitle("Pick a Date");
-                DatePicker.show();
-            }
-        });
-
-        TimeEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int hour = cldr.get(Calendar.HOUR_OF_DAY);
-                int minute = cldr.get(Calendar.MINUTE);
-                TimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
-                        String ampm = " AM";
-                        String sph = "";
-                        String spm = "";
-                        if (i >= 12) {
-                            if (i > 12)
-                                i = i % 12;
-                            ampm = " PM";
-                        }
-                        if (i < 10)
-                            sph = "0";
-                        if (i1 < 10)
-                            spm = "0";
-                        time = sph + i + ":" + spm + i1 + ampm;
-                        TimeEditText.setText(time);
-                    }
-                }, hour, minute, false);
-                TimePicker.show();
-            }
-        });
-        final int finalPositionToEdit = positionToEdit;
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("TEST", "ok button");
-                int notifyId;
-                // ReminderItem item = new ReminderItem( String.valueOf(TitleEditText.getText()),String.valueOf(ContentEditText.getText()),time,date);
-                if (edit) {
-                    AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
-                    Intent intent = new Intent(requireContext(), AlertReceiver.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("Item", mReminderList.get(finalPositionToEdit));
-                    intent.putExtra("Item", bundle);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                    alarmManager.cancel(pendingIntent);
-                    mReminderList.get(finalPositionToEdit).Edit(String.valueOf(TitleEditText.getText()), String.valueOf(ContentEditText.getText()), String.valueOf(DateEditText.getText()), String.valueOf(TimeEditText.getText()));
-                    notifyId = mReminderList.get(finalPositionToEdit).getnotifyId();
-                    createNotificaiton(mReminderList.get(finalPositionToEdit));
-                } else {
-                    ReminderItem item = new ReminderItem(String.valueOf(TitleEditText.getText()), String.valueOf(ContentEditText.getText()), time, date);
-                    notifyId = item.getnotifyId();
-                    mReminderList.add(item);
-                    createNotificaiton(item);
-                }
-                Log.d("TEST", String.valueOf(notifyId));
-                String json = gson.toJson(mReminderList);
-                if (!reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
-                    reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", true);
-                }
-
-                reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
-                reminderPreferenceEditor.apply();
-                //dismiss();
-                mNavController.navigate(R.id.action_reminderDialogFragment_to_nav_reminder);
-            }
-        });
-        return rootView;
-    }
-
-    public void editShow(int position) {
-        final SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
-        final Gson gson = new Gson();
-        final SharedPreferences.Editor reminderPreferenceEditor = reminderPreference.edit();
-
-        String json = reminderPreference.getString("REMINDER_ITEMS", "");
-        Type type = new TypeToken<ArrayList<ReminderItem>>() {
-        }.getType();
-        mReminderList = gson.fromJson(json, type);
-        ReminderItem editItem = mReminderList.get(position);
-        TitleEditText.setText(editItem.getTitle());
-        ContentEditText.setText(editItem.getDes());
-        DateEditText.setText(editItem.getDate());
-        TimeEditText.setText(editItem.getTime());
-
-    }
-
-    public void createNotificaiton(ReminderItem item) {
-        Calendar c = Calendar.getInstance();
-        int year = Integer.parseInt(item.getDate().substring(6));
-        int month = Integer.parseInt(item.getDate().substring(3, 5));
-        int day = Integer.parseInt(item.getDate().substring(0, 2));
-        int hour = Integer.parseInt(item.getTime().substring(0, 2));
-        int minute = Integer.parseInt(item.getTime().substring(3, 5));
-        String AMPM = item.getTime().substring(6);
-        if (AMPM.equals("PM") && hour != 12)
-            hour = hour + 12;
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month - 1);
-        c.set(Calendar.DAY_OF_MONTH, day);
-        c.set(Calendar.HOUR_OF_DAY, hour);
-        c.set(Calendar.MINUTE, minute);
-        c.set(Calendar.SECOND, 0);
-        AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(requireContext(), AlertReceiver.class);
-        Log.d(TAG, "createNotificaiton: item " + item.toString());
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("Item", item);
-        intent.putExtra("Item", bundle);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
-        Log.d("Test", String.valueOf(c.getTime()));
-    }
+	
+	private TextInputEditText mTitleEditText;
+	private TextInputEditText mContentEditText;
+	private TextView mDateEditText;
+	private TextView mTimeEditText;
+	
+	private NavController mNavController;
+	
+	private DatePickerDialog mDatePicker;
+	private TimePickerDialog mTimePicker;
+	
+	private FloatingActionButton okFab;
+	
+	private String date, time;
+	
+	private boolean inEditMode = false;
+	
+	private String currentDate, currentTime;
+	private int hourSelected, minuteSelected;
+	
+	private ArrayList<ReminderItem> mReminderList = new ArrayList<>();
+	
+	public ReminderDialogFragment() { }
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_reminder_dialog, container, false);
+		
+		int positionToEdit = -1;
+		
+		if (getArguments() != null) {
+			inEditMode = true;
+			positionToEdit = Integer.parseInt(String.valueOf(getArguments().getString("REMINDER_POSITION")));
+		}
+		
+		mTitleEditText = rootView.findViewById(R.id.titleEditText);
+		mContentEditText = rootView.findViewById(R.id.descriptionEditText);
+		mDateEditText = rootView.findViewById(R.id.dateTextView);
+		mTimeEditText = rootView.findViewById(R.id.timeTextView);
+		
+		okFab = rootView.findViewById(R.id.okButton);
+		
+		mNavController = NavHostFragment.findNavController(this);
+		
+		currentDate = getCurrentDate();
+		currentTime = getCurrentTime();
+		
+		if (inEditMode) {
+			populateEditText(positionToEdit);
+		} else {
+			date = currentDate;
+			mDateEditText.setText(currentDate);
+			
+			time = currentTime;
+			mTimeEditText.setText(currentTime);
+		}
+		
+		final SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
+		final Gson gson = new Gson();
+		final SharedPreferences.Editor reminderPreferenceEditor = reminderPreference.edit();
+		
+		if (reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
+			
+			String json = reminderPreference.getString("REMINDER_ITEMS", "");
+			Type type = new TypeToken<ArrayList<ReminderItem>>() {}.getType();
+			mReminderList = gson.fromJson(json, type);
+		}
+		
+		if (mReminderList == null) {
+			mReminderList = new ArrayList<>();
+		}
+		
+		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+			@Override
+			public void handleOnBackPressed() {
+				dismiss();
+				mNavController.navigateUp();
+			}
+		});
+		
+		mDateEditText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				
+				int year = Integer.parseInt(date.substring(6));
+				int month = Integer.parseInt(date.substring(3, 5)) - 1;
+				int day = Integer.parseInt(date.substring(0, 2));
+				
+				mDatePicker = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
+					@Override
+					public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+						
+						String selectedYear = String.valueOf(year);
+						String selectedMonth = String.valueOf(month + 1); // starts with 0
+						String selectedDay = String.valueOf(dayOfMonth);
+						
+						if (month < 9) { // to make 01 - 09
+							selectedMonth = "0" + selectedMonth;
+						}
+						
+						if (dayOfMonth < 10) { // to make 01 - 09
+							selectedDay = "0" + selectedDay;
+						}
+						
+						date = selectedDay +  "-" + selectedMonth  + "-" + selectedYear;
+						
+						mDateEditText.setText(date);
+						
+					}
+				}, year, month, day);
+				
+				mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+				
+				mDatePicker.show();
+			}
+		});
+		
+		mTimeEditText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				
+				int hour = Integer.parseInt(time.substring(0, 2));
+				int minute = Integer.parseInt(time.substring(3, 5));
+				
+				String am_pm = time.substring(6);
+				
+				if (am_pm.equals("PM") && hour != 12)
+					hour = hour + 12;
+				
+				mTimePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+					@Override
+					public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+						
+						hourSelected = hourOfDay;
+						minuteSelected = minute;
+						
+						String am_pm = "AM";
+						
+						if (hourOfDay >= 12) {
+							am_pm = "PM";
+						}
+						
+						if (hourOfDay > 12) {
+							hourOfDay = hourOfDay - 12;
+						}
+						
+						String selectedHour = String.valueOf(hourOfDay);
+						String selectedMinute = String.valueOf(minute);
+						
+						if (hourOfDay < 10)
+							selectedHour = "0" + selectedHour;
+						
+						if (minute < 10)
+							selectedMinute = "0" + selectedMinute;
+						
+						time = selectedHour + ":" + selectedMinute + " " + am_pm;
+						
+						mTimeEditText.setText(time);
+						
+					}
+				}, hour, minute, false);
+				
+				mTimePicker.show();
+			}
+		});
+		
+		final int finalPositionToEdit = positionToEdit;
+		
+		okFab.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				Calendar cal = Calendar.getInstance();
+				
+				if (date.equals(currentDate) && time.equals(currentTime)) {
+					Toast.makeText(requireContext(), "Cannot set reminder for now", Toast.LENGTH_SHORT).show();
+				} else if (date.equals(currentDate) && (hourSelected < cal.get(Calendar.HOUR_OF_DAY) || (hourSelected == cal.get(Calendar.HOUR_OF_DAY) && minuteSelected < cal.get(Calendar.MINUTE)))) {
+					Toast.makeText(requireContext(), "Cannot set reminder for previous times", Toast.LENGTH_SHORT).show();
+				} else {
+					String title = mTitleEditText.getText().toString().trim();
+					String content = mContentEditText.getText().toString().trim();
+					if (title.isEmpty()) title = "Reminder from Study Partner";
+					
+					if (inEditMode) {
+						
+						AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
+						
+						Intent intent = new Intent(requireContext(), AlertReceiver.class);
+						Bundle bundle = new Bundle();
+						bundle.putParcelable("BUNDLE_REMINDER_ITEM", mReminderList.get(finalPositionToEdit));
+						
+						intent.putExtra("EXTRA_REMINDER_ITEM", bundle);
+						
+						PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+						
+						alarmManager.cancel(pendingIntent);
+						
+						mReminderList.get(finalPositionToEdit).edit(title, content, time, date);
+						
+						Log.d("TAG", "onClick: " + mReminderList.get(finalPositionToEdit).toString());
+						
+						createNotification(mReminderList.get(finalPositionToEdit));
+					} else {
+						ReminderItem item = new ReminderItem(title, content, time, date);
+						Log.d("TAG", "onClick: " + item.toString());
+						
+						mReminderList.add(item);
+						createNotification(item);
+					}
+					
+					String json = gson.toJson(mReminderList);
+					
+					if (!reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
+						reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", true);
+					}
+					
+					reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
+					reminderPreferenceEditor.apply();
+					
+					mNavController.navigateUp();
+				}
+			}
+		});
+		return rootView;
+	}
+	
+	private void populateEditText(int position) {
+		
+		SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
+		Gson gson = new Gson();
+		
+		String json = reminderPreference.getString("REMINDER_ITEMS", "");
+		Type type = new TypeToken<ArrayList<ReminderItem>>() {}.getType();
+		mReminderList = gson.fromJson(json, type);
+		
+		if (mReminderList != null && mReminderList.size() > position) {
+			ReminderItem editItem = mReminderList.get(position);
+			mTitleEditText.setText(editItem.getTitle());
+			mContentEditText.setText(editItem.getDescription());
+			mDateEditText.setText(editItem.getDate());
+			date = editItem.getDate();
+			mTimeEditText.setText(editItem.getTime());
+			time = editItem.getTime();
+			hourSelected = Integer.parseInt(time.substring(0, 2));
+			minuteSelected = Integer.parseInt(time.substring(3, 5));
+		}
+		
+	}
+	
+	private void createNotification(ReminderItem item) {
+		
+		Calendar calendar = Calendar.getInstance();
+		
+		int year = Integer.parseInt(item.getDate().substring(6));
+		int month = Integer.parseInt(item.getDate().substring(3, 5)) - 1;
+		int day = Integer.parseInt(item.getDate().substring(0, 2));
+		
+		int hour = Integer.parseInt(item.getTime().substring(0, 2));
+		int minute = Integer.parseInt(item.getTime().substring(3, 5));
+		
+		String am_pm = item.getTime().substring(6);
+		
+		if (am_pm.equals("PM") && hour != 12)
+			hour = hour + 12;
+		
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.DAY_OF_MONTH, day);
+		calendar.set(Calendar.HOUR_OF_DAY, hour);
+		calendar.set(Calendar.MINUTE, minute);
+		calendar.set(Calendar.SECOND, 0);
+		
+		AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(requireContext(), AlertReceiver.class);
+		
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("BUNDLE_REMINDER_ITEM", item);
+		
+		intent.putExtra("EXTRA_REMINDER_ITEM", bundle);
+		
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+		
+	}
+	
+	private String  getCurrentDate() {
+		
+		Calendar calendar = Calendar.getInstance();
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH);
+		int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+		
+		String selectedYear = String.valueOf(year);
+		String selectedMonth = String.valueOf( month+ 1); // starts with 0
+		String selectedDay = String.valueOf(dayOfMonth);
+		
+		if (month < 9) { // to make 01 - 09
+			selectedMonth = "0" + selectedMonth;
+		}
+		
+		if (dayOfMonth < 10) { // to make 01 - 09
+			selectedDay = "0" + selectedDay;
+		}
+		
+		return selectedDay +  "-" + selectedMonth  + "-" + selectedYear;
+		
+	}
+	
+	private String getCurrentTime() {
+		
+		Calendar calendar = Calendar.getInstance();
+		int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+		int minute = calendar.get(Calendar.MINUTE);
+		hourSelected = hourOfDay;
+		minuteSelected = minute;
+		String am_pm = "AM";
+		
+		if (hourOfDay >= 12) {
+			am_pm = "PM";
+		}
+		
+		if (hourOfDay > 12) {
+			hourOfDay = hourOfDay - 12;
+		}
+		
+		String selectedHour = String.valueOf(hourOfDay);
+		String selectedMinute = String.valueOf(minute);
+		
+		if (hourOfDay < 10)
+			selectedHour = "0" + selectedHour;
+		
+		if (minute < 10)
+			selectedMinute = "0" + selectedMinute;
+		
+		return selectedHour + ":" + selectedMinute + " " + am_pm;
+		
+	}
 }

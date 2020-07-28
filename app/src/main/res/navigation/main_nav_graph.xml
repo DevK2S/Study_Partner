@@ -143,7 +143,13 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_nav_reminder_to_reminderDialogFragment"
-            app:destination="@id/reminderDialogFragment" />
+            app:destination="@id/reminderDialogFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <deepLink
+            app:uri="studypartner.com"/>
     </fragment>
 
     <fragment
@@ -151,9 +157,6 @@
         android:name="com.studypartner.fragments.ReminderDialogFragment"
         android:label="@string/navigation_menu_reminders"
         tools:layout="@layout/fragment_reminder_dialog">
-        <action
-            android:id="@+id/action_reminderDialogFragment_to_nav_reminder"
-            app:destination="@id/nav_reminder" />
     </fragment>
 
     <fragment

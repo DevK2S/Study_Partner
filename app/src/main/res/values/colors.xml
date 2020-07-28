@@ -13,6 +13,7 @@
     <color name="alternativeIconTint">#FFFFFF</color>
     <color name="darkIconTint">#000000</color>
     <color name="errorTint">#FF153C</color>
+    <color name="starredIconTint">#F0F812</color>
 
     <color name="editTextBg">#FFFFFF</color>
 
@@ -52,4 +53,7 @@
 
     <color name="notesItemActivated">#555555</color>
     <color name="notesItemBackground">#F8F8F8</color>
+
+    <color name="bottomSheetBackground">#888888</color>
+
 </resources>

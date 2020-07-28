@@ -6,138 +6,145 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/titleTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.050000012">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/titleEditText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="TITLE" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/contentTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="175dp"
-        android:layout_marginStart="35dp"
-        android:layout_marginEnd="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:cardCornerRadius="10dp"
-        android:backgroundTint="#AAAAAAAA"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextInputLayout"
-        app:layout_constraintVertical_bias="0.13">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/contentEditText"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="DESCRIPTION"
-            android:gravity="start"
-            android:layout_marginStart="4dp"
-            android:background="#AAAAAAAA" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/DateLayout"
+        android:id="@+id/dateLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/largeMargin"
         android:backgroundTint="@color/colorPrimary"
-        app:cardCornerRadius="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardCornerRadius="@dimen/mediumMargin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contentTextInputLayout"
-        app:layout_constraintVertical_bias="0.12000000">
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextInputLayout">
 
         <LinearLayout
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
-
+            android:paddingBottom="@dimen/smallPadding"
+            android:paddingEnd="@dimen/mediumPadding"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingTop="@dimen/smallPadding">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_calendar_today_24" />
+                android:src="@drawable/calendar_icon" />
 
             <TextView
-                android:id="@+id/Date"
+                android:id="@+id/dateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
+                android:paddingStart="@dimen/mediumPadding"
+                android:paddingEnd="@dimen/mediumPadding"
+                android:textColor="@color/alternativeText"
                 android:textSize="@dimen/largeText"
                 tools:text="22-07-2020" />
-
-
         </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/timeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mediumMargin"
         android:backgroundTint="@color/colorPrimary"
-        app:cardCornerRadius="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:cardCornerRadius="@dimen/mediumMargin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DateLayout"
-        app:layout_constraintVertical_bias="0.19">
+        app:layout_constraintTop_toBottomOf="@+id/dateLayout">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingLeft="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingBottom="@dimen/smallPadding"
+            android:paddingEnd="@dimen/mediumPadding"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingTop="@dimen/smallPadding">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_time_24" />
+                android:src="@drawable/time_icon" />
 
             <TextView
-                android:id="@+id/editTextTime"
+                android:id="@+id/timeTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
+                android:paddingStart="@dimen/mediumPadding"
+                android:paddingEnd="@dimen/mediumPadding"
+                android:textColor="@color/alternativeText"
                 android:textSize="@dimen/largeText"
                 tools:text="12:50 AM" />
         </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/okButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_marginBottom="@dimen/largeMargin"
+        android:src="@drawable/aar_ic_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.948"
-        app:srcCompat="@drawable/aar_ic_check" />
+        app:tint="@color/colorAccent" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/descriptionTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:layout_marginEnd="@dimen/mediumMargin"
+        android:layout_marginStart="@dimen/mediumMargin"
+        android:gravity="center"
+        android:hint="Description"
+        app:boxStrokeColor="@color/colorPrimary"
+        app:boxStrokeWidth="2dp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/iconTint"
+        app:hintTextColor="@color/primaryText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleTextInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/descriptionEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:inputType="textLongMessage|textMultiLine" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/titleTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mediumMargin"
+        android:layout_marginEnd="@dimen/mediumMargin"
+        android:layout_marginStart="@dimen/mediumMargin"
+        android:gravity="center"
+        android:hint="Title"
+        app:boxStrokeColor="@color/colorPrimary"
+        app:boxStrokeWidth="2dp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/iconTint"
+        app:hintTextColor="@color/primaryText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/titleEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textShortMessage" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,14 +21,14 @@
 
     <style name="CustomBottomSheet" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearanceOverlay">@style/CustomShapeAppearanceBottomSheetDialog</item>
-        <item name="android:backgroundTint">#888888</item>
+        <item name="android:backgroundTint">@color/bottomSheetBackground</item>
     </style>
 
     <style name="CustomShapeAppearanceBottomSheetDialog" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">32dp</item>
-        <item name="cornerSizeTopLeft">32dp</item>
-        <item name="cornerSizeBottomRight">16dp</item>
-        <item name="cornerSizeBottomLeft">16dp</item>
+        <item name="cornerSizeTopRight">@dimen/largeMargin</item>
+        <item name="cornerSizeTopLeft">@dimen/largeMargin</item>
+        <item name="cornerSizeBottomRight">@dimen/mediumMargin</item>
+        <item name="cornerSizeBottomLeft">@dimen/mediumMargin</item>
     </style>
 </resources>

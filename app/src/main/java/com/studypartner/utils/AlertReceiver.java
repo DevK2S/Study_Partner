@@ -12,13 +12,15 @@ import androidx.core.app.NotificationCompat;
 public class AlertReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Bundle bundle = intent.getBundleExtra("Item");
+        
+        Bundle bundle = intent.getBundleExtra("EXTRA_REMINDER_ITEM");
         assert bundle != null;
-        ReminderItem item = (ReminderItem) bundle.getParcelable("Item");
+        ReminderItem item = bundle.getParcelable("BUNDLE_REMINDER_ITEM");
         assert item != null;
-        int test = item.getnotifyId();
+      
         NotificationHelper notificationHelper = new NotificationHelper(context);
-        NotificationCompat.Builder nb = notificationHelper.getChannelNotification(item);
-        notificationHelper.getManager().notify(test, nb.build());
+        NotificationCompat.Builder builder = notificationHelper.getChannelNotification(item);
+        notificationHelper.getManager().notify(item.getnotifyId(), builder.build());
+        
     }
 }

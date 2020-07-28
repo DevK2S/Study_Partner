@@ -2,11 +2,9 @@ package com.studypartner.adapters;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.studypartner.R;
@@ -34,8 +32,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         this.mReminderItemClickListener = mReminderItemClickListener;
         this.mReminderList = mReminderList;
     }
-
-
+    
     @Override
     public ReminderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder: starts");
@@ -83,7 +80,6 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
             time = itemView.findViewById(R.id.reminderItemTime);
             reminderLayout = itemView.findViewById(R.id.ReminderItemCard);
             itemView.setOnClickListener(this);
-
         }
 
         @Override

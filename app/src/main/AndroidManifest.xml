@@ -23,8 +23,9 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.MediaActivity" />
         <activity
-            android:name=".activities.MainActivity"
-            android:launchMode="singleTop" />
+            android:name=".activities.MainActivity">
+            <nav-graph android:value="@navigation/main_nav_graph" />
+        </activity>
         <activity android:name=".activities.CreateAccountActivity" />
         <activity android:name=".activities.SplashScreenActivity">
             <intent-filter>

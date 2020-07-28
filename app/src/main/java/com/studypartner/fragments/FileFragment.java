@@ -605,10 +605,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					
 					case R.id.notes_item_rename:
 						
-						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-						alertDialog.setMessage("Enter a new name");
-						
 						final FileItem fileItem = notes.get(position);
+						
+						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+						if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
+							alertDialog.setMessage("Edit this link");
+						} else {
+							alertDialog.setMessage("Enter a new name");
+						}
 						
 						final EditText input = new EditText(getContext());
 						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
