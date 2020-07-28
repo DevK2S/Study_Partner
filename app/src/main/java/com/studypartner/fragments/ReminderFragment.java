@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
-public class ReminderFragment extends Fragment {
+public class ReminderFragment extends Fragment implements ReminderAdapter.ReminderItemClickListener {
 	private static final String TAG = "ReminderFragment";
 	private FloatingActionButton mfab;
 	private RecyclerView mRecyclerView;
@@ -98,17 +98,7 @@ public class ReminderFragment extends Fragment {
 		}
 		int c = mReminderList.size();
 		Log.d("Hello", String.valueOf(c));
-		reminderAdapter = new ReminderAdapter(getContext(), mReminderList, new ReminderAdapter.ReminderItemClickListener() {
-			@Override
-			public void editButtonClicked(int position) {
-				editReminder(position);
-			}
-
-			@Override
-			public void deleteButtonClicked(int position) {
-				deleteReminder(position);
-			}
-		});
+		reminderAdapter = new ReminderAdapter(requireActivity(), mReminderList, this);
 		mRecyclerView.setAdapter(reminderAdapter);
 	}
 
@@ -183,7 +173,7 @@ public class ReminderFragment extends Fragment {
 				if (AMPM.equals("PM"))
 					hour = hour + 12;
 				c.set(year, month, day, hour, minute);
-				if (c.before(today)) {
+				if (c.equals(today)) {
 					CheckReminderList.remove(item);
 				}
 			}
@@ -198,8 +188,10 @@ public class ReminderFragment extends Fragment {
 			mReminderList = new ArrayList<>();
 			Log.d("TEST", "NotEntered");
 		}
-
-
 	}
 
+	@Override
+	public void onClick(int position) {
+		editReminder(position);
+	}
 }

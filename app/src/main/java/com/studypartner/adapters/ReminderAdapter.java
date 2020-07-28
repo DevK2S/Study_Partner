@@ -2,6 +2,7 @@ package com.studypartner.adapters;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +15,14 @@ import com.studypartner.models.ReminderItem;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
     private static final String TAG = "ReminderAdapter";
 
     public interface ReminderItemClickListener {
-        void editButtonClicked(int position);
-        void deleteButtonClicked(int position);
+        void onClick(int position);
     }
 
     private Context context;
@@ -40,13 +41,26 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         Log.d(TAG, "onCreateViewHolder: starts");
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater.inflate(R.layout.reminder_item, parent, false);
-        return new ReminderViewHolder(itemView, mReminderItemClickListener);
+        return new ReminderViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ReminderAdapter.ReminderViewHolder holder, int position) {
         final ReminderItem item = mReminderList.get(position);
         holder.title.setText(item.getTitle());
+        holder.date.setText(item.getDate());
+        holder.time.setText(item.getTime());
+        applyClickEvents(holder);
+    }
+
+    private void applyClickEvents(final ReminderViewHolder holder) {
+        holder.reminderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mReminderItemClickListener.onClick(holder.getAdapterPosition());
+            }
+        });
+
     }
 
 
@@ -55,35 +69,26 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         return mReminderList.size();
     }
 
-    static class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private static final String TAG = "ReminderAadpter";
-        private ImageButton editButton, deleteButton;
-        private TextView title, date;
+        private TextView title, date, time;
+        CardView reminderLayout;
         private ReminderItemClickListener ClickListener;
 
-        public ReminderViewHolder(@NonNull View itemView, ReminderItemClickListener mReminderItemClickListener) {
+        public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
-            ClickListener = mReminderItemClickListener;
-            editButton = itemView.findViewById(R.id.reminderItemEditButton);
-            editButton.setOnClickListener(this);
-            deleteButton = itemView.findViewById(R.id.reminderItemDeleteButton);
-            deleteButton.setOnClickListener(this);
             title = itemView.findViewById(R.id.reminderItemTitle);
+            date = itemView.findViewById(R.id.reminderItemDate);
+            time = itemView.findViewById(R.id.reminderItemTime);
+            reminderLayout = itemView.findViewById(R.id.ReminderItemCard);
+            itemView.setOnClickListener(this);
+
         }
 
         @Override
-        public void onClick(View v) {
-
-            if (v.getId() == editButton.getId()) {
-                Log.d(TAG, "onClick: edit button clicked");
-                ClickListener.editButtonClicked(getAdapterPosition());
-
-            } else if (v.getId() == deleteButton.getId()) {
-                Log.d(TAG, "onClick: delete button clicked");
-                ClickListener.deleteButtonClicked(getAdapterPosition());
-
-            }
+        public void onClick(View view) {
+            mReminderItemClickListener.onClick(getAdapterPosition());
         }
     }
 }

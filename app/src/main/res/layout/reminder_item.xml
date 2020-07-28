@@ -3,9 +3,10 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/attendanceItemAttendanceCard"
+    android:id="@+id/ReminderItemCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
     android:layout_marginBottom="@dimen/mediumMargin"
     android:backgroundTint="@color/colorPrimary"
     app:cardCornerRadius="40dp"
@@ -27,11 +28,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
+            android:contentDescription="@string/reminder_item_edit_button"
             android:src="@drawable/pen_icon"
             android:tint="@color/alternativeIconTint"
             app:layout_constraintEnd_toStartOf="@id/reminderItemDeleteButton"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/reminder_item_edit_button" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/reminderItemDeleteButton"
@@ -53,18 +54,66 @@
             android:textColor="@color/alternativeText"
             android:textSize="@dimen/largeText"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="Java" />
+            app:layout_constraintVertical_bias="0.2"
+            tools:text="Title" />
 
-        <TextView
-            android:id="@+id/reminderItemDate"
+        <LinearLayout
+            android:id="@+id/DateLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/reminderItemTitle"
+            android:layout_marginStart="8dp"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/reminderItemTitle"
+            app:layout_constraintVertical_bias="0.5">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingRight="5dp"
+                android:src="@drawable/ic_baseline_calendar_today_24" />
+
+            <TextView
+                android:id="@+id/reminderItemDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textColor="@color/alternativeText"
+                android:textSize="@dimen/mediumText"
+                android:textStyle="bold"
+                tools:text="22-07-2020" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/DateLayout">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingRight="5dp"
+                android:src="@drawable/ic_time_24" />
+
+            <TextView
+                android:id="@+id/reminderItemTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textColor="@color/alternativeText"
+                android:textSize="@dimen/mediumText"
+                android:textStyle="bold"
+                tools:text="12:00 AM" />
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

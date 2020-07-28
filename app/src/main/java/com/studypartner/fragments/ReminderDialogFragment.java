@@ -143,8 +143,9 @@ public class ReminderDialogFragment extends DialogFragment {
                         String ampm = " AM";
                         String sph = "";
                         String spm = "";
-                        if (i > 12) {
-                            i = i - 12;
+                        if (i >= 12) {
+                            if (i > 12)
+                                i = i % 12;
                             ampm = " PM";
                         }
                         if (i < 10)
@@ -222,7 +223,7 @@ public class ReminderDialogFragment extends DialogFragment {
         int hour = Integer.parseInt(item.getTime().substring(0, 2));
         int minute = Integer.parseInt(item.getTime().substring(3, 5));
         String AMPM = item.getTime().substring(6);
-        if (AMPM.equals("PM"))
+        if (AMPM.equals("PM") && hour != 12)
             hour = hour + 12;
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month - 1);

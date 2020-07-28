@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingStart="30dp"
-        android:paddingEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,22 +20,24 @@
         app:layout_constraintVertical_bias="0.050000012">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/titleEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/titleEditText"
-            android:hint="hint" />
+            android:hint="TITLE" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/contentTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="175dp"
-        android:paddingStart="30dp"
-        android:paddingEnd="30dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="10dp"
+        android:backgroundTint="#AAAAAAAA"
         app:layout_constraintTop_toBottomOf="@+id/titleTextInputLayout"
         app:layout_constraintVertical_bias="0.13">
 
@@ -42,49 +45,86 @@
             android:id="@+id/contentEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="hint" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="DESCRIPTION"
+            android:gravity="start"
+            android:layout_marginStart="4dp"
+            android:background="#AAAAAAAA" />
+    </com.google.android.material.card.MaterialCardView>
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/DateLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/DateLayout"
+        android:backgroundTint="@color/colorPrimary"
+        app:cardCornerRadius="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contentTextInputLayout"
-        android:backgroundTint="@color/colorPrimary"
-        app:layout_constraintVertical_bias="0.120000005">
+        app:layout_constraintVertical_bias="0.12000000">
 
-        <ImageView
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content" />
+        <LinearLayout
 
-        <TextView
-            android:id="@+id/Date"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:textSize="25dp"
-            android:background="#AAAAAAAA" />
-    </LinearLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
-    <LinearLayout
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_calendar_today_24" />
+
+            <TextView
+                android:id="@+id/Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="@dimen/largeText"
+                tools:text="22-07-2020" />
+
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
+        android:backgroundTint="@color/colorPrimary"
+        app:cardCornerRadius="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/DateLayout"
         app:layout_constraintVertical_bias="0.19">
 
-        <TextView
-            android:id="@+id/editTextTime"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:textSize="25dp"
-            android:background="#AAAAAAAA" />
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_time_24" />
+
+            <TextView
+                android:id="@+id/editTextTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:textSize="@dimen/largeText"
+                tools:text="12:50 AM" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/okButton"
