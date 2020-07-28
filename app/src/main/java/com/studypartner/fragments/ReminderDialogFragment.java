@@ -227,24 +227,29 @@ public class ReminderDialogFragment extends DialogFragment {
 						Intent intent = new Intent(requireContext(), AlertReceiver.class);
 						Bundle bundle = new Bundle();
 						bundle.putParcelable("BUNDLE_REMINDER_ITEM", mReminderList.get(finalPositionToEdit));
-						
+
 						intent.putExtra("EXTRA_REMINDER_ITEM", bundle);
-						
+
 						PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-						
+
 						alarmManager.cancel(pendingIntent);
-						
+
 						mReminderList.get(finalPositionToEdit).edit(title, content, time, date);
 						mReminderList.get(finalPositionToEdit).setActive(true);
-						
+						if (mReminderList.get(finalPositionToEdit).isActive()) {
+							ReminderItem newItem = mReminderList.get(finalPositionToEdit);
+							mReminderList.remove(finalPositionToEdit);
+							mReminderList.add(0, newItem);
+						}
+
 						Log.d("TAG", "onClick: " + mReminderList.get(finalPositionToEdit).toString());
-						
+
 						createNotification(mReminderList.get(finalPositionToEdit));
 					} else {
 						ReminderItem item = new ReminderItem(title, content, time, date);
 						Log.d("TAG", "onClick: " + item.toString());
-						
-						mReminderList.add(item);
+
+						mReminderList.add(0, item);
 						createNotification(item);
 					}
 					

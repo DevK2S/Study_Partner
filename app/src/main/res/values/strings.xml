@@ -153,4 +153,6 @@
     <string name="file_empty">No items</string>
 
     <string name="bottom_sheet_notes_image_cd">Bottom Sheet Image</string>
+    <string name="calendar_icon">Calendar Icon</string>
+    <string name="TimeIcon">Time Icon</string>
 </resources>

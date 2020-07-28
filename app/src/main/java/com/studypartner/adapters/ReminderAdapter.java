@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.studypartner.R;
 import com.studypartner.models.ReminderItem;
+import com.zerobranch.layout.SwipeLayout;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,8 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
 
     public interface ReminderItemClickListener {
-        void onClick (int position);
-        void onLongClick (int position);
+        void onClick(int position);
+
+        void onLongClick(int position);
+
+        void deleteView(int adapterPosition);
+
     }
 
     private Context context;
@@ -70,7 +75,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
             holder.title.setTextColor(ColorStateList.valueOf(context.getResources().getColor(R.color.bottomSheetBackground, context.getTheme())));
             holder.date.setTextColor(ColorStateList.valueOf(context.getResources().getColor(R.color.bottomSheetBackground, context.getTheme())));
             holder.time.setTextColor(ColorStateList.valueOf(context.getResources().getColor(R.color.bottomSheetBackground, context.getTheme())));
-       
+
         }
         
         applyClickEvents(holder);
@@ -90,6 +95,13 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
                 return true;
             }
         });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.swipeLayout.close();
+                mReminderItemClickListener.deleteView(holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override
@@ -101,19 +113,24 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
         private TextView title, date, time;
         private CardView reminderLayout;
-        private ImageView activeIcon, reminderClock, reminderCalendar;
+        private SwipeLayout swipeLayout;
+        private ImageView activeIcon, reminderClock, reminderCalendar, delete;
 
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.reminderItemTitle);
             date = itemView.findViewById(R.id.reminderItemDate);
             time = itemView.findViewById(R.id.reminderItemTime);
+            swipeLayout = itemView.findViewById(R.id.swipeLayout);
             activeIcon = itemView.findViewById(R.id.reminderActiveIcon);
             reminderCalendar = itemView.findViewById(R.id.reminderCalendar);
             reminderClock = itemView.findViewById(R.id.reminderClock);
             reminderLayout = itemView.findViewById(R.id.reminderItemCard);
+            delete = itemView.findViewById(R.id.DeleteIcon);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+
+
         }
 
         @Override

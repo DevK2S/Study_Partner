@@ -1,112 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.zerobranch.layout.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/reminderItemCard"
+    android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="@dimen/mediumMargin"
-    app:cardCornerRadius="24dp"
-    app:cardElevation="@dimen/mediumElevation"
-    app:contentPadding="@dimen/mediumPadding">
+    app:draggedItem="@id/reminderItemCard"
+    app:rightItem="@id/DeleteIconLayout"
+    app:swipeDirection="left">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/reminderItemLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingStart="@dimen/mediumPadding"
-        android:paddingEnd="@dimen/mediumPadding"
-        android:backgroundTint="@color/bg_gray">
-
-        <TextView
-            android:id="@+id/reminderItemTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/mediumMargin"
-            android:textAllCaps="true"
-            android:textColor="@color/primaryText"
-            android:textSize="@dimen/mediumText"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Title" />
-
-        <LinearLayout
-            android:id="@+id/dateLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/smallMargin"
-            android:padding="@dimen/smallPadding"
-            app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reminderItemTitle">
-
-            <ImageView
-                android:id="@+id/reminderCalendar"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:tint="@color/iconTint"
-                android:src="@drawable/calendar_icon" />
-
-            <TextView
-                android:id="@+id/reminderItemDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/smallMargin"
-                android:textAllCaps="true"
-                android:textColor="@color/primaryText"
-                android:textSize="@dimen/smallText"
-                android:textStyle="bold"
-                tools:text="22-07-2020" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/smallMargin"
-            android:padding="@dimen/smallPadding"
-            app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dateLayout">
-
-            <ImageView
-                android:id="@+id/reminderClock"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:tint="@color/iconTint"
-                android:src="@drawable/time_icon" />
-
-            <TextView
-                android:id="@+id/reminderItemTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/smallMargin"
-                android:textAllCaps="true"
-                android:textColor="@color/primaryText"
-                android:textSize="@dimen/smallText"
-                android:textStyle="bold"
-                tools:text="12:00 AM" />
-        </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/DeleteIconLayout"
+        android:layout_width="80dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/mediumMargin"
+        android:layout_gravity="end"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="55dp"
+        android:paddingTop="35dp"
+        android:layout_height="140dp">
 
         <ImageView
-            android:id="@+id/reminderActiveIcon"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:src="@drawable/alarm_icon"
-            android:tint="@color/iconTint"
-            android:scaleType="centerCrop"
-            android:backgroundTint="@android:color/transparent"
-            app:layout_constraintTop_toBottomOf="@id/reminderItemTitle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:id="@+id/DeleteIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:src="@drawable/delete_icon" />
+    </RelativeLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/reminderItemCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/mediumMargin"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="@dimen/mediumElevation"
+        app:contentPadding="@dimen/mediumPadding">
 
-</com.google.android.material.card.MaterialCardView>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/reminderItemLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/bg_gray"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingEnd="@dimen/mediumPadding">
+
+            <TextView
+                android:id="@+id/reminderItemTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/mediumText"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="Title" />
+
+            <LinearLayout
+                android:id="@+id/dateLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/smallMargin"
+                android:padding="@dimen/smallPadding"
+                app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reminderItemTitle">
+
+                <ImageView
+                    android:id="@+id/reminderCalendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/calendar_icon"
+                    android:tint="@color/iconTint" />
+
+                <TextView
+                    android:id="@+id/reminderItemDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/smallMargin"
+                    android:textAllCaps="true"
+                    android:textColor="@color/primaryText"
+                    android:textSize="@dimen/smallText"
+                    android:textStyle="bold"
+                    tools:text="22-07-2020" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/smallMargin"
+                android:padding="@dimen/smallPadding"
+                app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateLayout">
+
+                <ImageView
+                    android:id="@+id/reminderClock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/time_icon"
+                    android:tint="@color/iconTint" />
+
+                <TextView
+                    android:id="@+id/reminderItemTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/smallMargin"
+                    android:textAllCaps="true"
+                    android:textColor="@color/primaryText"
+                    android:textSize="@dimen/smallText"
+                    android:textStyle="bold"
+                    tools:text="12:00 AM" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/reminderActiveIcon"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:backgroundTint="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/alarm_icon"
+                android:tint="@color/iconTint"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reminderItemTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</com.zerobranch.layout.SwipeLayout>

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import java.util.Calendar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,19 +68,19 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		
 		mRecyclerView = rootView.findViewById(R.id.recyclerview);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-		
-		mfab.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				activity.mNavController.navigate(R.id.reminderDialogFragment);
-				mfab.setVisibility(View.GONE);
-			}
-		});
-		
-		populateDataAndSetAdapter();
-		
-		return rootView;
-	}
+
+        mfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activity.mNavController.navigate(R.id.reminderDialogFragment);
+                mfab.setVisibility(View.GONE);
+            }
+        });
+
+        populateDataAndSetAdapter();
+        //enableSwipe();
+        return rootView;
+    }
 
 	private void populateDataAndSetAdapter() {
 
@@ -120,27 +122,39 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		if (mReminderList.size() == 0) {
 			reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", false);
 		}
-		
-		String json = gson.toJson(mReminderList);
-		
-		reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
-		reminderPreferenceEditor.apply();
-		
-		reminderAdapter = new ReminderAdapter(getContext(), mReminderList, this);
-		
-		mRecyclerView.setAdapter(reminderAdapter);
-	}
 
-	private void deleteReminder(final int position) {
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		
-		builder.setTitle("Delete Reminder");
-		builder.setMessage("Are you sure you want to remove the reminder");
-		
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        String json = gson.toJson(mReminderList);
+
+        reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
+        reminderPreferenceEditor.apply();
+
+        reminderAdapter = new ReminderAdapter(getContext(), mReminderList, this);
+
+        mRecyclerView.setAdapter(reminderAdapter);
+    }
+
+    void enableSwipe() {
+       /* final SwipeControl swipeController = new SwipeControl();
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(mRecyclerView);
+		mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+				swipeController.onDraw(c);
+			}
+		});*/
+    }
+
+    private void deleteReminder(final int position) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        builder.setTitle("Delete Reminder");
+        builder.setMessage("Are you sure you want to remove the reminder");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 				
 				AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
 				Intent intent = new Intent(requireContext(), AlertReceiver.class);
@@ -188,14 +202,20 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		mfab.setVisibility(View.GONE);
 		
 	}
-	
-	@Override
-	public void onClick(int position) {
-		editReminder(position);
-	}
-	
-	@Override
-	public void onLongClick(int position) {
-		deleteReminder(position);
-	}
+
+    @Override
+    public void onClick(int position) {
+        editReminder(position);
+    }
+
+    @Override
+    public void onLongClick(int position) {
+        deleteReminder(position);
+    }
+
+    @Override
+    public void deleteView(int adapterPosition) {
+
+        deleteReminder(adapterPosition);
+    }
 }
