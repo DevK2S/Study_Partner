@@ -13,19 +13,17 @@
 
     <RelativeLayout
         android:id="@+id/reminderItemDeleteIconLayout"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end|center_vertical"
         android:background="@drawable/reminder_delete_item_background"
-        android:paddingStart="@dimen/mediumPadding"
-        android:paddingEnd="@dimen/mediumPadding"
-        android:paddingBottom="@dimen/largePadding"
-        android:paddingTop="@dimen/largePadding">
+        android:paddingStart="@dimen/largePadding"
+        android:paddingEnd="@dimen/largePadding">
 
         <ImageView
             android:id="@+id/reminderItemDeleteIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:contentDescription="@string/delete_icon_cd"
             android:tint="@color/alternativeIconTint"
             android:src="@drawable/delete_icon"
@@ -39,7 +37,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="24dp"
         app:cardElevation="@dimen/mediumElevation"
-        app:contentPadding="@dimen/mediumPadding">
+        app:contentPadding="@dimen/smallPadding">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/reminderItemLayout"
@@ -51,25 +49,24 @@
 
             <TextView
                 android:id="@+id/reminderItemTitle"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAllCaps="true"
                 android:textColor="@color/primaryText"
                 android:textSize="@dimen/mediumText"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
                 tools:text="Title" />
 
             <LinearLayout
                 android:id="@+id/dateLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/smallMargin"
                 android:padding="@dimen/smallPadding"
                 app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -100,7 +97,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/smallMargin"
                 android:padding="@dimen/smallPadding"
                 app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -129,8 +125,8 @@
 
             <ImageView
                 android:id="@+id/reminderActiveIcon"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:backgroundTint="@android:color/transparent"
                 android:scaleType="centerCrop"
                 android:src="@drawable/alarm_icon"
@@ -138,7 +134,7 @@
                 android:contentDescription="@string/alarm_icon_cd"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reminderItemTitle" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

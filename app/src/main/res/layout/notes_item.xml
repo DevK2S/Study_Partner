@@ -2,7 +2,7 @@
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/file_layout"
+    android:id="@+id/fileLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/smallMargin"
@@ -14,7 +14,7 @@
         android:padding="@dimen/smallPadding">
 
         <TextView
-            android:id="@+id/file_name"
+            android:id="@+id/fileName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/mediumMargin"
@@ -23,13 +23,13 @@
             android:textColor="@color/notes_item_text_color"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/file_options"
+            app:layout_constraintEnd_toStartOf="@id/fileOptions"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/fileCl"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/file_options"
+            android:id="@+id/fileOptions"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_marginEnd="@dimen/smallMargin"
@@ -52,7 +52,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/file_image"
+                android:id="@+id/fileImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:scaleType="centerCrop"

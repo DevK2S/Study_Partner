@@ -98,11 +98,17 @@
 
     <string name="file_background_rectangle_cd">Background Rectangle Image</string>
     <string name="file_sort_order_cd">Sort Order</string>
+    <string name="file_empty_icon_cd">File Empty Icon</string>
+    <string name="file_empty">No items</string>
 
     <string name="notes_action_delete">Delete</string>
     <string name="notes_action_unstar">Unstar</string>
     <string name="notes_action_select_all">Select All</string>
     <string name="notes_action_share">Share</string>
+
+    <string name="notes_empty_icon_cd">Notes Empty Icon</string>
+    <string name="notes_empty">No subjects stored</string>
+    <string name="notes_empty_sub">Click on the plus icon to get started</string>
 
     <string name="bottom_sheet_new_folder">New Folder</string>
     <string name="bottom_sheet_file">File</string>
@@ -143,13 +149,6 @@
     <string name="starred_empty">Star important files to view them quickly</string>
     <string name="starred_empty_sub">To star a file click on its options menu</string>
 
-    <string name="notes_empty_icon_cd">Notes Empty Icon</string>
-    <string name="notes_empty">No subjects stored</string>
-    <string name="notes_empty_sub">Click on the plus icon to get started</string>
-
-    <string name="file_empty_icon_cd">File Empty Icon</string>
-    <string name="file_empty">No items</string>
-
     <string name="bottom_sheet_notes_image_cd">Bottom Sheet Image</string>
 
     <string name="calendar_icon_cd">Calendar Icon</string>
@@ -162,4 +161,17 @@
 
     <string name="reminder_dialog_desc">Description</string>
     <string name="reminder_dialog_title">Title</string>
+
+    <string name="bottom_sheet_open_with">Open With</string>
+    <string name="bottom_sheet_star">Add to starred</string>
+    <string name="bottom_sheet_unstar">Remove from starred</string>
+    <string name="bottom_sheet_rename">Rename</string>
+    <string name="bottom_sheet_delete">Delete</string>
+    <string name="bottom_sheet_send">Send</string>
+    <string name="bottom_sheet_details">Details</string>
+
+    <string name="home_large_image_cd">Home Large Image</string>
+    <string name="home_small_image_cd">Home Small Image</string>
+    <string name="home_empty_icon_cd">Home Empty Icon</string>
+    <string name="home_empty">Add notes to view them here</string>
 </resources>

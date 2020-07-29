@@ -232,10 +232,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		public NotesViewHolder(View view) {
 			super(view);
 			
-			fileName = view.findViewById(R.id.file_name);
-			fileImage = view.findViewById(R.id.file_image);
-			fileLayout = view.findViewById(R.id.file_layout);
-			fileOptions = view.findViewById(R.id.file_options);
+			fileName = view.findViewById(R.id.fileName);
+			fileImage = view.findViewById(R.id.fileImage);
+			fileLayout = view.findViewById(R.id.fileLayout);
+			fileOptions = view.findViewById(R.id.fileOptions);
 			
 			view.setOnClickListener(this);
 			view.setOnLongClickListener(this);

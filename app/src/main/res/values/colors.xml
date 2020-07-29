@@ -56,4 +56,6 @@
 
     <color name="bottomSheetBackground">#888888</color>
 
+    <color name="homeImageColor">#FF153C</color>
+    <color name="homeMusicColor">#F0F812</color>
 </resources>
