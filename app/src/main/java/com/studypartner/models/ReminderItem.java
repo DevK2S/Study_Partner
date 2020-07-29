@@ -3,6 +3,8 @@ package com.studypartner.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ReminderItem implements Parcelable {
 	private String time;
 	private String date;
@@ -119,6 +121,7 @@ public class ReminderItem implements Parcelable {
 		parcel.writeInt(active ? 1 : 0);
 	}
 	
+	@NotNull
 	@Override
 	public String toString() {
 		return "ReminderItem{" +

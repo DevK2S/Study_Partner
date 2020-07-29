@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/app_logo_transparent" />
+        android:src="@drawable/app_logo" />
 
     <TextView
         android:id="@+id/splashScreenAppName"

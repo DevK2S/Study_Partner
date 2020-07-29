@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import com.studypartner.utils.FileType;
 import com.studypartner.utils.FileUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -153,6 +155,7 @@ public class FileItem implements Parcelable {
 		parcel.writeString(String.valueOf(isStarred));
 	}
 	
+	@NotNull
 	@Override
 	public String toString() {
 		return "FileItem{" +

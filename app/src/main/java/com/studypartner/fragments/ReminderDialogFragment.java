@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -236,18 +235,16 @@ public class ReminderDialogFragment extends DialogFragment {
 
 						mReminderList.get(finalPositionToEdit).edit(title, content, time, date);
 						mReminderList.get(finalPositionToEdit).setActive(true);
+						
 						if (mReminderList.get(finalPositionToEdit).isActive()) {
 							ReminderItem newItem = mReminderList.get(finalPositionToEdit);
 							mReminderList.remove(finalPositionToEdit);
 							mReminderList.add(0, newItem);
 						}
-
-						Log.d("TAG", "onClick: " + mReminderList.get(finalPositionToEdit).toString());
-
-						createNotification(mReminderList.get(finalPositionToEdit));
+						
+						createNotification(mReminderList.get(0));
 					} else {
 						ReminderItem item = new ReminderItem(title, content, time, date);
-						Log.d("TAG", "onClick: " + item.toString());
 
 						mReminderList.add(0, item);
 						createNotification(item);

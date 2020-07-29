@@ -29,11 +29,6 @@ public class MediaActivity extends AppCompatActivity {
 	MediaAdapter mediaAdapter;
 	
 	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-	}
-	
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "Media Activity");

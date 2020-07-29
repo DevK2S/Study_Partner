@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import static android.content.Context.MODE_PRIVATE;
 
 public class AttendanceFragment extends Fragment {
-	private static final String TAG = "AttendanceFragment";
 	
 	private final String REQUIRED_ATTENDANCE_CHOSEN = "requiredAttendanceChosen";
 	private final String REQUIRED_ATTENDANCE = "requiredAttendance";
@@ -78,7 +76,6 @@ public class AttendanceFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView: starts");
 		
 		View rootView = inflater.inflate(R.layout.fragment_attendance, container, false);
 		
@@ -113,7 +110,6 @@ public class AttendanceFragment extends Fragment {
 		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override
 			public void handleOnBackPressed() {
-				Log.d(TAG, "handleOnBackPressed: starts");
 				mNavController.navigate(R.id.action_nav_attendance_to_nav_home);
 			}
 		});
@@ -376,7 +372,6 @@ public class AttendanceFragment extends Fragment {
 	}
 	
 	private void addSubject() {
-		Log.d(TAG, "addSubject: add subject clicked");
 		
 		final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 		
@@ -389,7 +384,6 @@ public class AttendanceFragment extends Fragment {
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "onClick: cancel pressed while adding subject");
 				builder.dismiss();
 			}
 		});
@@ -397,10 +391,8 @@ public class AttendanceFragment extends Fragment {
 		okButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "onClick: ok pressed while adding subject");
 				String subjectName = subjectNameTextInput.getEditText().getText().toString().trim();
 				if (subjectName.length() > 0) {
-					Log.d(TAG, "onClick: adding new subject");
 					
 					AttendanceItem newItem = new AttendanceItem(subjectName, requiredPercentage, 0, 0);
 					mEmptyLayout.setVisibility(View.INVISIBLE);
@@ -432,7 +424,6 @@ public class AttendanceFragment extends Fragment {
 	}
 	
 	private void editSubjectName(final int position) {
-		Log.d(TAG, "editSubjectName: edit button clicked");
 		
 		final AlertDialog builder = new AlertDialog.Builder(getContext()).create();
 		
@@ -446,7 +437,6 @@ public class AttendanceFragment extends Fragment {
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "onClick: cancel pressed while changing subject");
 				builder.dismiss();
 			}
 		});
@@ -454,7 +444,6 @@ public class AttendanceFragment extends Fragment {
 		okButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "onClick: ok pressed while changing subject");
 				
 				String subjectName = subjectNameTextInput.getEditText().getText().toString().trim();
 				
@@ -483,7 +472,6 @@ public class AttendanceFragment extends Fragment {
 	}
 	
 	private void deleteSubject(final int position) {
-		Log.d(TAG, "deleteSubject: delete button clicked");
 		
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 		builder.setTitle("Delete Subject");

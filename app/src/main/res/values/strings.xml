@@ -138,8 +138,6 @@
     <string name="notes_add_link_title">Enter Link</string>
     <string name="notes_add_link_ok">OK</string>
     <string name="notes_add_link_cancel">Cancel</string>
-    <string name="reminderitem_delete_button">Reminder Item Delete</string>
-    <string name="reminder_item_edit_button">Reminder Item Edit</string>
 
     <string name="starred_empty_icon_cd">Starred Empty Icon</string>
     <string name="starred_empty">Star important files to view them quickly</string>
@@ -153,6 +151,15 @@
     <string name="file_empty">No items</string>
 
     <string name="bottom_sheet_notes_image_cd">Bottom Sheet Image</string>
-    <string name="calendar_icon">Calendar Icon</string>
-    <string name="TimeIcon">Time Icon</string>
+
+    <string name="calendar_icon_cd">Calendar Icon</string>
+    <string name="time_icon_cd">Time Icon</string>
+    <string name="alarm_icon_cd">Alarm Icon</string>
+    <string name="delete_icon_cd">Delete</string>
+
+    <string name="reminder_item_delete_button">Reminder Item Delete</string>
+    <string name="reminder_item_edit_button">Reminder Item Edit</string>
+
+    <string name="reminder_dialog_desc">Description</string>
+    <string name="reminder_dialog_title">Title</string>
 </resources>

@@ -24,11 +24,8 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
     public interface ReminderItemClickListener {
         void onClick(int position);
-
         void onLongClick(int position);
-
-        void deleteView(int adapterPosition);
-
+        void deleteView(int position);
     }
 
     private Context context;
@@ -118,6 +115,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
+            
             title = itemView.findViewById(R.id.reminderItemTitle);
             date = itemView.findViewById(R.id.reminderItemDate);
             time = itemView.findViewById(R.id.reminderItemTime);
@@ -126,11 +124,10 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
             reminderCalendar = itemView.findViewById(R.id.reminderCalendar);
             reminderClock = itemView.findViewById(R.id.reminderClock);
             reminderLayout = itemView.findViewById(R.id.reminderItemCard);
-            delete = itemView.findViewById(R.id.DeleteIcon);
+            delete = itemView.findViewById(R.id.reminderItemDeleteIcon);
+            
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-
-
         }
 
         @Override

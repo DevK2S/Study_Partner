@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,7 +54,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import static android.content.Context.MODE_PRIVATE;
 
 public class StarredFragment extends Fragment implements NotesAdapter.NotesClickListener {
-	private static final String TAG = "StarredFragment";
 	
 	private final String SORT_BY_NAME = "By Name";
 	private final String SORT_BY_SIZE = "By Size";
@@ -114,7 +112,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView: starts");
 		
 		View rootView = inflater.inflate(R.layout.fragment_starred, container, false);
 		
@@ -125,7 +122,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override
 			public void handleOnBackPressed() {
-				Log.d(TAG, "handleOnBackPressed: starts");
 				fab.setOnClickListener(null);
 				activity.mNavController.navigate(R.id.action_nav_starred_to_nav_home);
 			}
@@ -136,7 +132,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				Log.d(TAG, "onClick: fab onclick called");
 				activity.mNavController.navigate(R.id.action_nav_starred_to_nav_notes);
 			}
 		});
@@ -215,7 +210,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				cancelButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Log.d(TAG, "onClick: cancel pressed while changing subject");
 						builder.dismiss();
 					}
 				});
@@ -345,7 +339,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	
 	@Override
 	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		Log.d(TAG, "onOptionsItemSelected: starts");
 		switch (item.getItemId()) {
 			case R.id.notes_menu_refresh:
 				populateDataAndSetAdapter();
@@ -453,7 +446,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 								File newFile = new File(oldFile.getParent(), newName + finalExtension);
 								if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
 									if (newName.equals(fileItem.getName()) || newName.equals("")) {
-										Log.d(TAG, "onClick: link not changed");
 									} else if (!FileUtils.isValidUrl(newName)) {
 										Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
 									} else {
@@ -482,7 +474,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 									}
 								} else {
 									if (newName.equals(fileItem.getName()) || newName.equals("")) {
-										Log.d(TAG, "onClick: filename not changed");
 									} else if (newFile.exists()) {
 										Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
 									} else if (newName.contains(".") || newName.contains("/")) {
@@ -772,8 +763,9 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				deleteRecursive(child);
 			}
 		}
-		
-		Log.d(TAG, "deleteRecursive: " + fileOrDirectory.delete());
+		if (!fileOrDirectory.delete()) {
+			Toast.makeText(activity, "Cannot delete some files", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	private void enableActionMode(int position) {

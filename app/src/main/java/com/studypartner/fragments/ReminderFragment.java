@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +28,13 @@ import java.util.Calendar;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class ReminderFragment extends Fragment implements ReminderAdapter.ReminderItemClickListener {
-	private static final String TAG = "ReminderFragment";
+	
 	private FloatingActionButton mfab;
 	private RecyclerView mRecyclerView;
 	private ArrayList<ReminderItem> mReminderList;
@@ -61,7 +58,6 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
 			@Override
 			public void handleOnBackPressed() {
-				Log.d(TAG, "handleOnBackPressed: starts");
 				activity.mNavController.navigate(R.id.action_nav_reminder_to_nav_home);
 			}
 		});
@@ -78,10 +74,37 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
         });
 
         populateDataAndSetAdapter();
-        //enableSwipe();
+        
         return rootView;
     }
-
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		Calendar calendar = Calendar.getInstance();
+		Calendar today = Calendar.getInstance();
+		
+		for (int position = 0; position < mReminderList.size(); position++) {
+			
+			ReminderItem item = mReminderList.get(position);
+			
+			int year = Integer.parseInt(item.getDate().substring(6));
+			int month = Integer.parseInt(item.getDate().substring(3, 5)) - 1;
+			int day = Integer.parseInt(item.getDate().substring(0, 2));
+			int hour = Integer.parseInt(item.getTime().substring(0, 2));
+			int minute = Integer.parseInt(item.getTime().substring(3, 5)) - 1;
+			String amOrPm = item.getTime().substring(6);
+			if (amOrPm.equals("PM") && hour != 12)
+				hour = hour + 12;
+			calendar.set(year, month, day, hour, minute);
+			if (calendar.compareTo(today) < 0) {
+				mReminderList.get(position).setActive(false);
+				reminderAdapter.notifyItemChanged(position);
+			}
+		}
+	}
+	
 	private void populateDataAndSetAdapter() {
 
 		SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
@@ -107,7 +130,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 			int month = Integer.parseInt(item.getDate().substring(3, 5)) - 1;
 			int day = Integer.parseInt(item.getDate().substring(0, 2));
 			int hour = Integer.parseInt(item.getTime().substring(0, 2));
-			int minute = Integer.parseInt(item.getTime().substring(3, 5));
+			int minute = Integer.parseInt(item.getTime().substring(3, 5)) - 1;
 			String amOrPm = item.getTime().substring(6);
 			if (amOrPm.equals("PM") && hour != 12)
 				hour = hour + 12;
@@ -116,8 +139,6 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 				mReminderList.get(position).setActive(false);
 			}
 		}
-		
-		Log.d(TAG, "populateDataAndSetAdapter: " + mReminderList.toString());
 		
 		if (mReminderList.size() == 0) {
 			reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", false);
@@ -131,18 +152,6 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
         reminderAdapter = new ReminderAdapter(getContext(), mReminderList, this);
 
         mRecyclerView.setAdapter(reminderAdapter);
-    }
-
-    void enableSwipe() {
-       /* final SwipeControl swipeController = new SwipeControl();
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
-        itemTouchhelper.attachToRecyclerView(mRecyclerView);
-		mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-			@Override
-			public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-				swipeController.onDraw(c);
-			}
-		});*/
     }
 
     private void deleteReminder(final int position) {
@@ -215,7 +224,6 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 
     @Override
     public void deleteView(int adapterPosition) {
-
         deleteReminder(adapterPosition);
     }
 }

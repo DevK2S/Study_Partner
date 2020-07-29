@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.util.Patterns;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
@@ -43,7 +42,6 @@ public class FileUtils {
 	public static final String DOCUMENTS_DIR = "documents";
 	public static final String AUTHORITY =  "${applicationId}.provider";
 	
-	private static final String TAG = "FileUtil";
 	final static HashMap<String, FileType> types = new HashMap<>();
 	
 	static void createMap() {
@@ -147,7 +145,6 @@ public class FileUtils {
 		
 		String outputFilePath = new File(outputDirectoryPath, fileName).getPath();
 		
-		Log.d(TAG, "copyFile: from " + inputFilePath + " to " + outputFilePath);
 		
 		try (InputStream in = new FileInputStream(inputFilePath)) {
 			
@@ -437,10 +434,8 @@ public class FileUtils {
 	
 	private static void logDir(File dir) {
 		if(!DEBUG) return;
-		Log.d(TAG, "Dir=" + dir);
 		File[] files = dir.listFiles();
 		for (File file : files) {
-			Log.d(TAG, "File=" + file.getPath());
 		}
 	}
 	
@@ -475,7 +470,6 @@ public class FileUtils {
 				return null;
 			}
 		} catch (IOException e) {
-			Log.w(TAG, e);
 			return null;
 		}
 		

@@ -25,7 +25,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
-	private static final String TAG = "NotesAdapter";
 	
 	public interface NotesClickListener {
 		void onClick(int position);

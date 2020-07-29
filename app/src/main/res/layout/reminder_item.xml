@@ -5,40 +5,38 @@
     android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/mediumMargin"
+    android:animateLayoutChanges="true"
     app:draggedItem="@id/reminderItemCard"
-    app:rightItem="@id/DeleteIconLayout"
+    app:rightItem="@id/reminderItemDeleteIconLayout"
     app:swipeDirection="left">
 
     <RelativeLayout
-        android:id="@+id/DeleteIconLayout"
-        android:layout_width="80dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="@dimen/mediumMargin"
-        android:layout_gravity="end"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="55dp"
-        android:paddingTop="35dp"
-        android:layout_height="140dp">
+        android:id="@+id/reminderItemDeleteIconLayout"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end|center_vertical"
+        android:background="@drawable/reminder_delete_item_background"
+        android:paddingStart="@dimen/mediumPadding"
+        android:paddingEnd="@dimen/mediumPadding"
+        android:paddingBottom="@dimen/largePadding"
+        android:paddingTop="@dimen/largePadding">
 
         <ImageView
-            android:id="@+id/DeleteIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            android:src="@drawable/delete_icon" />
+            android:id="@+id/reminderItemDeleteIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/delete_icon_cd"
+            android:tint="@color/alternativeIconTint"
+            android:src="@drawable/delete_icon"
+            android:layout_centerInParent="true"/>
+
     </RelativeLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/reminderItemCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="@dimen/mediumMargin"
         app:cardCornerRadius="24dp"
         app:cardElevation="@dimen/mediumElevation"
         app:contentPadding="@dimen/mediumPadding">
@@ -82,6 +80,7 @@
                     android:id="@+id/reminderCalendar"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:contentDescription="@string/calendar_icon_cd"
                     android:src="@drawable/calendar_icon"
                     android:tint="@color/iconTint" />
 
@@ -112,6 +111,7 @@
                     android:id="@+id/reminderClock"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:contentDescription="@string/time_icon_cd"
                     android:src="@drawable/time_icon"
                     android:tint="@color/iconTint" />
 
@@ -135,6 +135,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/alarm_icon"
                 android:tint="@color/iconTint"
+                android:contentDescription="@string/alarm_icon_cd"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reminderItemTitle" />
@@ -142,4 +143,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
 </com.zerobranch.layout.SwipeLayout>
