@@ -9,18 +9,57 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
+        android:fillViewport="true"
         android:paddingStart="@dimen/mediumPadding"
         android:paddingEnd="@dimen/mediumPadding"
         android:paddingTop="@dimen/smallPadding"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".fragments.ReminderFragment">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <LinearLayout
+                android:id="@+id/reminderEmptyLayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingEnd="@dimen/mediumPadding"
+                android:paddingStart="@dimen/mediumPadding"
+                android:paddingTop="@dimen/mediumPadding"
+                android:visibility="gone"
+                android:layout_marginBottom="?attr/actionBarSize"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" >
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:contentDescription="@string/reminder_empty_icon_cd"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/alarm_icon"
+                    android:tint="@color/iconTint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/mediumMargin"
+                    android:text="@string/reminder_empty"
+                    android:textAlignment="center"
+                    android:textColor="@color/primaryText"
+                    android:textSize="@dimen/largeText" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 

@@ -24,6 +24,7 @@
             android:focusable="false"
             android:text="@string/attendance_item_plus"
             android:textSize="@dimen/smallText"
+            android:backgroundTint="@color/colorAccent"
             app:layout_constraintStart_toEndOf="@id/attendanceItemAttended"
             app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
 
@@ -35,6 +36,7 @@
             android:focusable="false"
             android:text="@string/attendance_item_minus"
             android:textSize="@dimen/mediumText"
+            android:backgroundTint="@color/colorAccent"
             app:layout_constraintStart_toEndOf="@id/attendanceItemAttendedPlusButton"
             app:layout_constraintTop_toBottomOf="@id/attendanceSubjectAndPercentageLayout" />
 
@@ -46,6 +48,7 @@
             android:focusable="false"
             android:text="@string/attendance_item_plus"
             android:textSize="@dimen/smallText"
+            android:backgroundTint="@color/colorAccent"
             app:layout_constraintStart_toStartOf="@+id/attendanceItemAttendedPlusButton"
             app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedPlusButton" />
 
@@ -58,6 +61,7 @@
             android:focusable="false"
             android:text="@string/attendance_item_minus"
             android:textSize="@dimen/mediumText"
+            android:backgroundTint="@color/colorAccent"
             app:layout_constraintStart_toEndOf="@id/attendanceItemMissedPlusButton"
             app:layout_constraintTop_toBottomOf="@id/attendanceItemAttendedMinusButton" />
 

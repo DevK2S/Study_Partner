@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
 
 public class FileItem implements Parcelable {
 	
@@ -44,9 +43,14 @@ public class FileItem implements Parcelable {
 	public static long getFolderSize(File file) {
 		long size = 0;
 		if (file.isDirectory()) {
-			for (File f : Objects.requireNonNull(file.listFiles())) {
-				size += getFolderSize(f);
-			}
+			try {
+				File[] files = file.listFiles();
+				if (files != null && files.length > 0) {
+					for (File f : files) {
+						size += getFolderSize(f);
+					}
+				}
+			} catch (NullPointerException ignored) {}
 		} else {
 			size = file.length();
 		}

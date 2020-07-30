@@ -158,7 +158,8 @@
 
     <string name="reminder_item_delete_button">Reminder Item Delete</string>
     <string name="reminder_item_edit_button">Reminder Item Edit</string>
-
+    <string name="reminder_empty_icon_cd">Reminder Empty Icon</string>
+    <string name="reminder_empty">Add reminders and never miss any event</string>
     <string name="reminder_dialog_desc">Description</string>
     <string name="reminder_dialog_title">Title</string>
 

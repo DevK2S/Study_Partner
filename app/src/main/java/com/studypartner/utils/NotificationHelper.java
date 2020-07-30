@@ -21,7 +21,7 @@ import com.studypartner.models.ReminderItem;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
-class NotificationHelper extends ContextWrapper {
+public class NotificationHelper extends ContextWrapper {
 	public static final String channelID = "channelID";
 	public static final String channelName = "Reminder";
 	private NotificationManager mManager;

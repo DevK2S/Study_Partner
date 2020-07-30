@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ReminderFragment extends Fragment implements ReminderAdapter.ReminderItemClickListener {
 	
+	private LinearLayout mEmptyLayout;
 	private FloatingActionButton mfab;
 	private RecyclerView mRecyclerView;
 	private ArrayList<ReminderItem> mReminderList;
@@ -62,6 +64,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 			}
 		});
 		
+		mEmptyLayout = rootView.findViewById(R.id.reminderEmptyLayout);
 		mRecyclerView = rootView.findViewById(R.id.recyclerview);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
 
@@ -142,6 +145,9 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		
 		if (mReminderList.size() == 0) {
 			reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", false);
+			mEmptyLayout.setVisibility(View.VISIBLE);
+		} else {
+			mEmptyLayout.setVisibility(View.GONE);
 		}
 
         String json = gson.toJson(mReminderList);
@@ -185,6 +191,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 
 				if (mReminderList.size() == 0) {
 					reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", false);
+					mEmptyLayout.setVisibility(View.VISIBLE);
 				}
 
 				reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
@@ -219,7 +226,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 
     @Override
     public void onLongClick(int position) {
-        deleteReminder(position);
+        editReminder(position);
     }
 
     @Override

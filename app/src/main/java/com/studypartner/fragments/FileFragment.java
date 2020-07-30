@@ -1051,8 +1051,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	
 	private void deleteRecursive(File fileOrDirectory) {
 		if (fileOrDirectory.isDirectory()) {
-			for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
-				deleteRecursive(child);
+			File[] files = fileOrDirectory.listFiles();
+			if (files != null && files.length > 0) {
+				for (File file : files) {
+					deleteRecursive(file);
+				}
 			}
 		}
 		Log.d(TAG, "deleteRecursive: " + fileOrDirectory.delete());

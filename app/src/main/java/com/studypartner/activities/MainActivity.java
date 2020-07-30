@@ -26,7 +26,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
+import com.studypartner.models.ReminderItem;
 import com.studypartner.utils.Connection;
+import com.studypartner.utils.NotificationHelper;
 
 import java.util.Objects;
 
@@ -190,6 +192,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		Bundle bundle = intent.getBundleExtra("EXTRA_REMINDER_ITEM");
 		if (bundle != null) {
 			Log.d(TAG, "onCreate: starting reminder");
+			ReminderItem item = bundle.getParcelable("BUNDLE_REMINDER_ITEM");
+			
+			NotificationHelper notificationHelper = new NotificationHelper(this);
+			if (item != null) {
+				notificationHelper.getManager().cancel(item.getNotifyId());
+			}
 			mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
 		}
 	}

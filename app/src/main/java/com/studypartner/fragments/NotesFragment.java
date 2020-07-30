@@ -21,6 +21,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -117,6 +122,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 		
 		FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+		activity = (MainActivity) requireActivity();
 		
 		if (firebaseUser != null && firebaseUser.getEmail() != null) {
 			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
@@ -130,19 +136,27 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
 			}
 		} else {
-			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
-			if (!studyPartnerFolder.exists()) {
-				if (studyPartnerFolder.mkdirs()) {
-					noteFolder = studyPartnerFolder;
-				} else {
-					noteFolder = requireContext().getExternalFilesDir(null);
+			FirebaseAuth.getInstance().signOut();
+			
+			GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+					.requestIdToken(getString(R.string.default_web_client_id))
+					.requestEmail()
+					.build();
+			GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+			googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+				@Override
+				public void onComplete(@NonNull Task<Void> task) {
+					if (task.isSuccessful()) {
+						activity.mNavController.navigate(R.id.nav_logout);
+						activity.finishAffinity();
+						activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+					} else {
+						activity.finishAffinity();
+					}
 				}
-			} else {
-				noteFolder = studyPartnerFolder;
-			}
+			});
 		}
 		
-		activity = (MainActivity) requireActivity();
 		activity.mBottomAppBar.bringToFront();
 		activity.fab.bringToFront();
 		
@@ -779,8 +793,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	
 	private void deleteRecursive(File fileOrDirectory) {
 		if (fileOrDirectory.isDirectory()) {
-			for (File child : Objects.requireNonNull(fileOrDirectory.listFiles())) {
-				deleteRecursive(child);
+			File[] files = fileOrDirectory.listFiles();
+			if (files != null && files.length > 0) {
+				for (File file : files) {
+					deleteRecursive(file);
+				}
 			}
 		}
 		

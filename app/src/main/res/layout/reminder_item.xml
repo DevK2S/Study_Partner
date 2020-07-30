@@ -37,15 +37,15 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="24dp"
         app:cardElevation="@dimen/mediumElevation"
-        app:contentPadding="@dimen/smallPadding">
+        app:contentPadding="@dimen/mediumPadding">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/reminderItemLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:backgroundTint="@color/bg_gray"
-            android:paddingStart="@dimen/mediumPadding"
-            android:paddingEnd="@dimen/mediumPadding">
+            android:paddingStart="@dimen/smallPadding"
+            android:paddingEnd="@dimen/smallPadding">
 
             <TextView
                 android:id="@+id/reminderItemTitle"
@@ -97,7 +97,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/smallPadding"
+                android:paddingBottom="@dimen/smallPadding"
+                android:paddingStart="@dimen/smallPadding"
+                android:paddingEnd="@dimen/smallPadding"
+                android:paddingTop="0dp"
                 app:layout_constraintEnd_toStartOf="@id/reminderActiveIcon"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
