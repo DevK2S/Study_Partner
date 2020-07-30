@@ -8,7 +8,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Random;
+import java.util.UUID;
 
 import androidx.annotation.NonNull;
 
@@ -68,16 +68,14 @@ public class User {
 		String username;
 		do {
 			uniqueUsername[0] = true;
-			username = newEmail + (new Random().nextInt(1000));
-			final String finalUsername = username;
-			FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+			username = newEmail + UUID.randomUUID().toString().substring(0, 15);
+			final String finalUsername = username.substring(0, 15);
+			FirebaseDatabase.getInstance().getReference().child("usernames").addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(@NonNull DataSnapshot snapshot) {
 					for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-						for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-							if ("username".equals(dataSnapshot1.getKey()) && finalUsername.matches((String) dataSnapshot1.getValue())) {
-								uniqueUsername[0] = false;
-							}
+						if (finalUsername.matches( dataSnapshot.getValue(String.class))) {
+							uniqueUsername[0] = false;
 						}
 					}
 				}
@@ -89,7 +87,7 @@ public class User {
 			});
 		} while (!uniqueUsername[0]);
 		
-		this.username = username;
+		this.username = username.substring(0,15);
 	}
 	
 	public String validateName(String name) {

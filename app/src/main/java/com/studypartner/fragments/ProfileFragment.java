@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,7 +50,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
-import com.studypartner.activities.LoginActivity;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.models.User;
 import com.studypartner.utils.Connection;
@@ -124,9 +125,7 @@ public class ProfileFragment extends Fragment {
 				Log.d(TAG, "onActivityResult: setting image");
 				profileImageView.setImageBitmap(bitmap);
 				uploadImage();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			} catch (IOException ignored) {}
 		}
 	}
 	
@@ -420,6 +419,7 @@ public class ProfileFragment extends Fragment {
 			Log.d(TAG, "deleteAccount: showing delete account password edit text");
 			deleteAccountPasswordTextInput.setVisibility(View.VISIBLE);
 			Toast.makeText(getContext(), "Enter the current password to delete the account", Toast.LENGTH_SHORT).show();
+			enableViews();
 		} else {
 			Log.d(TAG, "deleteAccount: re authenticating the user");
 			
@@ -440,6 +440,7 @@ public class ProfileFragment extends Fragment {
 						public void onComplete(@NonNull Task<Void> task) {
 							if (task.isSuccessful()) {
 								Log.d(TAG, "onComplete: re authenticating successful");
+								enableViews();
 								
 								final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 								builder.setTitle("Deleting your account");
@@ -485,22 +486,43 @@ public class ProfileFragment extends Fragment {
 																					
 																					FirebaseAuth.getInstance().signOut();
 																					
-																					startActivity(new Intent(getContext(), LoginActivity.class));
-																					getActivity().finishAffinity();
-																					getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+																					GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+																							.requestIdToken(getString(R.string.default_web_client_id))
+																							.requestEmail()
+																							.build();
+																					
+																					GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+																					googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+																						@Override
+																						public void onComplete(@NonNull Task<Void> task) {
+																							if (task.isSuccessful()) {
+																								MainActivity activity = (MainActivity) requireActivity();
+																								activity.mNavController.navigate(R.id.nav_logout);
+																								activity.finishAffinity();
+																								activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+																								enableViews();
+																							} else {
+																								Toast.makeText(requireContext(), "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+																								enableViews();
+																							}
+																						}
+																					});
 																					
 																				} else {
 																					Log.d(TAG, "onComplete: could not delete account");
+																					enableViews();
 																				}
 																			}
 																		});
 															} else {
 																Log.d(TAG, "onComplete: could not delete data");
+																enableViews();
 															}
 														}
 													});
 												} else {
 													Log.d(TAG, "onComplete: could not delete data");
+													enableViews();
 												}
 											}
 										});
@@ -512,18 +534,19 @@ public class ProfileFragment extends Fragment {
 										dialog.dismiss();
 										deleteAccountPasswordTextInput.getEditText().setText("");
 										deleteAccountPasswordTextInput.setVisibility(View.GONE);
+										enableViews();
 									}
 								});
 								
 								builder.show();
 							} else {
 								Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+								enableViews();
 							}
 						}
 					});
 		}
 		
-		enableViews();
 	}
 	
 	private void updateProfile() {
@@ -540,10 +563,7 @@ public class ProfileFragment extends Fragment {
 			fullNameTextInput.setError(user.validateName(fullName));
 			usernameTextInput.setError(user.validateUsername(username));
 			enableViews();
-			return;
-		}
-		
-		if (!fullName.matches(user.getFullName()) && !username.matches(user.getUsername())) {
+		} else if (!fullName.matches(user.getFullName()) && !username.matches(user.getUsername())) {
 			Log.d(TAG, "updateProfile: updating username and full name");
 			
 			user.setFullName(fullName);
@@ -594,6 +614,7 @@ public class ProfileFragment extends Fragment {
 															if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
 																profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 															}
+															enableViews();
 														}
 													})
 													.addOnFailureListener(new OnFailureListener() {
@@ -601,6 +622,7 @@ public class ProfileFragment extends Fragment {
 														public void onFailure(@NonNull Exception e) {
 															Log.d(TAG, "onFailure: usernames database could not be updated");
 															Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+															enableViews();
 														}
 													});
 										}
@@ -610,6 +632,7 @@ public class ProfileFragment extends Fragment {
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: users database could not be updated");
 											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											enableViews();
 										}
 									});
 						}
@@ -619,6 +642,7 @@ public class ProfileFragment extends Fragment {
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: display name changing failed");
 							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							enableViews();
 						}
 					});
 			
@@ -652,6 +676,7 @@ public class ProfileFragment extends Fragment {
 											if (null != FirebaseAuth.getInstance().getCurrentUser().getDisplayName()) {
 												profileFullName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 											}
+											enableViews();
 										}
 									})
 									.addOnFailureListener(new OnFailureListener() {
@@ -659,6 +684,7 @@ public class ProfileFragment extends Fragment {
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: users database could not be updated");
 											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											enableViews();
 										}
 									});
 						}
@@ -668,6 +694,7 @@ public class ProfileFragment extends Fragment {
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: display name changing failed");
 							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							enableViews();
 						}
 					});
 			
@@ -689,6 +716,7 @@ public class ProfileFragment extends Fragment {
 											Log.d(TAG, "onSuccess: usernames database updated successfully");
 											
 											Toast.makeText(getContext(), "Username updated successfully", Toast.LENGTH_SHORT).show();
+											enableViews();
 										}
 									})
 									.addOnFailureListener(new OnFailureListener() {
@@ -696,6 +724,7 @@ public class ProfileFragment extends Fragment {
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: usernames database could not be updated");
 											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											enableViews();
 										}
 									});
 						}
@@ -705,13 +734,14 @@ public class ProfileFragment extends Fragment {
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: users database could not be updated");
 							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							enableViews();
 						}
 					});
 		} else {
-			Toast.makeText(getContext(), "Full name and username are same as now", Toast.LENGTH_SHORT).show();
+			Toast.makeText(requireContext(),"Name and Username are same as before", Toast.LENGTH_SHORT).show();
+			enableViews();
 		}
 		
-		enableViews();
 	}
 	
 	private void updateEmail() {
@@ -741,6 +771,7 @@ public class ProfileFragment extends Fragment {
 			passwordTextInput.setVisibility(View.VISIBLE);
 			emailTextInput.setEnabled(false);
 			Toast.makeText(getContext(), "Enter the current password to change the email", Toast.LENGTH_SHORT).show();
+			enableViews();
 		} else {
 			
 			Log.d(TAG, "updateEmail: re authenticating the user");
@@ -784,25 +815,28 @@ public class ProfileFragment extends Fragment {
 																
 																passwordTextInput.getEditText().setText("");
 																passwordTextInput.setVisibility(View.GONE);
+																enableViews();
 															} else {
 																Log.d(TAG, "onComplete: verification email could not be sent: " + task.getException().getMessage());
+																enableViews();
 															}
 														}
 													});
 												} else {
 													Toast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+													enableViews();
 												}
 											}
 										});
 								
 							} else {
 								Toast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+								enableViews();
 							}
 						}
 					});
 		}
 		
-		enableViews();
 	}
 	
 	private void updatePassword() {
@@ -819,6 +853,7 @@ public class ProfileFragment extends Fragment {
 			Log.d(TAG, "updatePassword: showing old password edit text");
 			oldPasswordTextInput.setVisibility(View.VISIBLE);
 			Toast.makeText(getContext(), "Enter the current password to change it", Toast.LENGTH_SHORT).show();
+			enableViews();
 		} else {
 			
 			Log.d(TAG, "updatePassword: re authenticating the user");
@@ -874,21 +909,23 @@ public class ProfileFragment extends Fragment {
 													oldPasswordTextInput.setVisibility(View.GONE);
 													newPasswordTextInput.setVisibility(View.GONE);
 													confirmPasswordTextInput.setVisibility(View.GONE);
+													enableViews();
 												} else {
 													Toast.makeText(getContext(), "Could not update password " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+													enableViews();
 												}
 											}
 										});
 								
 							} else {
 								Toast.makeText(getContext(), "Could not update password. Please reenter the correct password", Toast.LENGTH_SHORT).show();
+								enableViews();
 							}
 						}
 					});
 			
 		}
 		
-		enableViews();
 	}
 	
 	private void uploadImage() {

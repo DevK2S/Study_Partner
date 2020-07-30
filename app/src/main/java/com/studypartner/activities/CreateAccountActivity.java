@@ -18,7 +18,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.studypartner.R;
 import com.studypartner.models.User;
 
@@ -180,7 +183,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 				Log.d(TAG, "onClick: create account button pressed");
 				
 				if (validateFields()) {
-					createAccount();
+					checkUsernameValidity();
 				}
 			}
 		});
@@ -211,10 +214,40 @@ public class CreateAccountActivity extends AppCompatActivity {
 		Log.d(TAG, "onCreate: ends");
 	}
 	
+	private void checkUsernameValidity() {
+		
+		findViewById(R.id.createAccountScreenProgressBar).setVisibility(View.VISIBLE);
+		
+		FirebaseDatabase.getInstance().getReference().child("usernames").addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot snapshot) {
+				if (snapshot.exists() && snapshot.hasChildren()) {
+					for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+						if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+							if (username.trim().matches((String) dataSnapshot.getValue())) {
+								usernameTextInput.setError("Username is already taken by another user");
+								findViewById(R.id.createAccountScreenProgressBar).setVisibility(View.INVISIBLE);
+								return;
+							}
+						}
+					}
+				}
+				createAccount();
+			}
+			
+			@Override
+			public void onCancelled(@NonNull DatabaseError error) {
+				findViewById(R.id.createAccountScreenProgressBar).setVisibility(View.INVISIBLE);
+			}
+		});
+		
+	}
+	
 	private void createAccount() {
 		Log.d(TAG, "createAccount: starts");
 		
 		findViewById(R.id.createAccountScreenProgressBar).setVisibility(View.VISIBLE);
+		
 		FirebaseAuth.getInstance().createUserWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
 				.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 					@Override
@@ -222,10 +255,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 						if (task.isSuccessful()) {
 							Log.d(TAG, "onComplete: account created");
 							storeUserDetails();
-							Log.d(TAG, "onComplete: starting main activity");
-							startActivity(new Intent(CreateAccountActivity.this, MainActivity.class));
-							finishAffinity();
-							overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 						} else {
 							findViewById(R.id.createAccountScreenProgressBar).setVisibility(View.INVISIBLE);
 							Toast.makeText(CreateAccountActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -236,9 +265,9 @@ public class CreateAccountActivity extends AppCompatActivity {
 	
 	private void storeUserDetails() {
 		Log.d(TAG, "storeUserDetails: starts");
-		String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+		final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 		
-		User user = new User(fullName, username, email, FirebaseAuth.getInstance().getCurrentUser().isEmailVerified());
+		final User user = new User(fullName, username, email, FirebaseAuth.getInstance().getCurrentUser().isEmailVerified());
 		
 		UserProfileChangeRequest.Builder profileUpdates = new UserProfileChangeRequest.Builder();
 		profileUpdates.setDisplayName(fullName);
@@ -249,6 +278,18 @@ public class CreateAccountActivity extends AppCompatActivity {
 					public void onComplete(@NonNull Task<Void> task) {
 						if (task.isSuccessful()) {
 							Log.d(TAG, "onComplete: " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+							
+							//Make users database
+							FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
+							
+							//Make usernames database
+							FirebaseDatabase.getInstance().getReference().child("usernames").child(uid).setValue(username);
+							
+							Log.d(TAG, "onComplete: starting main activity");
+							startActivity(new Intent(CreateAccountActivity.this, MainActivity.class));
+							finishAffinity();
+							overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+							
 						} else {
 							Log.d(TAG, "onComplete: Could not update display name");
 						}
@@ -266,11 +307,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 			}
 		});
 		
-		//Make users database
-		FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
-		
-		//Make usernames database
-		FirebaseDatabase.getInstance().getReference().child("usernames").child(uid).setValue(username);
 		Log.d(TAG, "storeUserDetails: ends");
 	}
 	
@@ -287,7 +323,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 		String passwordValidation = validatePassword(passwordEditText.getText().toString(), confirmPasswordEditText.getText().toString());
 		
 		String confirmPasswordValidation = validateConfirmPassword(confirmPasswordEditText.getText().toString(), passwordEditText.getText().toString());
-		
 		
 		if (nameValidation == null && usernameValidation == null && emailValidation == null && passwordValidation == null && confirmPasswordValidation == null) {
 			Log.d(TAG, "validateFields: all fields valid");
@@ -328,7 +363,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 		return null;
 	}
 	
-	private String validateUsername(String username) {
+	private String validateUsername(final String username) {
 		if (username.trim().length() == 0) {
 			return "Username cannot be empty";
 		} else if (username.trim().length() < 5) {

@@ -45,6 +45,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/alternativeText"
                 android:textSize="@dimen/mediumText"
+                android:ellipsize="end"
+                android:maxLines="1"
                 tools:text="John Doe" />
 
             <TextView
@@ -54,6 +56,8 @@
                 android:layout_marginTop="@dimen/smallMargin"
                 android:textColor="@color/alternativeText"
                 android:textSize="12sp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 tools:text="example@example.com" />
         </LinearLayout>
     </LinearLayout>

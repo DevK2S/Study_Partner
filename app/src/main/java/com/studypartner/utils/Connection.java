@@ -19,7 +19,6 @@ import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.studypartner.BuildConfig;
 
 import androidx.fragment.app.Fragment;
 
@@ -116,94 +115,94 @@ public class Connection {
 		activityManager.getMemoryInfo(memoryInfo);
 		long ramSizeInMB = memoryInfo.totalMem / (1024 * 1024);
 		
-		String networkType;
-		
-		switch (telephonyManager.getNetworkType()) {
-			case TelephonyManager.NETWORK_TYPE_CDMA:
-				networkType = "CDMA";
-				break;
-			case TelephonyManager.NETWORK_TYPE_EDGE:
-				networkType = "EDGE";
-				break;
-			case TelephonyManager.NETWORK_TYPE_GPRS:
-				networkType = "GPRS";
-				break;
-			case TelephonyManager.NETWORK_TYPE_GSM:
-				networkType = "GSM";
-				break;
-			case TelephonyManager.NETWORK_TYPE_IWLAN:
-				networkType = "IWLAN";
-				break;
-			case TelephonyManager.NETWORK_TYPE_TD_SCDMA:
-				networkType = "TD SCDMA";
-				break;
-			case TelephonyManager.NETWORK_TYPE_LTE:
-				networkType = "LTE";
-				break;
-			case TelephonyManager.NETWORK_TYPE_UMTS:
-				networkType = "UMTS";
-				break;
-			case TelephonyManager.NETWORK_TYPE_HSDPA:
-				networkType = "HSDPA";
-				break;
-			case TelephonyManager.NETWORK_TYPE_HSPA:
-				networkType = "HSPA";
-				break;
-			case TelephonyManager.NETWORK_TYPE_HSPAP:
-				networkType = "HSPAP";
-				break;
-			case TelephonyManager.NETWORK_TYPE_HSUPA:
-				networkType = "HSUPA";
-				break;
-			default:
-				networkType = "UNKOWN";
-				break;
-		}
-		
-		String phoneType;
-		switch (telephonyManager.getPhoneType()) {
-			case TelephonyManager.PHONE_TYPE_CDMA:
-				phoneType = "CDMA";
-				break;
-			case TelephonyManager.PHONE_TYPE_GSM:
-				phoneType = "GSM";
-				break;
-			case TelephonyManager.PHONE_TYPE_SIP:
-				phoneType = "SIP";
-				break;
-			default:
-				phoneType = "NONE";
-				break;
-		}
+//		String networkType;
+//
+//		switch (telephonyManager.getNetworkType()) {
+//			case TelephonyManager.NETWORK_TYPE_CDMA:
+//				networkType = "CDMA";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_EDGE:
+//				networkType = "EDGE";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_GPRS:
+//				networkType = "GPRS";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_GSM:
+//				networkType = "GSM";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_IWLAN:
+//				networkType = "IWLAN";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_TD_SCDMA:
+//				networkType = "TD SCDMA";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_LTE:
+//				networkType = "LTE";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_UMTS:
+//				networkType = "UMTS";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_HSDPA:
+//				networkType = "HSDPA";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_HSPA:
+//				networkType = "HSPA";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_HSPAP:
+//				networkType = "HSPAP";
+//				break;
+//			case TelephonyManager.NETWORK_TYPE_HSUPA:
+//				networkType = "HSUPA";
+//				break;
+//			default:
+//				networkType = "UNKOWN";
+//				break;
+//		}
+//
+//		String phoneType;
+//		switch (telephonyManager.getPhoneType()) {
+//			case TelephonyManager.PHONE_TYPE_CDMA:
+//				phoneType = "CDMA";
+//				break;
+//			case TelephonyManager.PHONE_TYPE_GSM:
+//				phoneType = "GSM";
+//				break;
+//			case TelephonyManager.PHONE_TYPE_SIP:
+//				phoneType = "SIP";
+//				break;
+//			default:
+//				phoneType = "NONE";
+//				break;
+//		}
 		
 		StringBuilder builder = new StringBuilder();
 		builder.append("UID: ").append(FirebaseAuth.getInstance().getCurrentUser().getUid()).append("\n");
 		builder.append("EMAIL ADDRESS: ").append(FirebaseAuth.getInstance().getCurrentUser().getEmail()).append("\n");
 		builder.append("EMAIL VERIFIED: ").append(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()).append("\n");
-		builder.append("SERIAL: ").append(Build.SERIAL).append("\n");
-		builder.append("APP: ").append(BuildConfig.APPLICATION_ID).append("\n");
+//		builder.append("SERIAL: ").append(Build.SERIAL).append("\n");
+//		builder.append("APP: ").append(BuildConfig.APPLICATION_ID).append("\n");
 		builder.append("MODEL: ").append(Build.MODEL).append("\n");
 		builder.append("ID: ").append(Build.ID).append("\n");
 		builder.append("MANUFACTURER: ").append(Build.MANUFACTURER).append("\n");
 		builder.append("BRAND: ").append(Build.BRAND).append("\n");
 		builder.append("SDK  ").append(Build.VERSION.SDK_INT).append("\n");
 		builder.append("RELEASE: ").append(Build.VERSION.RELEASE).append("\n");
-		builder.append("NETWORK INFO: ").append(connectivityManager.getActiveNetwork()).append("\n");
+//		builder.append("NETWORK INFO: ").append(connectivityManager.getActiveNetwork()).append("\n");
 		builder.append("CARRIER: ").append(telephonyManager.getNetworkOperatorName()).append("\n");
-		builder.append("PHONE TYPE: ").append(phoneType).append("\n");
-		builder.append("NETWORK TYPE: ").append(networkType).append("\n");
+//		builder.append("PHONE TYPE: ").append(phoneType).append("\n");
+//		builder.append("NETWORK TYPE: ").append(networkType).append("\n");
 		builder.append("TOTAL RAM: ").append(ramSizeInMB).append(" MB").append("\n");
 		builder.append("INTERNAL MEMORY AVAILABLE: ").append(internalMemSizeInMB).append(" MB").append("\n");
-		builder.append("INCREMENTAL ").append(Build.VERSION.INCREMENTAL).append("\n");
-		builder.append("BOARD: ").append(Build.BOARD).append("\n");
-		builder.append("HOST ").append(Build.HOST).append("\n");
-		builder.append("FINGERPRINT: ").append(Build.FINGERPRINT).append("\n");
-		builder.append("BOOTLOADER: ").append(Build.BOOTLOADER).append("\n");
-		builder.append("DEVICE: ").append(Build.DEVICE).append("\n");
-		builder.append("DISPLAY: ").append(Build.DISPLAY).append("\n");
-		builder.append("HARDWARE: ").append(Build.HARDWARE).append("\n");
-		builder.append("PRODUCT: ").append(Build.PRODUCT).append("\n");
-		builder.append("PERMISSIONS GRANTED: ").append("\n");
+//		builder.append("INCREMENTAL ").append(Build.VERSION.INCREMENTAL).append("\n");
+//		builder.append("BOARD: ").append(Build.BOARD).append("\n");
+//		builder.append("HOST ").append(Build.HOST).append("\n");
+//		builder.append("FINGERPRINT: ").append(Build.FINGERPRINT).append("\n");
+//		builder.append("BOOTLOADER: ").append(Build.BOOTLOADER).append("\n");
+//		builder.append("DEVICE: ").append(Build.DEVICE).append("\n");
+//		builder.append("DISPLAY: ").append(Build.DISPLAY).append("\n");
+//		builder.append("HARDWARE: ").append(Build.HARDWARE).append("\n");
+//		builder.append("PRODUCT: ").append(Build.PRODUCT).append("\n");
+		builder.append("PERMISSIONS GRANTED: ").append("\n\n");
 		try {
 			PackageInfo packageInfo = activity.getPackageManager().getPackageInfo(activity.getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
 			for (int i = 0; i < packageInfo.requestedPermissions.length; i++) {

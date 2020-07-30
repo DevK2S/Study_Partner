@@ -1,11 +1,7 @@
 package com.studypartner.activities;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,11 +30,8 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -120,9 +113,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		Log.d(TAG, "onCreate: starts");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		//checking Permissions
-		if(isExternalStorageReadableWritable()) writeReadPermission();
 		
 		//setting hooks
 		
@@ -388,37 +378,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			default:
 				Toast.makeText(this, "This feature is not yet available", Toast.LENGTH_SHORT).show();
 				return false;
-		}
-	}
-	
-	private boolean isExternalStorageReadableWritable() {
-		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-	}
-	
-	private void writeReadPermission() {
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-		}
-	}
-	
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == 1) {
-			if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setTitle("Read and Write Permissions");
-				builder.setMessage("Read and write permissions are required to store notes in the app");
-				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						Log.d(TAG, "onClick: closing app");
-						finishAndRemoveTask();
-					}
-				});
-				builder.show();
-			}
-			
 		}
 	}
 }

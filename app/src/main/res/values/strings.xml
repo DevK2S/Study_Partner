@@ -61,7 +61,7 @@
     <string name="profile_screen_user_photo_cd">User Profile Image</string>
     <string name="profile_screen_user_profile_camera_cd">User Profile Image Camera</string>
 
-    <string name="hello_blank_fragment">Hello Blank Fragment</string>
+    <string name="hello_blank_fragment">Oops, it\'s embarrassing this screen is not yet made</string>
 
     <string name="attendance_item_plus">+</string>
     <string name="attendance_item_minus">-</string>
