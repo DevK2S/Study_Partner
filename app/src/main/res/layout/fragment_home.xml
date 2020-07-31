@@ -249,6 +249,7 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
                             <TextView
+                                android:id="@+id/homeCarouselAttendanceTotalTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/smallMargin"
@@ -261,6 +262,7 @@
                                 android:text="@string/home_carousel_high_attendance_congratulations"/>
 
                             <TextView
+                                android:id="@+id/homeCarouselAttendanceTotalSubTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/smallMargin"

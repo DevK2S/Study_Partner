@@ -181,4 +181,6 @@
     <string name="home_carousel_high_attendance_high_attendance">You have high attendance in all subjects</string>
     <string name="home_carousel_no_attendance">You have no subjects added</string>
     <string name="home_carousel_add_attendance">Add subjects to view their attendance here</string>
+    <string name="home_carousel_no_classes_attended">You haven\'t attended any classes yet</string>
+    <string name="home_carousel_attend_classes">Attend Classes</string>
 </resources>

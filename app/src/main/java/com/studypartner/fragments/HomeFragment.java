@@ -327,6 +327,13 @@ public class HomeFragment extends Fragment {
 					DecimalFormat decimalFormat = new DecimalFormat("##.#");
 					percentageAttended.setText(decimalFormat.format(totalPercentageAttended) + "%");
 					totalAttendedProgressBar.setProgress((float) totalPercentageAttended);
+				} else {
+					TextView highAttendanceTitle = view.findViewById(R.id.homeCarouselAttendanceTotalTitle);
+					TextView highAttendanceSubTitle = view.findViewById(R.id.homeCarouselAttendanceTotalSubTitle);
+					
+					highAttendanceTitle.setText(R.string.home_carousel_attend_classes);
+					highAttendanceSubTitle.setText(R.string.home_carousel_no_classes_attended);
+					totalAttendedProgressBar.setProgress((float) 0);
 				}
 				
 				totalRequiredProgressBar.setProgress((float) requiredPercentage);
