@@ -1,5 +1,6 @@
 package com.studypartner.fragments;
 
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.studypartner.utils.FileType;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 
@@ -100,6 +102,16 @@ public class MediaFragment extends Fragment {
 		} else {
 			videoPlayerView.setVisibility(View.GONE);
 			audioPlayerView.setVisibility(View.VISIBLE);
+			
+			GradientDrawable gradientDrawable = new GradientDrawable(
+					GradientDrawable.Orientation.TOP_BOTTOM,
+					new int[]{ContextCompat.getColor(requireContext(), R.color.audioColor1),
+							ContextCompat.getColor(requireContext(), R.color.audioColor2),
+							ContextCompat.getColor(requireContext(), R.color.audioColor3),
+							ContextCompat.getColor(requireContext(), R.color.audioColor4),
+							ContextCompat.getColor(requireContext(),R.color.audioColor5)});
+			audioPlayerView.findViewById(R.id.audio_controller_bg).setBackground(gradientDrawable);
+			
 			if (audioPlayerView != null)
 				audioPlayerView.setPlayer(player);
 

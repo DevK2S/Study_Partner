@@ -2,20 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.cleveroad.audiovisualization.GLAudioVisualizationView
-        android:id="@+id/visualizer_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:av_bubblesSize="20dp"
-        app:av_bubblesRandomizeSizes="true"
-        app:av_wavesHeight="50dp"
-        app:av_wavesFooterHeight="50dp"
-        app:av_wavesCount="7"
-        app:av_layersCount="4"
-        app:av_wavesColors="@array/audioPlayColors"
-        app:av_backgroundColor="@color/audioPlayColorBg" />
+    android:id="@+id/audio_controller_bg">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -55,7 +55,7 @@
     <color name="audioColor2">#3885C6</color>
     <color name="audioColor3">#1D68A8</color>
     <color name="audioColor4">#0361B1</color>
-    <color name="audioPlayColorBg">#07457A</color>
+    <color name="audioColor5">#07457A</color>
 
     <color name="notesItemActivated">#555555</color>
     <color name="notesItemBackground">#F8F8F8</color>
