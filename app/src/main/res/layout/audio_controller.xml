@@ -14,14 +14,8 @@
         app:av_wavesFooterHeight="50dp"
         app:av_wavesCount="7"
         app:av_layersCount="4"
-        app:av_backgroundColor="@color/av_color_bg" />
-
-    <!--ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:tint="@color/colorAccent"
-        android:src="@drawable/music_icon_48"/-->
+        app:av_wavesColors="@array/audioPlayColors"
+        app:av_backgroundColor="@color/audioPlayColorBg" />
 
     <LinearLayout
         android:layout_width="match_parent"

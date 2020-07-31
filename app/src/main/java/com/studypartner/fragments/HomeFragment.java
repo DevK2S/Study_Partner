@@ -7,11 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.studypartner.R;
+import com.studypartner.activities.MainActivity;
 import com.studypartner.models.FileItem;
 import com.studypartner.utils.FileType;
 
@@ -34,6 +40,8 @@ public class HomeFragment extends Fragment {
 	
 	private File noteFolder;
 	
+	private MainActivity activity;
+	
 	private ArrayList<FileItem> starred = new ArrayList<>();
 	private ArrayList<FileItem> links = new ArrayList<>();
 	private ArrayList<FileItem> notes = new ArrayList<>();
@@ -41,8 +49,7 @@ public class HomeFragment extends Fragment {
 	public HomeFragment() {}
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	                         Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
 		
 		return inflater.inflate(R.layout.fragment_home, container, false);
@@ -53,30 +60,51 @@ public class HomeFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		
 		FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+		activity = (MainActivity) requireActivity();
 		
 		if (firebaseUser != null && firebaseUser.getEmail() != null) {
 			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
 			if (!studyPartnerFolder.exists()) {
 				if (studyPartnerFolder.mkdirs()) {
 					noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
+					if (!noteFolder.exists()) Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
 				} else {
 					noteFolder = new File(requireContext().getExternalFilesDir(null), firebaseUser.getEmail());
+					if (!noteFolder.exists()) Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
 				}
 			} else {
 				noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
+				if (!noteFolder.exists()) Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
 			}
 		} else {
-			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
-			if (!studyPartnerFolder.exists()) {
-				if (studyPartnerFolder.mkdirs()) {
-					noteFolder = studyPartnerFolder;
-				} else {
-					noteFolder = requireContext().getExternalFilesDir(null);
+			FirebaseAuth.getInstance().signOut();
+			
+			GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+					.requestIdToken(getString(R.string.default_web_client_id))
+					.requestEmail()
+					.build();
+			GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+			googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+				@Override
+				public void onComplete(@NonNull Task<Void> task) {
+					if (task.isSuccessful()) {
+						activity.mNavController.navigate(R.id.nav_logout);
+						activity.finishAffinity();
+						activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+					} else {
+						activity.finishAffinity();
+					}
 				}
-			} else {
-				noteFolder = studyPartnerFolder;
-			}
+			});
 		}
+		
+		activity.fab.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				activity.mNavController.navigate(R.id.nav_notes);
+			}
+		});
+		
 	}
 	
 	private void populateDataAndSetAdapter() {
@@ -137,24 +165,29 @@ public class HomeFragment extends Fragment {
 		Collections.sort(notes, new Comparator<FileItem>() {
 			@Override
 			public int compare(FileItem o1, FileItem o2) {
-				return o1.getDateModified().compareTo(o2.getDateModified());
+				return o2.getDateModified().compareTo(o1.getDateModified());
 			}
 		});
-		
 		
 	}
 	
 	private void addRecursively(File folder) {
 		FileItem item = new FileItem(folder.getPath());
-		if (folder.isDirectory()) {
-			for (File file: Objects.requireNonNull(folder.listFiles())) {
-				addRecursively(file);
+		if (folder.exists()) {
+			if (folder.isDirectory()) {
+				File[] files = folder.listFiles();
+				if (files != null && files.length > 0) {
+					for (File file : files) {
+						addRecursively(file);
+					}
+				}
+			} else {
+				if (isStarred(item)) {
+					item.setStarred(true);
+				}
+				notes.add(item);
+				
 			}
-		} else {
-			if (isStarred(item)) {
-				item.setStarred(true);
-			}
-			notes.add(item);
 		}
 	}
 	
