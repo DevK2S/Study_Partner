@@ -1,9 +1,12 @@
 package com.studypartner.fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -48,6 +51,7 @@ import java.util.Objects;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -89,6 +93,28 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private ArrayList<FileItem> links = new ArrayList<>();
 	
 	public NotesFragment() {
+	}
+	
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (requestCode == 1) {
+			if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+				androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+				builder.setTitle("Read and Write Permissions");
+				builder.setMessage("Read and write permissions are required to store notes in the app");
+				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Log.d(TAG, "onClick: closing app");
+						activity.finishAndRemoveTask();
+					}
+				});
+				builder.show();
+			}
+		} else {
+			addFolder();
+			super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		}
 	}
 	
 	@Override
@@ -764,30 +790,50 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		return false;
 	}
 	
+	private boolean isExternalStorageReadableWritable() {
+		return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+	}
+	
+	private boolean writeReadPermission() {
+		if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	private void addFolder() {
-		File file;
-		
-		int count = 0;
-		
-		do {
-			String newFolder = "New Folder";
-			if (count > 0) {
-				newFolder += " " + count;
+		//checking Permissions
+		if(isExternalStorageReadableWritable()) {
+			
+			if (writeReadPermission()) {
+				
+				File file;
+				
+				int count = 0;
+				
+				do {
+					String newFolder = "New Folder";
+					if (count > 0) {
+						newFolder += " " + count;
+					}
+					++count;
+					file = new File(noteFolder, newFolder);
+				} while (file.exists());
+				
+				if (file.mkdirs()) {
+					notes.add(new FileItem(file.getPath()));
+					
+					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+						mEmptyLayout.setVisibility(View.GONE);
+					}
+					
+					mNotesAdapter.notifyItemInserted(notes.size());
+					
+					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+				}
 			}
-			++count;
-			file = new File(noteFolder, newFolder);
-		} while (file.exists());
-		
-		if (file.mkdirs()) {
-			notes.add(new FileItem(file.getPath()));
-			
-			if (mEmptyLayout.getVisibility() == View.VISIBLE) {
-				mEmptyLayout.setVisibility(View.GONE);
-			}
-			
-			mNotesAdapter.notifyItemInserted(notes.size());
-			
-			sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 		}
 	}
 	
