@@ -1,5 +1,7 @@
 package com.studypartner.models;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 public class AttendanceItem {
@@ -134,5 +136,20 @@ public class AttendanceItem {
 			classesNeeded = (int) ((((requiredPercentage / 100) * totalClasses) - attendedClasses) / (requiredPercentage / 100));
 		}
 		return classesNeeded;
+	}
+	
+	@NotNull
+	@Override
+	public String toString() {
+		return "AttendanceItem{" +
+				"id='" + id + '\'' +
+				", attendedClasses=" + attendedClasses +
+				", totalClasses=" + totalClasses +
+				", missedClasses=" + missedClasses +
+				", classesNeededToAttend=" + classesNeededToAttend +
+				", attendedPercentage=" + attendedPercentage +
+				", requiredPercentage=" + requiredPercentage +
+				", subjectName='" + subjectName + '\'' +
+				'}';
 	}
 }

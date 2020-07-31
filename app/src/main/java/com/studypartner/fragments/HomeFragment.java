@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -16,22 +17,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
+import com.studypartner.adapters.HomeAttendanceAdapter;
+import com.studypartner.models.AttendanceItem;
 import com.studypartner.models.FileItem;
+import com.studypartner.models.ReminderItem;
 import com.studypartner.utils.FileType;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -45,6 +59,15 @@ public class HomeFragment extends Fragment {
 	private ArrayList<FileItem> starred = new ArrayList<>();
 	private ArrayList<FileItem> links = new ArrayList<>();
 	private ArrayList<FileItem> notes = new ArrayList<>();
+	
+	private ArrayList<ReminderItem> reminders = new ArrayList<>();
+	private CardView reminderCard, emptyReminderCard;
+	private ReminderItem reminderItemToBeDisplayed;
+	
+	private ArrayList<AttendanceItem> attendances = new ArrayList<>();
+	private HomeAttendanceAdapter attendanceAdapter;
+	private CardView highAttendanceCard, emptyAttendanceCard;
+	private RecyclerView attendanceRecyclerView;
 	
 	public HomeFragment() {}
 	
@@ -104,6 +127,235 @@ public class HomeFragment extends Fragment {
 				activity.mNavController.navigate(R.id.nav_notes);
 			}
 		});
+		
+		initializeReminder(view);
+	}
+	
+	private void initializeReminder(View view) {
+		
+		reminderCard = view.findViewById(R.id.homeCarouselReminderCard);
+		emptyReminderCard = view.findViewById(R.id.homeCarouselEmptyReminderCard);
+		
+		emptyReminderCard.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				activity.mNavController.navigate(R.id.nav_reminder, null, activity.leftToRightBuilder.build());
+			}
+		});
+		
+		TextView reminderTitle = view.findViewById(R.id.homeCarouselReminderTitle);
+		TextView reminderTime = view.findViewById(R.id.homeCarouselReminderTime);
+		TextView reminderDate = view.findViewById(R.id.homeCarouselReminderDate);
+		TextView reminderDay = view.findViewById(R.id.homeCarouselReminderDay);
+		
+		SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
+		Gson gson = new Gson();
+		
+		if (reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
+			String json = reminderPreference.getString("REMINDER_ITEMS", "");
+			Type type = new TypeToken<ArrayList<ReminderItem>>() {}.getType();
+			reminders = gson.fromJson(json, type);
+		} else {
+			reminders = new ArrayList<>();
+		}
+		
+		Calendar calendar = Calendar.getInstance();
+		Calendar today = Calendar.getInstance();
+		
+		ArrayList<ReminderItem> remindersToBeRemoved = new ArrayList<>();
+		
+		for (int position = 0; position < reminders.size(); position++) {
+			
+			ReminderItem item = reminders.get(position);
+			
+			int year = Integer.parseInt(item.getDate().substring(6));
+			int month = Integer.parseInt(item.getDate().substring(3, 5)) - 1;
+			int day = Integer.parseInt(item.getDate().substring(0, 2));
+			int hour = Integer.parseInt(item.getTime().substring(0, 2));
+			int minute = Integer.parseInt(item.getTime().substring(3, 5));
+			String amOrPm = item.getTime().substring(6);
+			if (amOrPm.equals("PM") && hour != 12)
+				hour = hour + 12;
+			calendar.set(year, month, day, hour, minute);
+			if (calendar.compareTo(today) <= 0) {
+				remindersToBeRemoved.add(item);
+			}
+		}
+		
+		reminders.removeAll(remindersToBeRemoved);
+		
+		Collections.sort(reminders, new Comparator<ReminderItem>() {
+			@Override
+			public int compare(ReminderItem o1, ReminderItem o2) {
+				int dateCompare = o1.getDate().compareTo(o2.getDate());
+				if (dateCompare == 0) {
+					return o1.getTime().compareTo(o2.getTime());
+				} else {
+					return dateCompare;
+				}
+			}
+		});
+		
+		if (reminders.size() > 0) {
+			reminderItemToBeDisplayed = reminders.get(0);
+		}
+		
+		if (reminders.size() == 0 || reminderItemToBeDisplayed == null) {
+			
+			emptyReminderCard.setVisibility(View.VISIBLE);
+			reminderCard.setVisibility(View.INVISIBLE);
+			
+		} else {
+			
+			emptyReminderCard.setVisibility(View.INVISIBLE);
+			reminderCard.setVisibility(View.VISIBLE);
+			
+			reminderTitle.setText(reminderItemToBeDisplayed.getTitle());
+			reminderTime.setText(reminderItemToBeDisplayed.getTime());
+			
+			String stringDate = reminderItemToBeDisplayed.getDate();
+			
+			int year = Integer.parseInt(stringDate.substring(6));
+			int month = Integer.parseInt(stringDate.substring(3, 5)) - 1;
+			int day = Integer.parseInt(stringDate.substring(0, 2));
+			
+			calendar.set(year,month,day);
+			
+			SimpleDateFormat dateFormat;
+			
+			if (day >= 11 && day <= 13) {
+				dateFormat = new SimpleDateFormat("dd'th' MMMM, yyyy", Locale.getDefault());
+			} else {
+				switch (day % 10) {
+					case 1:
+						dateFormat = new SimpleDateFormat("dd'st' MMMM, yyyy", Locale.getDefault());
+						break;
+					case 2:
+						dateFormat = new SimpleDateFormat("dd'nd' MMMM, yyyy", Locale.getDefault());
+						break;
+					case 3:
+						dateFormat = new SimpleDateFormat("dd'rd' MMMM, yyyy", Locale.getDefault());
+						break;
+					default:
+						dateFormat = new SimpleDateFormat("dd'th' MMMM, yyyy", Locale.getDefault());
+						break;
+				}
+			}
+			
+			Date date = calendar.getTime();
+			
+			SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
+			
+			reminderDate.setText(dateFormat.format(date));
+			reminderDay.setText(dayFormat.format(date));
+			
+		}
+		
+		initializeAttendance(view);
+	}
+	
+	private void initializeAttendance(View view) {
+		
+		attendanceRecyclerView = view.findViewById(R.id.homeCarouselAttendanceRecyclerView);
+		highAttendanceCard = view.findViewById(R.id.homeCarouselHighAttendanceCard);
+		emptyAttendanceCard = view.findViewById(R.id.homeCarouselEmptyAttendanceCard);
+		
+		attendanceRecyclerView.setVisibility(View.INVISIBLE);
+		highAttendanceCard.setVisibility(View.INVISIBLE);
+		emptyAttendanceCard.setVisibility(View.INVISIBLE);
+		
+		CircularProgressBar totalAttendedProgressBar = view.findViewById(R.id.homeCarouselAttendanceTotalAttendedProgressBar);
+		CircularProgressBar totalRequiredProgressBar = view.findViewById(R.id.homeCarouselAttendanceTotalRequiredProgressBar);
+		TextView percentageAttended = view.findViewById(R.id.homeCarouselAttendanceTotalPercentageAttended);
+		
+		final SharedPreferences attendancePreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "ATTENDANCE", MODE_PRIVATE);
+		final Gson gson = new Gson();
+		
+		if (attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false)) {
+			String json = attendancePreference.getString("ATTENDANCE_ITEMS", "");
+			Type type = new TypeToken<List<AttendanceItem>>() {}.getType();
+			attendances = gson.fromJson(json, type);
+		}
+		
+		if (attendances == null) {
+			attendances = new ArrayList<>();
+		}
+		
+		if (attendances.size() > 0) { // Attendance exists atleast 1
+			
+			double requiredPercentage = attendances.get(0).getRequiredPercentage();
+			
+			ArrayList<AttendanceItem> attendancesToBeRemoved = new ArrayList<>();
+			
+			for (AttendanceItem item : attendances) {
+				if (item.getTotalClasses() == 0 || item.getAttendedPercentage() >= item.getRequiredPercentage()) { // Has not attended classes or has high attendance
+					attendancesToBeRemoved.add(item);
+				}
+			}
+			
+			attendances.removeAll(attendancesToBeRemoved);
+			
+			if (attendances.size() == 0) { // after removing size 0 so all high attendance
+				
+				attendanceRecyclerView.setVisibility(View.INVISIBLE);
+				highAttendanceCard.setVisibility(View.VISIBLE);
+				emptyAttendanceCard.setVisibility(View.INVISIBLE);
+				
+				if (attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false)) {
+					String json = attendancePreference.getString("ATTENDANCE_ITEMS", "");
+					Type type = new TypeToken<List<AttendanceItem>>() {}.getType();
+					attendances = gson.fromJson(json, type);
+				} else {
+					attendances = new ArrayList<>();
+				}
+				
+				if (attendances == null) {
+					attendances = new ArrayList<>();
+				}
+				
+				double totalPercentageAttended;
+				
+				int totalClasses = 0, attendedClasses = 0;
+				
+				for (AttendanceItem item : attendances) {
+					attendedClasses += item.getAttendedClasses();
+					totalClasses += item.getTotalClasses();
+				}
+				
+				if (totalClasses > 0) {
+					totalPercentageAttended = (double) attendedClasses * 100 / totalClasses;
+					DecimalFormat decimalFormat = new DecimalFormat("##.#");
+					percentageAttended.setText(decimalFormat.format(totalPercentageAttended) + "%");
+					totalAttendedProgressBar.setProgress((float) totalPercentageAttended);
+				}
+				
+				totalRequiredProgressBar.setProgress((float) requiredPercentage);
+				
+			} else { // low attendance item exists
+				
+				attendanceRecyclerView.setVisibility(View.VISIBLE);
+				highAttendanceCard.setVisibility(View.INVISIBLE);
+				emptyAttendanceCard.setVisibility(View.INVISIBLE);
+				
+				if ((reminders.size() == 0 || reminderItemToBeDisplayed == null) && attendances.size() > 1) { // has attendance, so if no reminder then remove empty reminder layout
+					emptyReminderCard.setVisibility(View.GONE);
+					reminderCard.setVisibility(View.GONE);
+				} // else show both reminder and attendance
+				
+				attendanceAdapter = new HomeAttendanceAdapter(requireContext(),attendances);
+				attendanceRecyclerView.setAdapter(attendanceAdapter);
+				LinearLayoutManager manager = new LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false);
+				attendanceRecyclerView.setLayoutManager(manager);
+				attendanceRecyclerView.setItemAnimator(new DefaultItemAnimator());
+			}
+			
+		} else { // no attendance item exists
+			
+			attendanceRecyclerView.setVisibility(View.INVISIBLE);
+			highAttendanceCard.setVisibility(View.INVISIBLE);
+			emptyAttendanceCard.setVisibility(View.VISIBLE);
+			
+		}
 		
 	}
 	

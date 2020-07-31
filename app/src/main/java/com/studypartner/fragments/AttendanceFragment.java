@@ -33,6 +33,7 @@ import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -323,8 +324,31 @@ public class AttendanceFragment extends Fragment {
 	private void initializeViews() {
 		
 		Date date = new Date();
+		
+		SimpleDateFormat dateFormat;
+		
+		int day = Calendar.getInstance().get(Calendar.DATE);
+		
+		if (day >= 11 && day <= 13) {
+			dateFormat = new SimpleDateFormat("dd'th' MMMM, yyyy", Locale.getDefault());
+		} else {
+			switch (day % 10) {
+				case 1:
+					dateFormat = new SimpleDateFormat("dd'st' MMMM, yyyy", Locale.getDefault());
+					break;
+				case 2:
+					dateFormat = new SimpleDateFormat("dd'nd' MMMM, yyyy", Locale.getDefault());
+					break;
+				case 3:
+					dateFormat = new SimpleDateFormat("dd'rd' MMMM, yyyy", Locale.getDefault());
+					break;
+				default:
+					dateFormat = new SimpleDateFormat("dd'th' MMMM, yyyy", Locale.getDefault());
+					break;
+			}
+		}
+		
 		SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd'th' MMMM, yyyy", Locale.getDefault());
 		dayText.setText(dayFormat.format(date));
 		dateText.setText(dateFormat.format(date));
 		setTotalPercentages();

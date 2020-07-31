@@ -13,6 +13,333 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <HorizontalScrollView
+            android:id="@+id/homeCarouselScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mediumPadding"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/homeCarouselReminderCard"
+                    android:layout_width="160dp"
+                    android:layout_height="220dp"
+                    android:layout_marginStart="@dimen/mediumMargin"
+                    android:elevation="@dimen/mediumElevation"
+                    android:visibility="invisible"
+                    app:cardCornerRadius="20dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/home_card_background"
+                        android:paddingTop="@dimen/mediumPadding"
+                        android:paddingBottom="@dimen/mediumPadding"
+                        android:paddingStart="@dimen/smallPadding"
+                        android:paddingEnd="@dimen/smallPadding">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:contentDescription="@string/home_carousel_reminder_cd"
+                                android:src="@drawable/reminder_icon"
+                                android:tint="@color/alternativeIconTint" />
+
+                            <TextView
+                                android:id="@+id/homeCarouselReminderTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                android:textAlignment="center"
+                                android:textColor="@color/alternativeText" />
+
+                            <TextView
+                                android:id="@+id/homeCarouselReminderTime"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:gravity="center"
+                                android:textColor="@color/alternativeText" />
+
+                            <TextView
+                                android:id="@+id/homeCarouselReminderDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:gravity="center"
+                                android:textColor="@color/alternativeText" />
+
+                            <TextView
+                                android:id="@+id/homeCarouselReminderDay"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:gravity="center"
+                                android:textColor="@color/alternativeText" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/homeCarouselEmptyReminderCard"
+                    android:layout_width="160dp"
+                    android:layout_height="220dp"
+                    android:layout_marginStart="@dimen/mediumMargin"
+                    android:elevation="@dimen/mediumElevation"
+                    app:cardCornerRadius="20dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/home_card_background"
+                        android:paddingTop="@dimen/mediumPadding"
+                        android:paddingBottom="@dimen/mediumPadding"
+                        android:paddingStart="@dimen/smallPadding"
+                        android:paddingEnd="@dimen/smallPadding">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:contentDescription="@string/home_carousel_reminder_cd"
+                                android:src="@drawable/reminder_add_icon"
+                                android:tint="@color/alternativeIconTint" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                android:text="@string/home_carousel_no_reminders"
+                                android:textAlignment="center"
+                                android:textColor="@color/alternativeText"
+                                android:textSize="@dimen/mediumText"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:gravity="center"
+                                android:text="@string/home_carousel_add_reminders"
+                                android:textColor="@color/alternativeText" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/homeCarouselAttendanceRecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="220dp"
+                    android:layout_marginEnd="@dimen/mediumMargin"
+                    android:visibility="invisible"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/homeCarouselReminderCard"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/homeCarouselHighAttendanceCard"
+                    android:layout_width="160dp"
+                    android:layout_height="220dp"
+                    android:elevation="@dimen/mediumElevation"
+                    android:layout_marginStart="@dimen/mediumMargin"
+                    android:visibility="invisible"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardCornerRadius="20dp"
+                    app:layout_constraintStart_toEndOf="@id/homeCarouselReminderCard"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="@dimen/mediumPadding"
+                        android:paddingBottom="@dimen/mediumPadding"
+                        android:paddingStart="@dimen/smallPadding"
+                        android:paddingEnd="@dimen/smallPadding"
+                        android:background="@drawable/home_card_background">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                                    android:id="@+id/homeCarouselAttendanceTotalAttendedProgressBar"
+                                    android:layout_width="72dp"
+                                    android:layout_height="72dp"
+                                    app:cpb_background_progressbar_color="@android:color/transparent"
+                                    app:cpb_progress="75"
+                                    app:cpb_progress_direction="to_left"
+                                    app:cpb_progress_max="100"
+                                    app:cpb_progressbar_color="@color/highAttendanceColor"
+                                    app:cpb_progressbar_width="4dp"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                                    android:id="@+id/homeCarouselAttendanceTotalRequiredProgressBar"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:backgroundTint="@color/colorAccent"
+                                    app:cpb_background_progressbar_color="@android:color/transparent"
+                                    app:cpb_progress="60"
+                                    app:cpb_progress_direction="to_left"
+                                    app:cpb_progress_max="100"
+                                    app:cpb_progressbar_color="@color/requiredAttendanceColor"
+                                    app:cpb_progressbar_width="3dp"
+                                    app:layout_constraintTop_toTopOf="@id/homeCarouselAttendanceTotalAttendedProgressBar"
+                                    app:layout_constraintStart_toStartOf="@id/homeCarouselAttendanceTotalAttendedProgressBar"
+                                    app:layout_constraintEnd_toEndOf="@id/homeCarouselAttendanceTotalAttendedProgressBar"
+                                    app:layout_constraintBottom_toBottomOf="@id/homeCarouselAttendanceTotalAttendedProgressBar"/>
+
+                                <TextView
+                                    android:id="@+id/homeCarouselAttendanceTotalPercentageAttended"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/attendance_item_empty_percentage"
+                                    android:textColor="@color/highAttendanceColor"
+                                    android:textSize="@dimen/smallText"
+                                    android:textStyle="bold"
+                                    app:layout_constraintBottom_toBottomOf="@id/homeCarouselAttendanceTotalAttendedProgressBar"
+                                    app:layout_constraintEnd_toEndOf="@id/homeCarouselAttendanceTotalAttendedProgressBar"
+                                    app:layout_constraintStart_toStartOf="@id/homeCarouselAttendanceTotalAttendedProgressBar"
+                                    app:layout_constraintTop_toTopOf="@id/homeCarouselAttendanceTotalAttendedProgressBar" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:ellipsize="end"
+                                android:maxLines="3"
+                                android:textAlignment="center"
+                                android:textColor="@color/alternativeText"
+                                android:textStyle="bold"
+                                android:textSize="@dimen/mediumText"
+                                android:text="@string/home_carousel_high_attendance_congratulations"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:ellipsize="end"
+                                android:maxLines="3"
+                                android:textAlignment="center"
+                                android:textColor="@color/alternativeText"
+                                android:text="@string/home_carousel_high_attendance_high_attendance"/>
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/homeCarouselEmptyAttendanceCard"
+                    android:layout_width="160dp"
+                    android:layout_height="220dp"
+                    android:layout_marginStart="@dimen/mediumMargin"
+                    android:elevation="@dimen/mediumElevation"
+                    app:cardCornerRadius="20dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/homeCarouselEmptyReminderCard"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/home_card_background"
+                        android:paddingTop="@dimen/mediumPadding"
+                        android:paddingBottom="@dimen/mediumPadding"
+                        android:paddingStart="@dimen/smallPadding"
+                        android:paddingEnd="@dimen/smallPadding">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:contentDescription="@string/home_carousel_reminder_cd"
+                                android:src="@drawable/attendance_icon"
+                                android:tint="@color/alternativeIconTint" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:ellipsize="end"
+                                android:maxLines="2"
+                                android:text="@string/home_carousel_no_attendance"
+                                android:textAlignment="center"
+                                android:textColor="@color/alternativeText"
+                                android:textSize="@dimen/mediumText"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/smallMargin"
+                                android:gravity="center"
+                                android:text="@string/home_carousel_add_attendance"
+                                android:textColor="@color/alternativeText" />
+
+                        </LinearLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </HorizontalScrollView>
+
         <ImageView
             android:id="@+id/homeBackgroundRectangle"
             android:layout_width="0dp"
@@ -23,37 +350,23 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/homeRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/mediumPadding"
-            android:paddingStart="@dimen/mediumPadding"
-            android:paddingTop="@dimen/mediumPadding"
-            android:layout_marginBottom="?attr/actionBarSize"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/homeBackgroundRectangle"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@id/homeCarouselScrollView" />
 
         <LinearLayout
             android:id="@+id/homeEmptyLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginBottom="?attr/actionBarSize"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingEnd="@dimen/mediumPadding"
             android:paddingStart="@dimen/mediumPadding"
             android:paddingTop="@dimen/mediumPadding"
             android:visibility="gone"
-            android:layout_marginBottom="?attr/actionBarSize"
             app:layout_constraintBottom_toBottomOf="@+id/homeBackgroundRectangle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/homeBackgroundRectangle" >
+            app:layout_constraintTop_toTopOf="@+id/homeBackgroundRectangle">
 
             <ImageView
                 android:layout_width="80dp"
@@ -73,6 +386,20 @@
                 android:textSize="@dimen/largeText" />
 
         </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/homeRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:paddingEnd="@dimen/mediumPadding"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingTop="@dimen/mediumPadding"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/homeBackgroundRectangle"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
