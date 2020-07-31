@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeCarouselAttendanceCard"
+    android:layout_width="160dp"
+    android:layout_height="220dp"
+    android:elevation="@dimen/mediumElevation"
+    android:layout_marginStart="@dimen/mediumMargin"
+    app:cardPreventCornerOverlap="false"
+    app:cardCornerRadius="20dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/mediumPadding"
+        android:paddingBottom="@dimen/mediumPadding"
+        android:paddingStart="@dimen/smallPadding"
+        android:paddingEnd="@dimen/smallPadding"
+        android:background="@drawable/home_card_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/homeCarouselAttendanceTotalProgressBar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:cpb_background_progressbar_color="@android:color/transparent"
+                    app:cpb_progress="75"
+                    app:cpb_progress_direction="to_left"
+                    app:cpb_progress_max="100"
+                    app:cpb_progressbar_color="@color/lowAttendanceColor"
+                    app:cpb_progressbar_width="4dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                    android:id="@+id/homeCarouselAttendanceRequiredProgressBar"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:backgroundTint="@color/colorAccent"
+                    app:cpb_background_progressbar_color="@android:color/transparent"
+                    app:cpb_progress="60"
+                    app:cpb_progress_direction="to_left"
+                    app:cpb_progress_max="100"
+                    app:cpb_progressbar_color="@color/requiredAttendanceColor"
+                    app:cpb_progressbar_width="3dp"
+                    app:layout_constraintTop_toTopOf="@id/homeCarouselAttendanceTotalProgressBar"
+                    app:layout_constraintStart_toStartOf="@id/homeCarouselAttendanceTotalProgressBar"
+                    app:layout_constraintEnd_toEndOf="@id/homeCarouselAttendanceTotalProgressBar"
+                    app:layout_constraintBottom_toBottomOf="@id/homeCarouselAttendanceTotalProgressBar"/>
+
+                <TextView
+                    android:id="@+id/homeCarouselAttendancePercentageAttended"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attendance_item_empty_percentage"
+                    android:textColor="@color/lowAttendanceColor"
+                    android:textSize="@dimen/smallText"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/homeCarouselAttendanceTotalProgressBar"
+                    app:layout_constraintEnd_toEndOf="@id/homeCarouselAttendanceTotalProgressBar"
+                    app:layout_constraintStart_toStartOf="@id/homeCarouselAttendanceTotalProgressBar"
+                    app:layout_constraintTop_toTopOf="@id/homeCarouselAttendanceTotalProgressBar" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/homeCarouselAttendanceSubjectName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/smallMargin"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAlignment="center"
+                android:textColor="@color/alternativeText"
+                android:textStyle="bold"
+                android:textSize="@dimen/mediumText"
+                tools:text="Database Management Systems"/>
+
+            <TextView
+                android:id="@+id/homeCarouselAttendanceClassesNeededToAttend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/smallMargin"
+                android:textColor="@color/alternativeText"
+                tools:text="You need to attend 2 more classes"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

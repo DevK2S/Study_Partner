@@ -171,8 +171,14 @@
     <string name="bottom_sheet_send">Send</string>
     <string name="bottom_sheet_details">Details</string>
 
-    <string name="home_large_image_cd">Home Large Image</string>
-    <string name="home_small_image_cd">Home Small Image</string>
     <string name="home_empty_icon_cd">Home Empty Icon</string>
     <string name="home_empty">Add notes to view them here</string>
+
+    <string name="home_carousel_reminder_cd">Home Carousel Reminder</string>
+    <string name="home_carousel_no_reminders">You have no reminders</string>
+    <string name="home_carousel_add_reminders">Add reminders to view them here</string>
+    <string name="home_carousel_high_attendance_congratulations">Congratulations</string>
+    <string name="home_carousel_high_attendance_high_attendance">You have high attendance in all subjects</string>
+    <string name="home_carousel_no_attendance">You have no subjects added</string>
+    <string name="home_carousel_add_attendance">Add subjects to view their attendance here</string>
 </resources>
