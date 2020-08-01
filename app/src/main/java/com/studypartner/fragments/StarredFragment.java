@@ -263,6 +263,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_starred_to_fileFragment, bundle);
 			} else if (fileDesc.getType() == FileType.FILE_TYPE_VIDEO || fileDesc.getType() == FileType.FILE_TYPE_IMAGE || fileDesc.getType() == FileType.FILE_TYPE_AUDIO) {
 				Bundle bundle = new Bundle();
+				bundle.putString("State", "Files");
 				bundle.putString("Media", fileDesc.getPath());
 				bundle.putBoolean("InStarred", true);
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_starred_to_mediaActivity, bundle);
@@ -369,12 +370,13 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_starred_to_fileFragment, bundle);
 			
 		} else if (starred.get(position).getType().equals(FileType.FILE_TYPE_VIDEO) || starred.get(position).getType().equals(FileType.FILE_TYPE_AUDIO) || starred.get(position).getType() == FileType.FILE_TYPE_IMAGE) {
-			
+
 			Bundle bundle = new Bundle();
+			bundle.putString("State", "Files");
 			bundle.putString("Media", starred.get(position).getPath());
 			bundle.putBoolean("InStarred", true);
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_starred_to_mediaActivity, bundle);
-			
+
 		} else if (starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
 			
 			FileUtils.openLink(requireContext(),starred.get(position));

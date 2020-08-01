@@ -463,6 +463,7 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 			@Override
 			public void onClick(int position) {
 				Bundle bundle = new Bundle();
+				bundle.putString("State", "Home");
 				bundle.putParcelableArrayList("HomeMedia", imagesList);
 				bundle.putInt("Position", position);
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, bundle);
@@ -474,6 +475,7 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 			@Override
 			public void onClick(int position) {
 				Bundle bundle = new Bundle();
+				bundle.putString("State", "Home");
 				bundle.putParcelableArrayList("HomeMedia", videosList);
 				bundle.putInt("Position", position);
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, bundle);

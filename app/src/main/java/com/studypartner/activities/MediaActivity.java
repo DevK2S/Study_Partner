@@ -38,20 +38,21 @@ public class MediaActivity extends AppCompatActivity {
 
 		viewPager = findViewById(R.id.viewPager2);
 		Intent intent = getIntent();
-		String path = "";
-		path = intent.getStringExtra("Media");
-		inStarred = intent.getBooleanExtra("InStarred", false);
-		ArrayList<FileItem> homeMedia = intent.getParcelableArrayListExtra("HomeMedia");
-		int position;
-		if (homeMedia.size() != 0) {
-			//position = intent.getIntExtra("Position",0);
-			homeMediaDisplay(homeMedia, 0);
-		}
-		/*if(!path.equals("")) {
+		String state = intent.getStringExtra("State");
+		if (state.equals("Files")) {
+			String path = intent.getStringExtra("Media");
+			inStarred = intent.getBooleanExtra("InStarred", false);
 			File file = new File(path);
 			File parentFile = file.getParentFile();
 			mediaData(parentFile, file);
-		}*/
+		} else if (state.equals("Home")) {
+			ArrayList<FileItem> homeMedia = intent.getParcelableArrayListExtra("HomeMedia");
+			int position;
+			//position = intent.getIntExtra("Position",0);
+			homeMediaDisplay(homeMedia, 0);
+		}
+
+
 	}
 
 	private void homeMediaDisplay(ArrayList<FileItem> homeMedia, int value) {
