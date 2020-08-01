@@ -524,6 +524,8 @@
                 android:id="@+id/homeRecyclerViewVideo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_marginStart="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintVertical_bias="0.650"
                 app:layout_constraintStart_toStartOf="parent"
