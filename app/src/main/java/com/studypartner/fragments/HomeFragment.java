@@ -134,6 +134,8 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 		});
 		
 		initializeReminder(view);
+		
+		populateDataAndSetAdapter(view);
 	}
 	
 	private void initializeReminder(View view) {
@@ -258,7 +260,6 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 
 		initializeAttendance(view);
 		
-		populateDataAndSetAdapter(view);
 	}
 	
 	private void initializeAttendance(View view) {
