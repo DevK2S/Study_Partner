@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="36dp"
+    android:height="36dp"
+    android:autoMirrored="true"
+    android:viewportHeight="512"
+    android:viewportWidth="512">
+    <path
+        android:fillColor="#E2E5E7"
+        android:pathData="M128,0c-17.6,0 -32,14.4 -32,32v448c0,17.6 14.4,32 32,32h320c17.6,0 32,-14.4 32,-32V128L352,0H128z" />
+    <path
+        android:fillColor="#B0B7BD"
+        android:pathData="M384,128h96L352,0v96C352,113.6 366.4,128 384,128z" />
+    <path
+        android:fillColor="#CAD1D8"
+        android:pathData="M480,224l-96,-96l96,0z" />
+    <path
+        android:fillColor="#F15642"
+        android:pathData="M416,416c0,8.8 -7.2,16 -16,16H48c-8.8,0 -16,-7.2 -16,-16V256c0,-8.8 7.2,-16 16,-16h352c8.8,0 16,7.2 16,16V416z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M105.456,303.152c0,-4.224 3.328,-8.832 8.688,-8.832h29.552c16.64,0 31.616,11.136 31.616,32.48c0,20.224 -14.976,31.488 -31.616,31.488h-21.36v16.896c0,5.632 -3.568,8.816 -8.176,8.816c-4.224,0 -8.688,-3.184 -8.688,-8.816v-72.032H105.456zM122.336,310.432v31.872h21.36c8.576,0 15.36,-7.568 15.36,-15.504c0,-8.944 -6.784,-16.368 -15.36,-16.368H122.336z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M191.616,303.152c0,-4.224 3.328,-8.832 8.704,-8.832h29.552c16.64,0 31.616,11.136 31.616,32.48c0,20.224 -14.976,31.488 -31.616,31.488h-21.36v16.896c0,5.632 -3.584,8.816 -8.192,8.816c-4.224,0 -8.704,-3.184 -8.704,-8.816V303.152zM208.496,310.432v31.872h21.36c8.576,0 15.36,-7.568 15.36,-15.504c0,-8.944 -6.784,-16.368 -15.36,-16.368H208.496z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M301.68,311.472h-22.368c-11.136,0 -11.136,-16.368 0,-16.368h60.496c11.392,0 11.392,16.368 0,16.368h-21.232v64.608c0,11.12 -16.896,11.392 -16.896,0V311.472z" />
+    <path
+        android:fillColor="#CAD1D8"
+        android:pathData="M400,432H96v16h304c8.8,0 16,-7.2 16,-16v-16C416,424.8 408.8,432 400,432z" />
+</vector>

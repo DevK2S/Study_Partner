@@ -68,9 +68,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
 			
 			if (fileItem.isStarred()) {
-				holder.fileImage.setImageResource(R.drawable.folder_starred_icon);
+				holder.fileImage.setImageResource(R.drawable.folder_starred_icon_svg);
 			} else {
-				holder.fileImage.setImageResource(R.drawable.folder_icon);
+				holder.fileImage.setImageResource(R.drawable.folder_icon_svg);
 			}
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_IMAGE) {
@@ -101,16 +101,28 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_AUDIO) {
 			
-			holder.fileImage.setImageResource(R.drawable.music_icon_48);
+			holder.fileImage.setImageResource(R.drawable.headphone_icon);
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
 			
-			holder.fileImage.setImageResource(R.drawable.link_icon_48);
+			holder.fileImage.setImageResource(R.drawable.link_icon);
 			
 		} else {
-			
-			holder.fileImage.setImageResource(R.drawable.file_icon);
-			
+			if (fileItem.getName().contains(".doc") || fileItem.getName().contains(".docx")) {
+				holder.fileImage.setImageResource(R.drawable.doc_icon);
+			} else if(fileItem.getName().contains(".pdf")) {
+				holder.fileImage.setImageResource(R.drawable.pdf_icon);
+			} else if(fileItem.getName().contains(".ppt") || fileItem.getName().contains(".pptx")) {
+				holder.fileImage.setImageResource(R.drawable.ppt_icon);
+			} else if(fileItem.getName().contains(".xls") || fileItem.getName().contains(".xlsx")) {
+				holder.fileImage.setImageResource(R.drawable.excel_icon);
+			} else if(fileItem.getName().contains(".zip") || fileItem.getName().contains(".rar")) {
+				holder.fileImage.setImageResource(R.drawable.zip_icon);
+			} else if(fileItem.getName().contains(".txt")) {
+				holder.fileImage.setImageResource(R.drawable.txt_icon);
+			} else {
+				holder.fileImage.setImageResource(R.drawable.file_icon);
+			}
 		}
 		
 		holder.fileLayout.setBackground(mActivity.getDrawable(R.drawable.notes_item_background_odd));

@@ -1,0 +1,12 @@
+<vector android:autoMirrored="true" android:height="48dp"
+    android:viewportHeight="512" android:viewportWidth="512"
+    android:width="48dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#fff16b" android:pathData="m15,15h482v482h-482z"/>
+    <path android:fillColor="#ffb454" android:pathData="m15,256h482v241h-482z"/>
+    <path android:fillColor="#0052be" android:pathData="m497,0h-482c-8.284,0 -15,6.716 -15,15v482c0,8.284 6.716,15 15,15h482c8.284,0 15,-6.716 15,-15v-482c0,-8.284 -6.716,-15 -15,-15zM160.667,432v50h-50.333v-50zM190.667,432h50.333v50h-50.333zM271,432h50.333v50h-50.333zM351.333,432h50.333v50h-50.333zM30,402v-292h452v292zM351.333,80v-50h50.333v50zM321.333,80h-50.333v-50h50.333zM241,80h-50.333v-50h50.333zM160.667,80h-50.333v-50h50.333zM482,80h-50.334v-50h50.334zM30,30h50.333v50h-50.333zM30,432h50.333v50h-50.333zM482,482h-50.334v-50h50.334z"/>
+    <path android:fillColor="#00337a" android:pathData="m482,256v146h-452v-146h-30v241c0,8.284 6.716,15 15,15h482c8.284,0 15,-6.716 15,-15v-241zM80.333,482h-50.333v-50h50.333zM160.667,482h-50.333v-50h50.333zM241,482h-50.333v-50h50.333zM321.333,482h-50.333v-50h50.333zM401.666,482h-50.333v-50h50.333zM482,482h-50.334v-50h50.334z"/>
+    <path android:fillColor="#ff6b6b" android:pathData="m256,371c-63.411,0 -115,-51.589 -115,-115s51.589,-115 115,-115 115,51.589 115,115 -51.589,115 -115,115z"/>
+    <path android:fillColor="#ff1f3d" android:pathData="m256,371c63.411,0 115,-51.589 115,-115h-230c0,63.411 51.589,115 115,115z"/>
+    <path android:fillColor="#f9f9f9" android:pathData="m235.998,316c-2.287,0 -4.583,-0.522 -6.706,-1.583 -5.082,-2.542 -8.292,-7.735 -8.292,-13.417v-90c0,-5.682 3.21,-10.875 8.292,-13.417 5.081,-2.541 11.162,-1.993 15.708,1.417l60,45c3.777,2.833 6,7.279 6,12s-2.223,9.167 -6,12l-60,45c-2.646,1.985 -5.814,3 -9.002,3z"/>
+    <path android:fillColor="#e2dff4" android:pathData="m221,301c0,5.682 3.21,10.875 8.292,13.417 2.123,1.062 4.419,1.583 6.706,1.583 3.188,0 6.355,-1.015 9.002,-3l60,-45c3.777,-2.833 6,-7.279 6,-12h-90z"/>
+</vector>
