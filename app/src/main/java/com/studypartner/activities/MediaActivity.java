@@ -47,9 +47,9 @@ public class MediaActivity extends AppCompatActivity {
 			mediaData(parentFile, file);
 		} else if (state.equals("Home")) {
 			ArrayList<FileItem> homeMedia = intent.getParcelableArrayListExtra("HomeMedia");
-			int position;
-			//position = intent.getIntExtra("Position",0);
-			homeMediaDisplay(homeMedia, 0);
+			int position = intent.getIntExtra("Position", 0);
+			;
+			homeMediaDisplay(homeMedia, position);
 		}
 
 
