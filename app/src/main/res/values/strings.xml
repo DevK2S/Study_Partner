@@ -183,4 +183,9 @@
     <string name="home_carousel_add_attendance">Add subjects to view their attendance here</string>
     <string name="home_carousel_no_classes_attended">You haven\'t attended any classes yet</string>
     <string name="home_carousel_attend_classes">Attend Classes</string>
+    <string name="home_images">Images</string>
+    <string name="home_documents">Documents</string>
+    <string name="home_videos">Videos</string>
+    <string name="home_recents">RECENTS</string>
+    <string name="home_media_item_cd">Home Media Item</string>
 </resources>

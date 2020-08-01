@@ -68,9 +68,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
 			
 			if (fileItem.isStarred()) {
-				holder.fileImage.setImageResource(R.drawable.folder_starred_icon_svg);
+				holder.fileImage.setImageResource(R.drawable.folder_starred_icon);
 			} else {
-				holder.fileImage.setImageResource(R.drawable.folder_icon_svg);
+				holder.fileImage.setImageResource(R.drawable.folder_icon);
 			}
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_IMAGE) {
@@ -84,6 +84,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 						.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 						.into(holder.fileImage);
 				
+			} else {
+				holder.fileImage.setImageResource(R.drawable.image_add_icon_bs);
 			}
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_VIDEO) {
@@ -97,6 +99,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 						.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 						.into(holder.fileImage);
 				
+			} else {
+				holder.fileImage.setImageResource(R.drawable.video_add_icon_bs);
 			}
 			
 		} else if (fileItem.getType() == FileType.FILE_TYPE_AUDIO) {

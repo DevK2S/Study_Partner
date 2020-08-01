@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,6 +28,7 @@ import com.studypartner.models.AttendanceItem;
 import com.studypartner.models.FileItem;
 import com.studypartner.models.ReminderItem;
 import com.studypartner.utils.FileType;
+import com.studypartner.utils.FileUtils;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -44,6 +46,7 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -52,34 +55,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMediaClickListener, NotesAdapter.NotesClickListener {
+public class HomeFragment extends Fragment implements NotesAdapter.NotesClickListener {
 	private static final String TAG = "HomeFragment";
 
 	private File noteFolder;
 
 	private MainActivity activity;
 
-	private ArrayList<FileItem> starred = new ArrayList<>();
-	private ArrayList<FileItem> links = new ArrayList<>();
 	private ArrayList<FileItem> notes = new ArrayList<>();
 	private ArrayList<FileItem> docsList = new ArrayList<>();
 	private ArrayList<FileItem> imagesList = new ArrayList<>();
 	private ArrayList<FileItem> videosList = new ArrayList<>();
-
+	
 	private ArrayList<ReminderItem> reminders = new ArrayList<>();
 	private CardView reminderCard, emptyReminderCard;
 	private ReminderItem reminderItemToBeDisplayed;
 
 	private ArrayList<AttendanceItem> attendances = new ArrayList<>();
-	private HomeAttendanceAdapter attendanceAdapter;
-	private CardView highAttendanceCard, emptyAttendanceCard;
-	private RecyclerView attendanceRecyclerView;
-	private RecyclerView imageRecyclerView;
-	private RecyclerView videoRecyclerView;
-	private RecyclerView docsRecyclerView;
-	private HomeMediaAdapter imageAdapter;
-	private HomeMediaAdapter videoAdapter;
-	private NotesAdapter docsAdapter;
 
 	public HomeFragment() {
 	}
@@ -137,7 +129,7 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 		activity.fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				activity.mNavController.navigate(R.id.nav_notes);
+				activity.mNavController.navigate(R.id.action_nav_home_to_nav_notes);
 			}
 		});
 		
@@ -265,14 +257,15 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 		}
 
 		initializeAttendance(view);
+		
 		populateDataAndSetAdapter(view);
 	}
 	
 	private void initializeAttendance(View view) {
 		
-		attendanceRecyclerView = view.findViewById(R.id.homeCarouselAttendanceRecyclerView);
-		highAttendanceCard = view.findViewById(R.id.homeCarouselHighAttendanceCard);
-		emptyAttendanceCard = view.findViewById(R.id.homeCarouselEmptyAttendanceCard);
+		RecyclerView attendanceRecyclerView = view.findViewById(R.id.homeCarouselAttendanceRecyclerView);
+		CardView highAttendanceCard = view.findViewById(R.id.homeCarouselHighAttendanceCard);
+		CardView emptyAttendanceCard = view.findViewById(R.id.homeCarouselEmptyAttendanceCard);
 		
 		attendanceRecyclerView.setVisibility(View.INVISIBLE);
 		highAttendanceCard.setVisibility(View.INVISIBLE);
@@ -363,7 +356,7 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 					reminderCard.setVisibility(View.GONE);
 				} // else show both reminder and attendance
 				
-				attendanceAdapter = new HomeAttendanceAdapter(requireContext(),attendances);
+				HomeAttendanceAdapter attendanceAdapter = new HomeAttendanceAdapter(requireContext(), attendances);
 				attendanceRecyclerView.setAdapter(attendanceAdapter);
 				LinearLayoutManager manager = new LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false);
 				attendanceRecyclerView.setLayoutManager(manager);
@@ -381,91 +374,110 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 	}
 
 	private void populateDataAndSetAdapter(View view) {
-
-		imageRecyclerView = view.findViewById(R.id.homeRecyclerViewImage);
-		videoRecyclerView = view.findViewById(R.id.homeRecyclerViewVideo);
-		docsRecyclerView = view.findViewById(R.id.homeRecyclerViewDocs);
-		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-
-		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
-			Gson gson = new Gson();
-			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {
-			}.getType();
-			starred = gson.fromJson(json, type);
-
-			if (starred == null) starred = new ArrayList<>();
-		}
 		
-		ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-		for (FileItem starItem : starred) {
-			File starFile = new File(starItem.getPath());
-			if (starItem.getType() == FileType.FILE_TYPE_LINK) {
-				if (starFile.getParentFile() == null || !starFile.getParentFile().exists()) {
-					starredToBeRemoved.add(starItem);
-				}
-			} else {
-				if (!starFile.exists()) {
-					starredToBeRemoved.add(starItem);
-				}
-			}
-		}
-		starred.removeAll(starredToBeRemoved);
+		RecyclerView imageRecyclerView = view.findViewById(R.id.homeImageRecyclerView);
+		RecyclerView videoRecyclerView = view.findViewById(R.id.homeVideoRecyclerView);
+		RecyclerView docsRecyclerView = view.findViewById(R.id.homeDocsRecyclerView);
 		
-		SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+		ConstraintLayout imageLayout = view.findViewById(R.id.homeImageLayout);
+		ConstraintLayout docsLayout = view.findViewById(R.id.homeDocsLayout);
+		ConstraintLayout videoLayout = view.findViewById(R.id.homeVideosLayout);
 		
-		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
-			Gson gson = new Gson();
-			String json = linkPreference.getString("LINK_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
-			links = gson.fromJson(json, type);
-			
-			if (links == null) links = new ArrayList<>();
-		}
+		LinearLayout emptyLayout = view.findViewById(R.id.homeEmptyLayout);
 		
-		ArrayList<FileItem> linkToBeRemoved = new ArrayList<>();
-		for (FileItem linkItem : links) {
-			File linkParent = new File(linkItem.getPath()).getParentFile();
-			assert linkParent != null;
-			if (!linkParent.exists()) {
-				linkToBeRemoved.add(linkItem);
-			}
-		}
-		links.removeAll(linkToBeRemoved);
-
+		View imageDocsDivider = view.findViewById(R.id.homeImageDocsDivider);
+		View docsVideoDivider = view.findViewById(R.id.homeDocsVideoDivider);
+		
 		notes = new ArrayList<>();
 
 		addRecursively(noteFolder);
-
-		//notes.addAll(links);
-
+		
 		Collections.sort(notes, new Comparator<FileItem>() {
 			@Override
 			public int compare(FileItem o1, FileItem o2) {
 				return o2.getDateModified().compareTo(o1.getDateModified());
 			}
 		});
-
-
-		for (FileItem f : notes) {
-			if (f.getType() == FileType.FILE_TYPE_IMAGE && imagesList.size() <= 9)
-				imagesList.add(f);
-			else if (f.getType() == FileType.FILE_TYPE_VIDEO && videosList.size() <= 9)
-				videosList.add(f);
-			else if ((f.getType() == FileType.FILE_TYPE_TEXT || f.getType() == FileType.FILE_TYPE_APPLICATION) && docsList.size() <= 9)
-				docsList.add(f);
+		
+		for (FileItem fileItem : notes) {
+			
+			if (fileItem.getType() == FileType.FILE_TYPE_IMAGE && imagesList.size() < 9) {
+				
+				imagesList.add(fileItem);
+			
+			} else if (fileItem.getType() == FileType.FILE_TYPE_VIDEO && videosList.size() < 9) {
+				
+				videosList.add(fileItem);
+			
+			} else if ((fileItem.getType() == FileType.FILE_TYPE_APPLICATION || fileItem.getType() == FileType.FILE_TYPE_TEXT || fileItem.getType() == FileType.FILE_TYPE_OTHER) && docsList.size() < 9) {
+				
+				docsList.add(fileItem);
+			
+			}
 		}
-		GridLayoutManager managerImage = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
-		GridLayoutManager managerVideo = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
-		imageRecyclerView.setLayoutManager(managerImage);
-		imageAdapter = new HomeMediaAdapter(getActivity(), imagesList, this);
+		
+		GridLayoutManager imageManager = new GridLayoutManager(getContext(), 3);
+		GridLayoutManager videoManager = new GridLayoutManager(getContext(), 3);
+		
+		imageRecyclerView.setLayoutManager(imageManager);
+		HomeMediaAdapter imageAdapter = new HomeMediaAdapter(getActivity(), imagesList, new HomeMediaAdapter.HomeMediaClickListener() {
+			@Override
+			public void onClick(int position) {
+				Bundle bundle = new Bundle();
+				bundle.putString("State", "Home");
+				bundle.putParcelableArrayList("HomeMedia", imagesList);
+				bundle.putInt("Position", position);
+				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, bundle);
+			}
+		});
 		imageRecyclerView.setAdapter(imageAdapter);
-		videoRecyclerView.setLayoutManager(managerVideo);
-		videoAdapter = new HomeMediaAdapter(getActivity(), videosList, this);
+		
+		videoRecyclerView.setLayoutManager(videoManager);
+		HomeMediaAdapter videoAdapter = new HomeMediaAdapter(getActivity(), videosList, new HomeMediaAdapter.HomeMediaClickListener() {
+			@Override
+			public void onClick(int position) {
+				Bundle bundle = new Bundle();
+				bundle.putString("State", "Home");
+				bundle.putParcelableArrayList("HomeMedia", videosList);
+				bundle.putInt("Position", position);
+				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, bundle);
+			}
+		});
 		videoRecyclerView.setAdapter(videoAdapter);
+		
 		docsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-		docsAdapter = new NotesAdapter(getActivity(), docsList, this, false);
+		NotesAdapter docsAdapter = new NotesAdapter(getActivity(), docsList, this, false);
 		docsRecyclerView.setAdapter(docsAdapter);
+		
+		if (imagesList.isEmpty()) {
+			imageLayout.setVisibility(View.GONE);
+			imageDocsDivider.setVisibility(View.GONE);
+		}
+		if (docsList.isEmpty()) {
+			docsLayout.setVisibility(View.GONE);
+			imageDocsDivider.setVisibility(View.GONE);
+			if (imagesList.isEmpty()) {
+				docsVideoDivider.setVisibility(View.GONE);
+			}
+		}
+		if (videosList.isEmpty()) {
+			docsVideoDivider.setVisibility(View.GONE);
+			videoLayout.setVisibility(View.GONE);
+		}
+		
+		if (imagesList.isEmpty() && docsList.isEmpty() && videosList.isEmpty()) {
+			view.findViewById(R.id.recentTextView).setVisibility(View.GONE);
+			imageLayout.setVisibility(View.GONE);
+			imageDocsDivider.setVisibility(View.GONE);
+			docsLayout.setVisibility(View.GONE);
+			docsVideoDivider.setVisibility(View.GONE);
+			videoLayout.setVisibility(View.GONE);
+			
+			emptyLayout.setVisibility(View.VISIBLE);
+		} else {
+			emptyLayout.setVisibility(View.INVISIBLE);
+		}
+		
 	}
 	
 	private void addRecursively(File folder) {
@@ -479,35 +491,14 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 					}
 				}
 			} else {
-				if (isStarred(item)) {
-					item.setStarred(true);
-				}
 				notes.add(item);
-				
 			}
 		}
-	}
-	
-	private boolean isStarred (FileItem item) {
-		if (starred != null) {
-			for (int i = 0; i < starred.size(); i++) {
-				FileItem starredItem = starred.get(i);
-				if (starredItem.getPath().equals(item.getPath())) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	@Override
 	public void onClick(int position) {
-
-		Bundle b = new Bundle();
-		b.putParcelableArrayList("HomeMedia", imagesList);
-		b.putInt("Position", position);
-		((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, b);
-
+		FileUtils.openFile(requireContext(), docsList.get(position));
 	}
 
 	@Override
