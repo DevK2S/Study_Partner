@@ -2,6 +2,7 @@
 
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -363,6 +364,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/homeCarouselScrollView" />
 
+
         <LinearLayout
             android:id="@+id/homeEmptyLayout"
             android:layout_width="match_parent"
@@ -398,19 +400,138 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/homeRecyclerView"
+        <TextView
+            android:id="@+id/recentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="RECENTS"
+            android:textSize="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/homeBackgroundRectangle"
+            app:layout_constraintVertical_bias="0.03" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/homeImageLayout"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:paddingEnd="@dimen/mediumPadding"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingTop="@dimen/mediumPadding"
+            app:layout_constraintBottom_toTopOf="@id/homeDocsLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recentTextView"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/ImageViewHome"
+                android:layout_width="wrap_content"
+                android:text="Images"
+                android:textSize="20dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/homeRecyclerViewImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeRecyclerViewImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="16dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintVertical_bias="0.650"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ImageViewHome"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/homeDocsLayout"
+            android:backgroundTint="@color/bg_gray"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:paddingEnd="@dimen/mediumPadding"
+            android:paddingStart="@dimen/mediumPadding"
+            android:paddingTop="@dimen/mediumPadding"
+            app:layout_constraintBottom_toTopOf="@id/homeVideosLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/homeImageLayout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/DocsViewHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Documents"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toTopOf="@id/homeRecyclerViewDocs"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeRecyclerViewDocs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/DocsViewHome"
+                app:layout_constraintVertical_bias="0.650" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="?attr/actionBarSize"
             android:paddingEnd="@dimen/mediumPadding"
             android:paddingStart="@dimen/mediumPadding"
+            android:id="@+id/homeVideosLayout"
             android:paddingTop="@dimen/mediumPadding"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/homeBackgroundRectangle"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@id/homeDocsLayout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <TextView
+                android:id="@+id/VideoViewHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Videos"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toTopOf="@id/homeRecyclerViewVideo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeRecyclerViewVideo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintVertical_bias="0.650"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/VideoViewHome"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

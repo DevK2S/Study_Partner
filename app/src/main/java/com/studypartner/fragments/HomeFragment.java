@@ -21,6 +21,8 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.HomeAttendanceAdapter;
+import com.studypartner.adapters.HomeMediaAdapter;
+import com.studypartner.adapters.NotesAdapter;
 import com.studypartner.models.AttendanceItem;
 import com.studypartner.models.FileItem;
 import com.studypartner.models.ReminderItem;
@@ -44,37 +46,48 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMediaClickListener, NotesAdapter.NotesClickListener {
 	private static final String TAG = "HomeFragment";
-	
+
 	private File noteFolder;
-	
+
 	private MainActivity activity;
-	
+
 	private ArrayList<FileItem> starred = new ArrayList<>();
 	private ArrayList<FileItem> links = new ArrayList<>();
 	private ArrayList<FileItem> notes = new ArrayList<>();
-	
+	private ArrayList<FileItem> docsList = new ArrayList<>();
+	private ArrayList<FileItem> imagesList = new ArrayList<>();
+	private ArrayList<FileItem> videosList = new ArrayList<>();
+
 	private ArrayList<ReminderItem> reminders = new ArrayList<>();
 	private CardView reminderCard, emptyReminderCard;
 	private ReminderItem reminderItemToBeDisplayed;
-	
+
 	private ArrayList<AttendanceItem> attendances = new ArrayList<>();
 	private HomeAttendanceAdapter attendanceAdapter;
 	private CardView highAttendanceCard, emptyAttendanceCard;
 	private RecyclerView attendanceRecyclerView;
-	
-	public HomeFragment() {}
-	
+	private RecyclerView imageRecyclerView;
+	private RecyclerView videoRecyclerView;
+	private RecyclerView docsRecyclerView;
+	private HomeMediaAdapter imageAdapter;
+	private HomeMediaAdapter videoAdapter;
+	private NotesAdapter docsAdapter;
+
+	public HomeFragment() {
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
-		
+
 		return inflater.inflate(R.layout.fragment_home, container, false);
 	}
 	
@@ -241,17 +254,18 @@ public class HomeFragment extends Fragment {
 						break;
 				}
 			}
-			
+
 			Date date = calendar.getTime();
-			
+
 			SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
-			
+
 			reminderDate.setText(dateFormat.format(date));
 			reminderDay.setText(dayFormat.format(date));
-			
+
 		}
-		
+
 		initializeAttendance(view);
+		populateDataAndSetAdapter(view);
 	}
 	
 	private void initializeAttendance(View view) {
@@ -355,27 +369,31 @@ public class HomeFragment extends Fragment {
 				attendanceRecyclerView.setLayoutManager(manager);
 				attendanceRecyclerView.setItemAnimator(new DefaultItemAnimator());
 			}
-			
+
 		} else { // no attendance item exists
-			
+
 			attendanceRecyclerView.setVisibility(View.INVISIBLE);
 			highAttendanceCard.setVisibility(View.INVISIBLE);
 			emptyAttendanceCard.setVisibility(View.VISIBLE);
-			
+
 		}
-		
+
 	}
-	
-	private void populateDataAndSetAdapter() {
-		
+
+	private void populateDataAndSetAdapter(View view) {
+
+		imageRecyclerView = view.findViewById(R.id.homeRecyclerViewImage);
+		videoRecyclerView = view.findViewById(R.id.homeRecyclerViewVideo);
+		docsRecyclerView = view.findViewById(R.id.homeRecyclerViewDocs);
 		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-		
+
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
-			
+
 			if (starred == null) starred = new ArrayList<>();
 		}
 		
@@ -414,20 +432,40 @@ public class HomeFragment extends Fragment {
 			}
 		}
 		links.removeAll(linkToBeRemoved);
-		
+
 		notes = new ArrayList<>();
-		
+
 		addRecursively(noteFolder);
-		
-		notes.addAll(links);
-		
+
+		//notes.addAll(links);
+
 		Collections.sort(notes, new Comparator<FileItem>() {
 			@Override
 			public int compare(FileItem o1, FileItem o2) {
 				return o2.getDateModified().compareTo(o1.getDateModified());
 			}
 		});
-		
+
+
+		for (FileItem f : notes) {
+			if (f.getType() == FileType.FILE_TYPE_IMAGE && imagesList.size() <= 9)
+				imagesList.add(f);
+			else if (f.getType() == FileType.FILE_TYPE_VIDEO && videosList.size() <= 9)
+				videosList.add(f);
+			else if ((f.getType() == FileType.FILE_TYPE_TEXT || f.getType() == FileType.FILE_TYPE_APPLICATION) && docsList.size() <= 9)
+				docsList.add(f);
+		}
+		GridLayoutManager managerImage = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
+		GridLayoutManager managerVideo = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
+		imageRecyclerView.setLayoutManager(managerImage);
+		imageAdapter = new HomeMediaAdapter(getActivity(), imagesList, this);
+		imageRecyclerView.setAdapter(imageAdapter);
+		videoRecyclerView.setLayoutManager(managerVideo);
+		videoAdapter = new HomeMediaAdapter(getActivity(), videosList, this);
+		videoRecyclerView.setAdapter(videoAdapter);
+		docsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+		docsAdapter = new NotesAdapter(getActivity(), docsList, this, false);
+		docsRecyclerView.setAdapter(docsAdapter);
 	}
 	
 	private void addRecursively(File folder) {
@@ -460,5 +498,25 @@ public class HomeFragment extends Fragment {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void onClick(int position) {
+
+		Bundle b = new Bundle();
+		b.putParcelableArrayList("HomeMedia", imagesList);
+		b.putInt("Position", position);
+		((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, b);
+
+	}
+
+	@Override
+	public void onLongClick(int position) {
+
+	}
+
+	@Override
+	public void onOptionsClick(View view, int position) {
+
 	}
 }
