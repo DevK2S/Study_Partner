@@ -64,4 +64,10 @@
 
     <color name="homeImageColor">#FF153C</color>
     <color name="homeMusicColor">#F0F812</color>
+
+    <string-array name="color_preset1">
+        <item>#2699FB</item>
+        <item>#41A7FE</item>
+        <item>#6dd5ed</item>
+    </string-array>
 </resources>

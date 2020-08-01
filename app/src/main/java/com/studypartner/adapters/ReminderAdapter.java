@@ -52,7 +52,6 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         holder.title.setText(item.getTitle());
         holder.date.setText(item.getDate());
         holder.time.setText(item.getTime());
-        
         if (item.isActive()) {
             
             holder.activeIcon.setImageResource(R.drawable.alarm_icon);
@@ -140,5 +139,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
             mReminderItemClickListener.onLongClick(getAdapterPosition());
             return true;
         }
+
+
     }
 }

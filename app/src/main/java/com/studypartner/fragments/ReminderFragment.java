@@ -35,21 +35,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ReminderFragment extends Fragment implements ReminderAdapter.ReminderItemClickListener {
-	
-	private LinearLayout mEmptyLayout;
-	private FloatingActionButton mfab;
-	private RecyclerView mRecyclerView;
-	private ArrayList<ReminderItem> mReminderList;
-	private ReminderAdapter reminderAdapter;
 
-	public ReminderFragment() {
-	}
+    private LinearLayout mEmptyLayout;
+    private FloatingActionButton mfab;
+    private RecyclerView mRecyclerView;
+    private ArrayList<ReminderItem> mReminderList;
+    private ReminderAdapter reminderAdapter;
+    int open = -1;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
-		
-		View rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
+    public ReminderFragment() {
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
 		
 		final MainActivity activity = (MainActivity) requireActivity();
 		mfab = rootView.findViewById(R.id.reminderFab);
