@@ -41,7 +41,6 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
     private RecyclerView mRecyclerView;
     private ArrayList<ReminderItem> mReminderList;
     private ReminderAdapter reminderAdapter;
-    int open = -1;
 
     public ReminderFragment() {
     }

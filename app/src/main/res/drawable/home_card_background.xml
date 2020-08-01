@@ -2,13 +2,6 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape>
-            <padding android:right="0.5dp" android:bottom="0.5dp"/>
-            <solid android:color="#60CCCCCC"/>
-            <corners android:radius="20dp"/>
-        </shape>
-    </item>
-    <item>
         <shape android:shape="rectangle">
             <gradient
                 android:type="linear"

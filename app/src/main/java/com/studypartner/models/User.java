@@ -68,8 +68,8 @@ public class User {
 		String username;
 		do {
 			uniqueUsername[0] = true;
-			username = newEmail + UUID.randomUUID().toString().substring(0, 15);
-			final String finalUsername = username.substring(0, 15);
+			username = newEmail + UUID.randomUUID().toString().substring(0, 5);
+			final String finalUsername = username.substring(0, 25);
 			FirebaseDatabase.getInstance().getReference().child("usernames").addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -87,7 +87,7 @@ public class User {
 			});
 		} while (!uniqueUsername[0]);
 		
-		this.username = username.substring(0,15);
+		this.username = username.substring(0,25);
 	}
 	
 	public String validateName(String name) {
@@ -106,8 +106,8 @@ public class User {
 			return "Username cannot be empty";
 		} else if (username.trim().length() < 5) {
 			return "Username too small. Minimum length is 5";
-		} else if (username.trim().length() > 15) {
-			return "Username too long. Maximum length is 15";
+		} else if (username.trim().length() > 25) {
+			return "Username too long. Maximum length is 25";
 		} else if (!username.trim().matches("^[a-zA-Z][a-zA-Z0-9]+$")) {
 			return "Username can only contain letters and numbers";
 		}

@@ -526,7 +526,7 @@ public class AttendanceFragment extends Fragment {
 		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-			
+				attendanceAdapter.notifyItemChanged(position);
 			}
 		});
 		builder.show();

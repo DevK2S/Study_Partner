@@ -368,8 +368,8 @@ public class CreateAccountActivity extends AppCompatActivity {
 			return "Username cannot be empty";
 		} else if (username.trim().length() < 5) {
 			return "Username too small. Minimum length is 5";
-		} else if (username.trim().length() > 15) {
-			return "Username too long. Maximum length is 15";
+		} else if (username.trim().length() > 25) {
+			return "Username too long. Maximum length is 25";
 		} else if (!username.trim().matches("^[a-zA-Z][a-zA-Z0-9]+$")) {
 			return "Username can only contain letters and numbers";
 		}

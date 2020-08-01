@@ -55,6 +55,8 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		
 		DecimalFormat decimalFormat = new DecimalFormat("##.#");
 		
+		holder.deleteButton.setClickable(true);
+		
 		holder.subjectName.setText(item.getSubjectName());
 		holder.classesAttended.setText(mContext.getString(R.string.attendance_item_attended, item.getAttendedClasses()));
 		holder.classesMissed.setText(mContext.getString(R.string.attendance_item_missed, item.getMissedClasses()));
@@ -161,7 +163,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 			} else if (v.getId() == deleteButton.getId()) {
 
 				mClickListener.deleteButtonClicked(getAdapterPosition());
-
+				deleteButton.setClickable(false);
 			}
 		}
 	}
