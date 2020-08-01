@@ -27,6 +27,7 @@ import com.studypartner.models.AttendanceItem;
 import com.studypartner.models.FileItem;
 import com.studypartner.models.ReminderItem;
 import com.studypartner.utils.FileType;
+import com.studypartner.utils.FileUtils;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -458,10 +459,26 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 		GridLayoutManager managerImage = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
 		GridLayoutManager managerVideo = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
 		imageRecyclerView.setLayoutManager(managerImage);
-		imageAdapter = new HomeMediaAdapter(getActivity(), imagesList, this);
+		imageAdapter = new HomeMediaAdapter(getActivity(), imagesList, new HomeMediaAdapter.HomeMediaClickListener() {
+			@Override
+			public void onClick(int position) {
+				Bundle bundle = new Bundle();
+				bundle.putParcelableArrayList("HomeMedia", imagesList);
+				bundle.putInt("Position", position);
+				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, bundle);
+			}
+		});
 		imageRecyclerView.setAdapter(imageAdapter);
 		videoRecyclerView.setLayoutManager(managerVideo);
-		videoAdapter = new HomeMediaAdapter(getActivity(), videosList, this);
+		videoAdapter = new HomeMediaAdapter(getActivity(), videosList, new HomeMediaAdapter.HomeMediaClickListener() {
+			@Override
+			public void onClick(int position) {
+				Bundle bundle = new Bundle();
+				bundle.putParcelableArrayList("HomeMedia", videosList);
+				bundle.putInt("Position", position);
+				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, bundle);
+			}
+		});
 		videoRecyclerView.setAdapter(videoAdapter);
 		docsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 		docsAdapter = new NotesAdapter(getActivity(), docsList, this, false);
@@ -502,12 +519,7 @@ public class HomeFragment extends Fragment implements HomeMediaAdapter.HomeMedia
 
 	@Override
 	public void onClick(int position) {
-
-		Bundle b = new Bundle();
-		b.putParcelableArrayList("HomeMedia", imagesList);
-		b.putInt("Position", position);
-		((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_home_to_mediaActivity, b);
-
+		FileUtils.openFile(requireContext(), docsList.get(position));
 	}
 
 	@Override

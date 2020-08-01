@@ -29,75 +29,79 @@ public class MediaActivity extends AppCompatActivity {
 	MediaAdapter mediaAdapter;
 	
 	@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "Media Activity");
-        setContentView(R.layout.activity_media);
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "Media Activity");
+		setContentView(R.layout.activity_media);
 
-        getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
+		getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
 
-        viewPager = findViewById(R.id.viewPager2);
-        Intent intent = getIntent();
-        String path = "";
-        path = intent.getStringExtra("Media");
-        inStarred = intent.getBooleanExtra("InStarred", false);
-        ArrayList<FileItem> homeMedia = intent.getParcelableArrayListExtra("HomeMedia");
-        int position;
-        homeMediaDisplay(homeMedia, 0);
-        File file = new File(path);
-        File parentFile = file.getParentFile();
-        mediaData(parentFile, file);
+		viewPager = findViewById(R.id.viewPager2);
+		Intent intent = getIntent();
+		String path = "";
+		path = intent.getStringExtra("Media");
+		inStarred = intent.getBooleanExtra("InStarred", false);
+		ArrayList<FileItem> homeMedia = intent.getParcelableArrayListExtra("HomeMedia");
+		int position;
+		if (homeMedia.size() != 0) {
+			//position = intent.getIntExtra("Position",0);
+			homeMediaDisplay(homeMedia, 0);
+		}
+		/*if(!path.equals("")) {
+			File file = new File(path);
+			File parentFile = file.getParentFile();
+			mediaData(parentFile, file);
+		}*/
+	}
 
-    }
+	private void homeMediaDisplay(ArrayList<FileItem> homeMedia, int value) {
+		ArrayList<String> mediafiles = new ArrayList<>();
+		for (FileItem f : homeMedia) {
+			mediafiles.add(f.getPath());
+		}
+		mediaAdapter = new MediaAdapter(getSupportFragmentManager(), getLifecycle());
+		for (String s : mediafiles) {
+			mediaAdapter.addFragment(MediaFragment.newInstance(s));
+		}
 
-    private void homeMediaDisplay(ArrayList<FileItem> homeMedia, int value) {
-        ArrayList<String> mediafiles = new ArrayList<>();
-        for (FileItem f : homeMedia) {
-            mediafiles.add(f.getPath());
-        }
-        mediaAdapter = new MediaAdapter(getSupportFragmentManager(), getLifecycle());
-        for (String s : mediafiles) {
-            mediaAdapter.addFragment(MediaFragment.newInstance(s));
-        }
+		viewPager.setAdapter(mediaAdapter);
+		viewPager.setCurrentItem(value, false);
+		viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+				try {
+					(mediaAdapter.createFragment(position - 1)).isHidden();
+					(mediaAdapter.createFragment(position)).isVisible();
 
-        viewPager.setAdapter(mediaAdapter);
-        viewPager.setCurrentItem(value, false);
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-                try {
-                    (mediaAdapter.createFragment(position - 1)).isHidden();
-                    (mediaAdapter.createFragment(position)).isVisible();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+			}
 
-            }
+			@Override
+			public void onPageSelected(int position) {
+				super.onPageSelected(position);
+			}
 
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-            }
+			@Override
+			public void onPageScrollStateChanged(int state) {
+				super.onPageScrollStateChanged(state);
+			}
+		});
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-            }
-        });
+	}
 
-    }
-
-    public void mediaData(File parent, File child) {
-        ArrayList<String> mediafiles = new ArrayList<>();
-        int value = 0;
-        if (!inStarred) {
-            File[] files = parent.listFiles();
-            assert files != null;
-            for (File f : files) {
+	public void mediaData(File parent, File child) {
+		ArrayList<String> mediafiles = new ArrayList<>();
+		int value = 0;
+		if (!inStarred) {
+			File[] files = parent.listFiles();
+			assert files != null;
+			for (File f : files) {
 				FileItem newFile = new FileItem(f.getPath());
-				
+
 				if (newFile.getType() == FileType.FILE_TYPE_VIDEO || newFile.getType() == FileType.FILE_TYPE_AUDIO || newFile.getType() == FileType.FILE_TYPE_IMAGE) {
 					mediafiles.add(newFile.getPath());
 					if (f.getName().equals(child.getName()))
