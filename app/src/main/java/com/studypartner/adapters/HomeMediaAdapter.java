@@ -25,9 +25,9 @@ public class HomeMediaAdapter extends RecyclerView.Adapter<HomeMediaAdapter.Home
         void onClick(int position);
     }
 
-    private Activity mActivity;
-    private ArrayList<FileItem> mFileItems;
-    private HomeMediaClickListener listener;
+    private final Activity mActivity;
+    private final ArrayList<FileItem> mFileItems;
+    private final HomeMediaClickListener listener;
 
     public HomeMediaAdapter(Activity mActivity, ArrayList<FileItem> mFileItems, HomeMediaClickListener listener) {
         this.mActivity = mActivity;
@@ -99,7 +99,7 @@ public class HomeMediaAdapter extends RecyclerView.Adapter<HomeMediaAdapter.Home
 
     public class HomeMediaViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        ImageView homeMediaImage;
+        private final ImageView homeMediaImage;
 
         public HomeMediaViewHolder(@NonNull View itemView) {
             super(itemView);

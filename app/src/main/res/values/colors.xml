@@ -13,14 +13,10 @@
     <color name="alternativeIconTint">#FFFFFF</color>
     <color name="darkIconTint">#000000</color>
     <color name="errorTint">#FF153C</color>
-    <color name="starredIconTint">#F0F812</color>
-
-    <color name="editTextBg">#FFFFFF</color>
 
     <color name="primaryText">#2699FB</color>
     <color name="alternativeText">#FFFFFF</color>
     <color name="titleText">#000000</color>
-    <color name="titleBarText">#FFFFFF</color>
     <color name="subText">#777777</color>
     <color name="lightGrayText">#ECE2E2</color>
 
@@ -28,9 +24,6 @@
 
     <color name="roundedButtonsBg">#2699FB</color>
     <color name="alternativeRoundedButtonsBg">#FFFFFF</color>
-
-    <color name="navigationMenuIcon">#2699FB</color>
-    <color name="navigationMenuText">#2699FB</color>
 
     <color name="bottomNavigationItemSelected">#FFFFFF</color>
     <color name="bottomNavigationItem">#444444</color>
@@ -44,8 +37,6 @@
     <color name="onBoardingScreenSelectedTabIndicator">#4c84ff</color>
     <color name="onBoardingScreenButtonTextColor">#2699FB</color>
     <color name="onBoardingScreenTabIndicator">#c0c0c0</color>
-    <color name="onBoardingScreenIntroTitleColor">#000000</color>
-    <color name="onBoardingScreenIntroDescriptionColor">#777777</color>
 
     <color name="lowAttendanceColor">#FF153C</color>
     <color name="highAttendanceColor">#6AFF1F</color>
@@ -61,13 +52,4 @@
     <color name="notesItemBackground">#F8F8F8</color>
 
     <color name="bottomSheetBackground">#888888</color>
-
-    <color name="homeImageColor">#FF153C</color>
-    <color name="homeMusicColor">#F0F812</color>
-
-    <string-array name="color_preset1">
-        <item>#2699FB</item>
-        <item>#41A7FE</item>
-        <item>#6dd5ed</item>
-    </string-array>
 </resources>

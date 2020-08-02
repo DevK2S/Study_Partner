@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Study Partner</string>
 
     <string name="splash_screen_logo_cd">Application Logo</string>
@@ -11,7 +11,7 @@
 
     <string name="login_screen_welcome_back">Welcome Back</string>
     <string name="login_screen_bg_rectangle_cd">Login Screen Background Rectangle</string>
-    <string name="login_screen_join_community">Join the community of 10k+ students</string>
+    <string name="login_screen_join_community">Join our community of brilliant students</string>
     <string name="login_screen_email">Email</string>
     <string name="login_screen_password">Password</string>
     <string name="login_screen_title">Login</string>
@@ -46,7 +46,6 @@
     <string name="navigation_menu_report_bug">Report Bug</string>
     <string name="navigation_menu_about_us">About Us</string>
 
-    <string name="profile_screen_background_rectangle_cd">Profile Screen Background Rectangle</string>
     <string name="profile_screen_full_name">Full Name</string>
     <string name="profile_screen_username">Username</string>
     <string name="profile_screen_email">New Email</string>
@@ -68,8 +67,8 @@
     <string name="attendance_item_attended">Attended: %1$d</string>
     <string name="attendance_item_missed">Missed: %1$d</string>
     <string name="attendance_item_empty_percentage">---</string>
-    <string name="attendance_item_need_to_attend">"You need to attend %1$d more class%2$s"</string>
-    <string name="attendance_item_you_can_miss">"You can miss %1$d class%2$s"</string>
+    <string name="attendance_item_need_to_attend" tools:ignore="PluralsCandidate">"You need to attend %1$d more class%2$s"</string>
+    <string name="attendance_item_you_can_miss" tools:ignore="PluralsCandidate">"You can miss %1$d class%2$s"</string>
     <string name="attendance_item_cannot_miss">You cannot miss any classes</string>
     <string name="attendance_item_edit_button">Attendance Item Edit Button</string>
     <string name="attendance_item_delete_button">Attendance Item Delete Button</string>
@@ -86,12 +85,11 @@
     <string name="attendance_empty">It\'s too empty in here</string>
     <string name="attendance_empty_add_subs">Add your subjects and never miss any exam</string>
     <string name="attendance_empty_icon_cd">Empty Attendance Icon</string>
-    <string name="attendance_percentage_attended">%1$s</string>
     <string name="attendance_required_name">Name</string>
     <string name="attendance_minimum_attendance_criteria">Minimum Attendance Criteria</string>
     <string name="attendance_default_required_attendance">75%</string>
+    <string name="attendance_percentage">%1$s%%</string>
 
-    <string name="file_name">File Name</string>
     <string name="file_type_image_cd">File Type Image</string>
     <string name="file_options_cd">Options</string>
     <string name="file_sort_button_cd">Sort Button</string>
@@ -149,27 +147,15 @@
     <string name="starred_empty">Star important files to view them quickly</string>
     <string name="starred_empty_sub">To star a file click on its options menu</string>
 
-    <string name="bottom_sheet_notes_image_cd">Bottom Sheet Image</string>
-
     <string name="calendar_icon_cd">Calendar Icon</string>
     <string name="time_icon_cd">Time Icon</string>
     <string name="alarm_icon_cd">Alarm Icon</string>
     <string name="delete_icon_cd">Delete</string>
 
-    <string name="reminder_item_delete_button">Reminder Item Delete</string>
-    <string name="reminder_item_edit_button">Reminder Item Edit</string>
     <string name="reminder_empty_icon_cd">Reminder Empty Icon</string>
     <string name="reminder_empty">Add reminders and never miss any event</string>
     <string name="reminder_dialog_desc">Description</string>
     <string name="reminder_dialog_title">Title</string>
-
-    <string name="bottom_sheet_open_with">Open With</string>
-    <string name="bottom_sheet_star">Add to starred</string>
-    <string name="bottom_sheet_unstar">Remove from starred</string>
-    <string name="bottom_sheet_rename">Rename</string>
-    <string name="bottom_sheet_delete">Delete</string>
-    <string name="bottom_sheet_send">Send</string>
-    <string name="bottom_sheet_details">Details</string>
 
     <string name="home_empty_icon_cd">Home Empty Icon</string>
     <string name="home_empty">Add notes to view them here</string>

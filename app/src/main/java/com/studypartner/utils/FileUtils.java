@@ -35,8 +35,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import okhttp3.HttpUrl;
 
-import static com.studypartner.BuildConfig.DEBUG;
-
 
 public class FileUtils {
 	public static final String DOCUMENTS_DIR = "documents";
@@ -297,7 +295,6 @@ public class FileUtils {
 	 * @param context The context.
 	 * @param uri     The Uri to query.
 	 * @see #isLocal(String)
-	 * @see #getFile(Context, Uri)
 	 */
 	public static String getFilePath(final Context context, final Uri uri) {
 		String absolutePath = getLocalPath(context, uri);
@@ -402,41 +399,12 @@ public class FileUtils {
 		return null;
 	}
 	
-	
-	/**
-	 * Convert Uri into File, if possible.
-	 *
-	 * @return file A local file that the Uri was pointing to, or null if the
-	 * Uri is unsupported or pointed to a remote resource.
-	 * @author paulburke
-	 * @see #getFilePath(Context, Uri)
-	 */
-	public static File getFile(Context context, Uri uri) {
-		if (uri != null) {
-			String path = getFilePath(context, uri);
-			if (path != null && isLocal(path)) {
-				return new File(path);
-			}
-		}
-		return null;
-	}
-	
 	public static File getDocumentCacheDir(@NonNull Context context) {
 		File dir = new File(context.getCacheDir(), DOCUMENTS_DIR);
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
-		logDir(context.getCacheDir());
-		logDir(dir);
-		
 		return dir;
-	}
-	
-	private static void logDir(File dir) {
-		if(!DEBUG) return;
-		File[] files = dir.listFiles();
-		for (File file : files) {
-		}
 	}
 	
 	@Nullable
@@ -472,8 +440,6 @@ public class FileUtils {
 		} catch (IOException e) {
 			return null;
 		}
-		
-		logDir(directory);
 		
 		return file;
 	}

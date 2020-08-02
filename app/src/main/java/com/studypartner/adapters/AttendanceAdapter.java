@@ -30,9 +30,9 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		void deleteButtonClicked (int position);
 	}
 	
-	private Context mContext;
-	private AttendanceItemClickListener mAttendanceItemClickListener;
-	private ArrayList<AttendanceItem> mAttendanceItemArrayList;
+	private final Context mContext;
+	private final AttendanceItemClickListener mAttendanceItemClickListener;
+	private final ArrayList<AttendanceItem> mAttendanceItemArrayList;
 	
 	public AttendanceAdapter (Context context, ArrayList<AttendanceItem> attendanceItemArrayList, AttendanceItemClickListener attendanceItemClickListener) {
 		mContext = context;
@@ -63,7 +63,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		holder.attendedProgressBar.setProgress((float) item.getAttendedPercentage());
 		
 		if (item.getTotalClasses() > 0) {
-			holder.percentageAttended.setText(decimalFormat.format(item.getAttendedPercentage()) + "%");
+			holder.percentageAttended.setText(mContext.getString(R.string.attendance_percentage, decimalFormat.format(item.getAttendedPercentage())));
 			
 			if (item.getAttendedPercentage() < item.getRequiredPercentage()) {
 				holder.attendedProgressBar.setProgressBarColor(mContext.getColor(R.color.lowAttendanceColor));
@@ -103,12 +103,20 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 	
 	static class AttendanceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 		
-		private TextView subjectName, percentageAttended, classesAttended, classesMissed, classesText;
-		private Button attendedPlusButton, attendedMinusButton, missedPlusButton, missedMinusButton;
-		private ImageButton editButton, deleteButton;
-		private CircularProgressBar attendedProgressBar;
+		private final TextView subjectName;
+		private final TextView percentageAttended;
+		private final TextView classesAttended;
+		private final TextView classesMissed;
+		private final TextView classesText;
+		private final Button attendedPlusButton;
+		private final Button attendedMinusButton;
+		private final Button missedPlusButton;
+		private final Button missedMinusButton;
+		private final ImageButton editButton;
+		private final ImageButton deleteButton;
+		private final CircularProgressBar attendedProgressBar;
 		
-		private AttendanceItemClickListener mClickListener;
+		private final AttendanceItemClickListener mClickListener;
 		
 		public AttendanceViewHolder(@NonNull View itemView, AttendanceItemClickListener listener) {
 			super(itemView);

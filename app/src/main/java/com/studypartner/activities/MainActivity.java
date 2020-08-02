@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -101,6 +102,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			} else {
 				verifiedImage.setImageResource(R.drawable.not_verified_icon);
 			}
+			
+			profileEmail.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+						FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+							@Override
+							public void onSuccess(Void aVoid) {
+								Toast.makeText(MainActivity.this, "Verification email sent successfully", Toast.LENGTH_SHORT).show();
+							}
+						});
+					}
+				}
+			});
 			
 		} else {
 			startActivity(new Intent(MainActivity.this, LoginActivity.class));

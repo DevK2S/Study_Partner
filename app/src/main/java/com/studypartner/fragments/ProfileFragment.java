@@ -365,7 +365,42 @@ public class ProfileFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onCreate: update profile button clicked");
-				updateProfile();
+				
+				Connection.checkConnection(ProfileFragment.this);
+				
+				disableViews();
+				
+				username = usernameTextInput.getEditText().getText().toString().trim();
+				
+				if (user.validateUsername(username) == null && !username.matches(user.getUsername())) {
+					final boolean[] usernameTaken = {false};
+					FirebaseDatabase.getInstance().getReference().child("usernames").addListenerForSingleValueEvent(new ValueEventListener() {
+						@Override
+						public void onDataChange(@NonNull DataSnapshot snapshot) {
+							if (snapshot.exists() && snapshot.hasChildren()) {
+								for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+									if (dataSnapshot.exists() && dataSnapshot.getValue() != null) {
+										if (username.matches((String) dataSnapshot.getValue())) {
+											usernameTextInput.setError("Username is already taken by another user");
+											enableViews();
+											usernameTaken[0] = true;
+										}
+									}
+								}
+							}
+							if (!usernameTaken[0]) {
+								updateProfile();
+							}
+						}
+						
+						@Override
+						public void onCancelled(@NonNull DatabaseError error) {
+							enableViews();
+						}
+					});
+				} else {
+					updateProfile();;
+				}
 			}
 		});
 		
@@ -409,7 +444,6 @@ public class ProfileFragment extends Fragment {
 	
 	private void deleteAccount() {
 		Log.d(TAG, "deleteAccount: checking internet connection");
-		Connection.checkConnection(this);
 		
 		disableViews();
 		
