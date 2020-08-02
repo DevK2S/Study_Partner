@@ -176,7 +176,7 @@
 
     <string name="home_carousel_reminder_cd">Home Carousel Reminder</string>
     <string name="home_carousel_no_reminders">You have no reminders</string>
-    <string name="home_carousel_add_reminders">Add reminders to view them here</string>
+    <string name="home_carousel_add_reminders">Click here to add reminders</string>
     <string name="home_carousel_high_attendance_congratulations">Congratulations</string>
     <string name="home_carousel_high_attendance_high_attendance">You have high attendance in all subjects</string>
     <string name="home_carousel_no_attendance">You have no subjects added</string>

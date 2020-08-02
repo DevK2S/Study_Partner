@@ -3,18 +3,13 @@ package com.studypartner.models;
 
 import android.util.Patterns;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
 import java.util.UUID;
-
-import androidx.annotation.NonNull;
 
 public class User {
 	String fullName, username, email;
 	Boolean isEmailVerified;
+	
+	public User() {}
 	
 	public User(String fullName, String email, Boolean isEmailVerified) {
 		this.fullName = fullName;
@@ -63,31 +58,13 @@ public class User {
 	}
 	
 	public void generateUsername() {
-		String newEmail = email.substring(0, email.indexOf("@"));
-		final boolean[] uniqueUsername = new boolean[1];
-		String username;
-		do {
-			uniqueUsername[0] = true;
-			username = newEmail + UUID.randomUUID().toString().substring(0, 5);
-			final String finalUsername = username.substring(0, 25);
-			FirebaseDatabase.getInstance().getReference().child("usernames").addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(@NonNull DataSnapshot snapshot) {
-					for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-						if (finalUsername.matches( dataSnapshot.getValue(String.class))) {
-							uniqueUsername[0] = false;
-						}
-					}
-				}
-				
-				@Override
-				public void onCancelled(@NonNull DatabaseError error) {
-				
-				}
-			});
-		} while (!uniqueUsername[0]);
+		String newEmail = email.substring(0, email.indexOf("@")) + UUID.randomUUID().toString().substring(0,5);
 		
-		this.username = username.substring(0,25);
+		if (newEmail.length() > 25) {
+			this.username = newEmail.substring(0, 25);
+		} else {
+			this.username = newEmail;
+		}
 	}
 	
 	public String validateName(String name) {

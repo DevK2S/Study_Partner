@@ -35,7 +35,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.studypartner.R;
 import com.studypartner.models.User;
 
@@ -307,13 +310,13 @@ public class LoginActivity extends AppCompatActivity {
 	private void storeUserDetails() {
 		Log.d(TAG, "storeUserDetails: starts");
 		
-		GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
+		final GoogleSignInAccount signInAccount = GoogleSignIn.getLastSignedInAccount(LoginActivity.this);
 		
 		if (signInAccount != null) {
 			
 			final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 			
-			final User user = new User(signInAccount.getDisplayName(), signInAccount.getEmail(), true);
+			final User user = new User(signInAccount.getDisplayName(), signInAccount.getEmail(), false);
 			
 			UserProfileChangeRequest.Builder profileUpdates = new UserProfileChangeRequest.Builder();
 			profileUpdates.setDisplayName(signInAccount.getDisplayName());
@@ -330,52 +333,100 @@ public class LoginActivity extends AppCompatActivity {
 						}
 					});
 			
-			FirebaseAuth.getInstance().getCurrentUser().updateEmail(signInAccount.getEmail())
-					.addOnCompleteListener(new OnCompleteListener<Void>() {
-						@Override
-						public void onComplete(@NonNull Task<Void> task) {
-							if (task.isSuccessful()) {
-								Log.d(TAG, "onComplete: email " + FirebaseAuth.getInstance().getCurrentUser().getEmail());
-								
-								if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-									FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
-								}
-								
-								//Make users database
-								FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
-								
-								//Make usernames database
-								FirebaseDatabase.getInstance().getReference().child("usernames").child(uid).setValue(user.getUsername());
-								
-								startActivity(new Intent(LoginActivity.this, MainActivity.class));
-								finishAffinity();
-								overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-							} else if (task.getException().getMessage().equals("The email address is already in use by another account.")) {
-								Log.d(TAG, "onComplete: email already in use");
-								
-								findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
-								
-								Toast.makeText(LoginActivity.this, "Email already in use by other account. Cannot sign in", Toast.LENGTH_LONG).show();
-								
-								FirebaseAuth.getInstance().getCurrentUser().delete()
-										.addOnSuccessListener(new OnSuccessListener<Void>() {
-											@Override
-											public void onSuccess(Void aVoid) {
-												Log.d(TAG, "onSuccess: account deleted successfully");
-											}
-										})
-										.addOnFailureListener(new OnFailureListener() {
-											@Override
-											public void onFailure(@NonNull Exception e) {
-												Log.d(TAG, "onFailure: account could not be deleted");
-											}
-										});
-							} else {
-								findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
-								task.getException().printStackTrace();
-							}
+			FirebaseDatabase.getInstance().getReference().child("usernames").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+				@Override
+				public void onDataChange(@NonNull DataSnapshot snapshot) {
+					if (snapshot.exists()) {
+						Log.d(TAG, "onDataChange: account already exists");
+						if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+							FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
 						}
-					});
+						FirebaseDatabase.getInstance().getReference().child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+							@Override
+							public void onDataChange(@NonNull DataSnapshot snapshot) {
+								User tempUser = snapshot.getValue(User.class);
+								if (tempUser != null) {
+									tempUser.setEmail(signInAccount.getEmail());
+									tempUser.setFullName(signInAccount.getDisplayName());
+									tempUser.setEmailVerified(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified());
+									FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(tempUser);
+								}
+							}
+							
+							@Override
+							public void onCancelled(@NonNull DatabaseError error) {
+							
+							}
+						});
+						startActivity(new Intent(LoginActivity.this, MainActivity.class));
+						finishAffinity();
+						overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+					} else {
+						Log.d(TAG, "onDataChange: account does not exist");
+						FirebaseAuth.getInstance().getCurrentUser().updateEmail(signInAccount.getEmail())
+								.addOnCompleteListener(new OnCompleteListener<Void>() {
+									@Override
+									public void onComplete(@NonNull Task<Void> task) {
+										if (task.isSuccessful()) {
+											Log.d(TAG, "onComplete: email " + FirebaseAuth.getInstance().getCurrentUser().getEmail());
+											
+											if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+												FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+											}
+											
+											//Make users database
+											FirebaseDatabase.getInstance().getReference().child("users").child(uid).setValue(user);
+											
+											//Make usernames database
+											FirebaseDatabase.getInstance().getReference().child("usernames").child(uid).setValue(user.getUsername());
+											
+											startActivity(new Intent(LoginActivity.this, MainActivity.class));
+											finishAffinity();
+											overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+										} else if (task.getException().getMessage().equals("The email address is already in use by another account.")) {
+											Log.d(TAG, "onComplete: email already in use");
+											
+											findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
+											
+											Toast.makeText(LoginActivity.this, "Email already in use by other account. Cannot sign in", Toast.LENGTH_LONG).show();
+											
+											GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+													.requestIdToken(getString(R.string.default_web_client_id))
+													.requestEmail()
+													.build();
+											
+											GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(LoginActivity.this, gso);
+											googleSignInClient.signOut();
+											
+											FirebaseAuth.getInstance().getCurrentUser().delete()
+													.addOnSuccessListener(new OnSuccessListener<Void>() {
+														@Override
+														public void onSuccess(Void aVoid) {
+															Log.d(TAG, "onSuccess: account deleted successfully");
+														}
+													})
+													.addOnFailureListener(new OnFailureListener() {
+														@Override
+														public void onFailure(@NonNull Exception e) {
+															Log.d(TAG, "onFailure: account could not be deleted");
+														}
+													});
+										} else {
+											findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
+											task.getException().printStackTrace();
+										}
+									}
+								});
+						
+					}
+				}
+				
+				@Override
+				public void onCancelled(@NonNull DatabaseError error) {
+				
+				}
+			});
+			
 		}
 		Log.d(TAG, "storeUserDetails: ends");
 	}

@@ -357,7 +357,7 @@ public class ProfileFragment extends Fragment {
 		if (currentUser.getPhotoUrl() != null) {
 			Picasso.get().load(currentUser.getPhotoUrl())
 					.error(R.drawable.image_error_icon)
-					.placeholder(R.drawable.profile_photo_icon)
+					.placeholder(R.drawable.user_icon)
 					.into(profileImageView);
 		}
 		
@@ -802,6 +802,14 @@ public class ProfileFragment extends Fragment {
 															if (task.isSuccessful()) {
 																Log.d(TAG, "onComplete: verification email sent successfully");
 																Toast.makeText(getContext(), "Email changed successfully", Toast.LENGTH_SHORT).show();
+																NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+																ImageView verifiedImage = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerVerifiedImage);
+																
+																if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+																	verifiedImage.setImageResource(R.drawable.verified_icon);
+																} else {
+																	verifiedImage.setImageResource(R.drawable.not_verified_icon);
+																}
 																
 																SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SESSIONS, MODE_PRIVATE);
 																SharedPreferences.Editor editor = sharedPreferences.edit();

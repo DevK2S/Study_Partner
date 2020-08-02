@@ -26,8 +26,6 @@ import com.studypartner.models.ReminderItem;
 import com.studypartner.utils.Connection;
 import com.studypartner.utils.NotificationHelper;
 
-import java.util.Objects;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,10 +72,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 	
 	@Override
 	protected void onResume() {
-		Log.d(TAG, "onResume: starts");
 		super.onResume();
 		
 		ImageView profileImage = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileImage);
+		ImageView verifiedImage = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerVerifiedImage);
 		TextView profileFullName = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerProfileName);
 		TextView profileEmail = mNavigationView.getHeaderView(0).findViewById(R.id.navigationDrawerEmail);
 		
@@ -88,24 +86,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			}
 			
 			if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
-				Log.d(TAG, "onResume: Downloading profile image");
 				Picasso.get().load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
-						.error(Objects.requireNonNull(getDrawable(R.drawable.image_error_icon)))
-						.placeholder(Objects.requireNonNull(getDrawable(R.drawable.profile_photo_icon)))
+						.error(R.drawable.image_error_icon)
+						.placeholder(R.drawable.user_icon)
 						.into(profileImage);
 			} else {
-				Log.d(TAG, "onResume: Image url does not exist for user");
-				profileImage.setImageDrawable(getDrawable(R.drawable.profile_photo_icon));
+				profileImage.setImageResource(R.drawable.user_icon);
 			}
 			
 			profileEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+			
+			if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+				verifiedImage.setImageResource(R.drawable.verified_icon);
+			} else {
+				verifiedImage.setImageResource(R.drawable.not_verified_icon);
+			}
 			
 		} else {
 			startActivity(new Intent(MainActivity.this, LoginActivity.class));
 			finishAffinity();
 			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 		}
-		Log.d(TAG, "onResume: ends");
 	}
 	
 	@Override
