@@ -42,30 +42,30 @@ public class OnBoardingActivity extends AppCompatActivity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_on_boarding);
-		
-		nextButton = findViewById(R.id.onBoardingScreenNextButton);
-		getStartedButton = findViewById(R.id.onBoardingScreenGetStartedButton);
-		skipButton = findViewById(R.id.onBoardingScreenSkipButton);
-		backButton = findViewById(R.id.onBoardingScreenBackButton);
-		tabIndicator = findViewById(R.id.onBoardingScreenTabLayout);
-		buttonAnimation = AnimationUtils.loadAnimation(this, R.anim.on_boarding_get_started_animation);
-		
-		Log.d(TAG, "onCreate: Initialising screens for onBoarding");
-		
-		final List<OnBoardingItem> screenList = new ArrayList<>();
-		screenList.add(new OnBoardingItem("NOTES KEEPER", "One step to keep and arrange all your notes", R.drawable.on_boarding_screen_notes_image));
-		screenList.add(new OnBoardingItem("ALL TYPES OF NOTES", "We can store images, documents, videos and much more", R.drawable.on_boarding_screen_types_of_notes_image));
-		screenList.add(new OnBoardingItem("ATTENDANCE MANAGER", "We manage your attendance too", R.drawable.on_boarding_screen_attendance_image));
-		
-		screenPager = findViewById(R.id.onBoardingScreenViewPager);
-		onBoardingViewPagerAdapter = new OnBoardingViewPagerAdapter(this, screenList);
-		screenPager.setAdapter(onBoardingViewPagerAdapter);
-		tabIndicator.setupWithViewPager(screenPager, true);
-		
-		if (screenList.size() == 1) {
-			Log.d(TAG, "onCreate: onBoarding has only one screen");
-			loadLastScreen();
-		}
+
+        nextButton = findViewById(R.id.onBoardingScreenNextButton);
+        getStartedButton = findViewById(R.id.onBoardingScreenGetStartedButton);
+        skipButton = findViewById(R.id.onBoardingScreenSkipButton);
+        backButton = findViewById(R.id.onBoardingScreenBackButton);
+        tabIndicator = findViewById(R.id.onBoardingScreenTabLayout);
+        buttonAnimation = AnimationUtils.loadAnimation(this, R.anim.on_boarding_get_started_animation);
+
+        Log.d(TAG, "onCreate: Initialising screens for onBoarding");
+
+        final List<OnBoardingItem> screenList = new ArrayList<>();
+        screenList.add(new OnBoardingItem("NOTES KEEPER", "One step to keep and arrange all your notes!", R.drawable.on_boarding_screen_notes_image));
+        screenList.add(new OnBoardingItem("ALL TYPES OF NOTES", "Store Images, Documents, Videos and much more", R.drawable.on_boarding_screen_types_of_notes_image));
+        screenList.add(new OnBoardingItem("ATTENDANCE MANAGER", "Manage your Attendance too", R.drawable.on_boarding_screen_attendance_image));
+
+        screenPager = findViewById(R.id.onBoardingScreenViewPager);
+        onBoardingViewPagerAdapter = new OnBoardingViewPagerAdapter(this, screenList);
+        screenPager.setAdapter(onBoardingViewPagerAdapter);
+        tabIndicator.setupWithViewPager(screenPager, true);
+
+        if (screenList.size() == 1) {
+            Log.d(TAG, "onCreate: onBoarding has only one screen");
+            loadLastScreen();
+        }
 		
 		nextButton.setOnClickListener(new View.OnClickListener() {
 			@Override

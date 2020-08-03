@@ -688,22 +688,22 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 										Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
 									} else {
 										if (oldFile.renameTo(newFile)) {
-											Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
-											notes.get(position).setName(newName);
-											notes.get(position).setPath(newFile.getPath());
-											
-											int starredIndex = starredIndex(position);
-											if (starredIndex == -1) {
-												SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-												SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-												
-												starred.get(starredIndex).setName(newName);
-												Gson gson = new Gson();
-												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-												starredPreferenceEditor.apply();
-											}
-											
-											if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
+                                            Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+                                            notes.get(position).setName(newName);
+                                            notes.get(position).setPath(newFile.getPath());
+
+                                            int starredIndex = starredIndex(position);
+                                            if (starredIndex != -1) {
+                                                SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+                                                SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+                                                starred.get(starredIndex).setName(newName);
+                                                Gson gson = new Gson();
+                                                starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+                                                starredPreferenceEditor.apply();
+                                            }
+
+                                            if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
 												for (FileItem starItem : starred) {
 													if (starItem.getPath().contains(oldFile.getPath())) {
 														starItem.setPath(starItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
@@ -720,18 +720,19 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 												
 												Gson gson = new Gson();
 												linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-												linkPreferenceEditor.apply();
-												
-												SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-												SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-												
-												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-												starredPreferenceEditor.apply();
-											}
-											
-											mNotesAdapter.notifyItemChanged(position);
-											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
-										} else {
+                                                linkPreferenceEditor.apply();
+
+                                                SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+                                                SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+                                                starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+                                                starredPreferenceEditor.apply();
+                                            }
+
+                                            mNotesAdapter.notifyItemChanged(position);
+                                            populateDataAndSetAdapter();
+                                            sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+                                        } else {
 											Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
 										}
 									}
