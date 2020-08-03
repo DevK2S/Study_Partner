@@ -16,7 +16,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,8 +55,7 @@ public class AttendanceFragment extends Fragment {
 	private ConstraintLayout mainLayout, requiredAttendanceLayout;
 	
 	private RecyclerView mRecyclerView;
-	private BottomAppBar mBottomAppBar;
-	private FloatingActionButton mfab, attendanceRequiredPercentageFabNext;
+	private FloatingActionButton attendanceRequiredPercentageFabNext;
 	private NavController mNavController;
 	private LinearLayout mEmptyLayout;
 	private Button addButton, updateButton;
@@ -104,8 +102,6 @@ public class AttendanceFragment extends Fragment {
 		sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "RequiredPercentageSelected", Context.MODE_PRIVATE);
 		
 		MainActivity activity = (MainActivity) requireActivity();
-		mBottomAppBar = activity.mBottomAppBar;
-		mfab = activity.fab;
 		mNavController = NavHostFragment.findNavController(this);
 		
 		requireActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
@@ -168,7 +164,7 @@ public class AttendanceFragment extends Fragment {
 				double progress = sharedPreferences.getFloat(REQUIRED_ATTENDANCE, 75);
 				attendanceRequiredPercentageProgressBarSetter.setProgress((float) progress);
 				DecimalFormat decimalFormat = new DecimalFormat("##.#");
-				attendanceRequiredPercentageSetter.setText(decimalFormat.format(progress) + "%");
+				attendanceRequiredPercentageSetter.setText(requireContext().getString(R.string.attendance_percentage,decimalFormat.format(progress)));
 				attendanceRequiredPercentageSeekBarSetter.setProgress((int) progress);
 			}
 		});
@@ -178,7 +174,7 @@ public class AttendanceFragment extends Fragment {
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				attendanceRequiredPercentageProgressBarSetter.setProgress(progress);
 				DecimalFormat decimalFormat = new DecimalFormat("##.#");
-				attendanceRequiredPercentageSetter.setText(decimalFormat.format(progress) + "%");
+				attendanceRequiredPercentageSetter.setText(requireContext().getString(R.string.attendance_percentage,decimalFormat.format(progress)));
 			}
 			
 			@Override
@@ -368,7 +364,7 @@ public class AttendanceFragment extends Fragment {
 		if (totalClasses > 0) {
 			totalPercentageAttended = (double) attendedClasses * 100 / totalClasses;
 			DecimalFormat decimalFormat = new DecimalFormat("##.#");
-			percentageAttended.setText(decimalFormat.format(totalPercentageAttended) + "%");
+			percentageAttended.setText(requireContext().getString(R.string.attendance_percentage,decimalFormat.format(totalPercentageAttended)));
 		} else {
 			percentageAttended.setText(getString(R.string.attendance_item_empty_percentage));
 		}

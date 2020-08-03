@@ -62,10 +62,10 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 
 	private MainActivity activity;
 
-	private ArrayList<FileItem> notes = new ArrayList<>();
-	private ArrayList<FileItem> docsList = new ArrayList<>();
-	private ArrayList<FileItem> imagesList = new ArrayList<>();
-	private ArrayList<FileItem> videosList = new ArrayList<>();
+	private final ArrayList<FileItem> notes = new ArrayList<>();
+	private final ArrayList<FileItem> docsList = new ArrayList<>();
+	private final ArrayList<FileItem> imagesList = new ArrayList<>();
+	private final ArrayList<FileItem> videosList = new ArrayList<>();
 	
 	private ArrayList<ReminderItem> reminders = new ArrayList<>();
 	private CardView reminderCard, emptyReminderCard;
@@ -333,7 +333,7 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 				if (totalClasses > 0) {
 					totalPercentageAttended = (double) attendedClasses * 100 / totalClasses;
 					DecimalFormat decimalFormat = new DecimalFormat("##.#");
-					percentageAttended.setText(decimalFormat.format(totalPercentageAttended) + "%");
+					percentageAttended.setText(requireContext().getString(R.string.attendance_percentage, decimalFormat.format(totalPercentageAttended)));
 					totalAttendedProgressBar.setProgress((float) totalPercentageAttended);
 				} else {
 					TextView highAttendanceTitle = view.findViewById(R.id.homeCarouselAttendanceTotalTitle);
@@ -389,8 +389,6 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 		View imageDocsDivider = view.findViewById(R.id.homeImageDocsDivider);
 		View docsVideoDivider = view.findViewById(R.id.homeDocsVideoDivider);
 		
-		notes = new ArrayList<>();
-
 		addRecursively(noteFolder);
 		
 		Collections.sort(notes, new Comparator<FileItem>() {

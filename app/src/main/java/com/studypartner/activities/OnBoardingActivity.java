@@ -22,12 +22,12 @@ import androidx.viewpager.widget.ViewPager;
 public class OnBoardingActivity extends AppCompatActivity {
 	private static final String TAG = "OnBoardingActivity";
 	
-	ViewPager screenPager;
-	OnBoardingViewPagerAdapter onBoardingViewPagerAdapter;
-	TabLayout tabIndicator;
-	Button nextButton, getStartedButton, skipButton, backButton;
-	Animation buttonAnimation;
-	int currentPagePosition = 0;
+	private ViewPager screenPager;
+	private OnBoardingViewPagerAdapter onBoardingViewPagerAdapter;
+	private TabLayout tabIndicator;
+	private Button nextButton, getStartedButton, skipButton, backButton;
+	private Animation buttonAnimation;
+	private int currentPagePosition = 0;
 	
 	@Override
 	public void onBackPressed() {

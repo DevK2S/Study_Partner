@@ -1,4 +1,4 @@
-# Study_Partner
+# Study Partner
 One stop solution for organizing and maintaining notes and attendance
 
 Before committing read the following:

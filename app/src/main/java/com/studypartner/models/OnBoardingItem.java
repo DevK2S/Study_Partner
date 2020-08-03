@@ -2,8 +2,9 @@ package com.studypartner.models;
 
 public class OnBoardingItem {
 	
-	String title, description;
-	int image;
+	private final String title;
+	private final String description;
+	private final int image;
 	
 	public OnBoardingItem(String title, String description, int image) {
 		this.title = title;

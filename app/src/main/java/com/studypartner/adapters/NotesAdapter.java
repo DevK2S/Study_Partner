@@ -32,13 +32,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		void onOptionsClick(View view, int position);
 	}
 	
-	private Activity mActivity;
-	private ArrayList<FileItem> mFileItems;
-	private ArrayList<FileItem> mFileItemsCopy;
-	private SparseBooleanArray selectedItems;
-	private NotesClickListener listener;
+	private final Activity mActivity;
+	private final ArrayList<FileItem> mFileItems;
+	private final ArrayList<FileItem> mFileItemsCopy;
+	private final SparseBooleanArray selectedItems;
+	private final NotesClickListener listener;
 	
-	private boolean isOptionsVisible;
+	private final boolean isOptionsVisible;
 	
 	public NotesAdapter(Activity activity, ArrayList<FileItem> fileItems, NotesClickListener listener, boolean isOptionVisible) {
 		this.mActivity = activity;
@@ -240,10 +240,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	
 	public class NotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 		
-		TextView fileName;
-		ImageView fileImage;
-		ImageButton fileOptions;
-		CardView fileLayout;
+		final TextView fileName;
+		final ImageView fileImage;
+		final ImageButton fileOptions;
+		final CardView fileLayout;
 		
 		public NotesViewHolder(View view) {
 			super(view);

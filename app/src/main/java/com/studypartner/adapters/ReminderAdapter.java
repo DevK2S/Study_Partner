@@ -28,9 +28,9 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         void deleteView(int position);
     }
 
-    private Context context;
-    private ReminderItemClickListener mReminderItemClickListener;
-    private ArrayList<ReminderItem> mReminderList;
+    private final Context context;
+    private final ReminderItemClickListener mReminderItemClickListener;
+    private final ArrayList<ReminderItem> mReminderList;
 
     public ReminderAdapter(Context context, ArrayList<ReminderItem> mReminderList, ReminderItemClickListener mReminderItemClickListener) {
         this.context = context;
@@ -107,10 +107,15 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 
     public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-        private TextView title, date, time;
-        private CardView reminderLayout;
-        private SwipeLayout swipeLayout;
-        private ImageView activeIcon, reminderClock, reminderCalendar, delete;
+        private final TextView title;
+        private final TextView date;
+        private final TextView time;
+        private final CardView reminderLayout;
+        private final SwipeLayout swipeLayout;
+        private final ImageView activeIcon;
+        private final ImageView reminderClock;
+        private final ImageView reminderCalendar;
+        private final ImageView delete;
 
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);

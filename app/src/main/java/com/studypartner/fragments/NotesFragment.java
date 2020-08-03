@@ -98,21 +98,21 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode == 1) {
-			if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-				androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				addFolder();
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
 				builder.setTitle("Read and Write Permissions");
 				builder.setMessage("Read and write permissions are required to store notes in the app");
 				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						Log.d(TAG, "onClick: closing app");
-						activity.finishAndRemoveTask();
 					}
 				});
 				builder.show();
 			}
 		} else {
-			addFolder();
 			super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		}
 	}
@@ -804,15 +804,12 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	}
 	
 	private void addFolder() {
-		//checking Permissions
 		if(isExternalStorageReadableWritable()) {
-			
 			if (writeReadPermission()) {
 				
 				File file;
 				
 				int count = 0;
-				
 				do {
 					String newFolder = "New Folder";
 					if (count > 0) {
@@ -834,6 +831,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				}
 			}
+		} else {
+			Toast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT).show();
 		}
 	}
 	

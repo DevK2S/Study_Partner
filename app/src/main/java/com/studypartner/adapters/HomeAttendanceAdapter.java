@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class HomeAttendanceAdapter extends RecyclerView.Adapter<HomeAttendanceAdapter.HomeAttendanceViewHolder> {
 	
-	private Context mContext;
-	private ArrayList<AttendanceItem> mAttendanceItems;
+	private final Context mContext;
+	private final ArrayList<AttendanceItem> mAttendanceItems;
 	
 	public HomeAttendanceAdapter(Context context, ArrayList<AttendanceItem> attendanceItems) {
 		mContext = context;
@@ -42,7 +42,7 @@ public class HomeAttendanceAdapter extends RecyclerView.Adapter<HomeAttendanceAd
 		DecimalFormat decimalFormat = new DecimalFormat("##.#");
 		
 		holder.subjectName.setText(item.getSubjectName());
-		holder.percentageAttended.setText(decimalFormat.format(item.getAttendedPercentage()) + "%");
+		holder.percentageAttended.setText(mContext.getString(R.string.attendance_percentage,decimalFormat.format(item.getAttendedPercentage())));
 		
 		if (item.getClassesNeededToAttend() > 1) {
 			holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), "es"));
@@ -62,8 +62,11 @@ public class HomeAttendanceAdapter extends RecyclerView.Adapter<HomeAttendanceAd
 	
 	public static class HomeAttendanceViewHolder extends RecyclerView.ViewHolder{
 		
-		private TextView subjectName, classesText, percentageAttended;
-		private CircularProgressBar attendedProgressBar, requiredProgressBar;
+		private final TextView subjectName;
+		private final TextView classesText;
+		private final TextView percentageAttended;
+		private final CircularProgressBar attendedProgressBar;
+		private final CircularProgressBar requiredProgressBar;
 		
 		public HomeAttendanceViewHolder(@NonNull View itemView) {
 			super(itemView);

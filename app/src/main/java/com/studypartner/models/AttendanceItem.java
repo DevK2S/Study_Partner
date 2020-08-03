@@ -59,26 +59,6 @@ public class AttendanceItem {
 		this.id = id;
 	}
 	
-	public void setTotalClasses(int totalClasses) {
-		this.totalClasses = totalClasses;
-	}
-	
-	public void setClassesNeededToAttend(int classesNeededToAttend) {
-		this.classesNeededToAttend = classesNeededToAttend;
-	}
-	
-	public void setAttendedPercentage(double attendedPercentage) {
-		this.attendedPercentage = attendedPercentage;
-	}
-	
-	public void setAttendedClasses(int attendedClasses) {
-		this.attendedClasses = attendedClasses;
-	}
-	
-	public void setMissedClasses(int missedClasses) {
-		this.missedClasses = missedClasses;
-	}
-	
 	public void setRequiredPercentage(double requiredPercentage) {
 		this.requiredPercentage = requiredPercentage;
 		this.attendedPercentage = attendedPercentage();

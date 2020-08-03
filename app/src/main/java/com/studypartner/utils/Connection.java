@@ -106,7 +106,6 @@ public class Connection {
 	public static void reportBug (final Activity activity) {
 		
 		Connection.checkConnection(activity);
-		ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(CONNECTIVITY_SERVICE);
 		TelephonyManager telephonyManager = (TelephonyManager) activity.getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 		StatFs internalStatFs = new StatFs(Environment.getRootDirectory().getAbsolutePath());
 		long internalMemSizeInMB = (internalStatFs.getAvailableBlocksLong() * internalStatFs.getBlockCountLong()) / (1024 * 1024);

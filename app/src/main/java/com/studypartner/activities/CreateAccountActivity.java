@@ -1,7 +1,7 @@
 package com.studypartner.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,7 +26,6 @@ import com.studypartner.R;
 import com.studypartner.models.User;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class CreateAccountActivity extends AppCompatActivity {
@@ -192,22 +191,8 @@ public class CreateAccountActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: terms and conditions pressed");
-				AlertDialog.Builder builder = new AlertDialog.Builder(CreateAccountActivity.this);
-				builder.setTitle("Terms and Conditions")
-						.setMessage("Do you agree to our terms and conditions?")
-						.setPositiveButton("Agree", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-							
-							}
-						})
-						.setNegativeButton("Disagree", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								onBackPressed();
-							}
-						});
-				builder.show();
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.google.com/document/d/1MKWGuegWbqugvAPzyNpF0oVYQpDsIZON1DJr8Ap9CWc/edit?usp=sharing"));
+				startActivity(Intent.createChooser(browserIntent,"Select the app to open the link"));
 			}
 		});
 		

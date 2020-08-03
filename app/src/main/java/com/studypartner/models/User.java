@@ -6,8 +6,8 @@ import android.util.Patterns;
 import java.util.UUID;
 
 public class User {
-	String fullName, username, email;
-	Boolean isEmailVerified;
+	private String fullName, username, email;
+	private Boolean isEmailVerified;
 	
 	public User() {}
 	
@@ -47,10 +47,6 @@ public class User {
 	
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	
-	public Boolean getEmailVerified() {
-		return isEmailVerified;
 	}
 	
 	public void setEmailVerified(Boolean emailVerified) {

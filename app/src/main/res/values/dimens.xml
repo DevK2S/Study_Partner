@@ -15,9 +15,7 @@
     <dimen name="largeText">22sp</dimen>
     <dimen name="extraLargeText">28sp</dimen>
 
-    <dimen name="smallElevation">4dp</dimen>
     <dimen name="mediumElevation">8dp</dimen>
-    <dimen name="largeElevation">12dp</dimen>
 
     <dimen name="splashScreenAppLogoHeight">250dp</dimen>
     <dimen name="splashScreenAppLogoWidth">250dp</dimen>
@@ -36,11 +34,6 @@
     <dimen name="createAccountScreenBoxStrokeWidthFocused">2dp</dimen>
     <dimen name="createAccountScreenBackgroundRectangleTopMargin">75dp</dimen>
 
-    <dimen name="navigationHeaderHeight">150dp</dimen>
-
     <dimen name="profileScreenBoxStrokeWidthFocused">2dp</dimen>
     <dimen name="profileScreenImageButtonDimensions">100dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="list_item_spacing">16dp</dimen>
-    <dimen name="list_item_spacing_half">8dp</dimen>
 </resources>
