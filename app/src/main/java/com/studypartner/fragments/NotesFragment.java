@@ -99,6 +99,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode == 1) {
 			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				populateDataAndSetAdapter();
 				addFolder();
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -147,19 +148,19 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		
 		View rootView = inflater.inflate(R.layout.fragment_notes, container, false);
 		
-		FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+		FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 		activity = (MainActivity) requireActivity();
 		
-		if (firebaseUser != null && firebaseUser.getEmail() != null) {
+		if (firebaseUser != null) {
 			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
 			if (!studyPartnerFolder.exists()) {
 				if (studyPartnerFolder.mkdirs()) {
-					noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
+					noteFolder = new File(studyPartnerFolder, firebaseUser.getUid());
 				} else {
-					noteFolder = new File(requireContext().getExternalFilesDir(null), firebaseUser.getEmail());
+					noteFolder = new File(requireContext().getExternalFilesDir(null), firebaseUser.getUid());
 				}
 			} else {
-				noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
+				noteFolder = new File(studyPartnerFolder, firebaseUser.getUid());
 			}
 		} else {
 			FirebaseAuth.getInstance().signOut();
@@ -315,7 +316,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		super.onResume();
 		
 		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE);
-
+		
 		if (sharedPreferences.getBoolean("NotesSearchExists", false)) {
 			File searchedFile = new File(sharedPreferences.getString("NotesSearch", null));
 			FileItem fileDesc = new FileItem(searchedFile.getPath());
@@ -346,7 +347,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
 			
 			if (starred == null) starred = new ArrayList<>();
@@ -372,7 +374,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = linkPreference.getString("LINK_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			links = gson.fromJson(json, type);
 			
 			if (links == null) links = new ArrayList<>();
@@ -470,7 +473,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					case R.id.notes_item_rename:
 						
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-						alertDialog.setMessage("Enter a new name");
+						alertDialog.setMessage("New Name");
 						
 						final FileItem fileItem = notes.get(position);
 						
@@ -494,12 +497,12 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								if (newName.equals(fileItem.getName()) || newName.equals("")) {
 									Log.d(TAG, "onClick: filename not changed");
 								} else if (newFile.exists()) {
-									Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
-								} else if (newName.contains(".") || newName.contains("/")) {
-									Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
+									Toast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT).show();
+								} else if (newName.contains("/")) {
+									Toast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT).show();
 								} else {
 									if (oldFile.renameTo(newFile)) {
-										Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+										Toast.makeText(getContext(), "Folder renamed successfully", Toast.LENGTH_SHORT).show();
 										notes.get(position).setName(newName);
 										notes.get(position).setPath(newFile.getPath());
 										
@@ -542,7 +545,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										mNotesAdapter.notifyItemChanged(position);
 										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 									} else {
-										Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
+										Toast.makeText(getContext(), "Folder could not be renamed", Toast.LENGTH_SHORT).show();
 									}
 								}
 							}
@@ -556,7 +559,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						
 						alertDialog.show();
 						return true;
-						
+					
 					case R.id.notes_item_star:
 						
 						int starredIndex = starredIndex(position);
@@ -579,7 +582,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						}
 						
 						return true;
-						
+					
 					case R.id.notes_item_unstar:
 						
 						int unstarredIndex = starredIndex(position);
@@ -602,12 +605,12 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						}
 						
 						return true;
-						
+					
 					case R.id.notes_item_delete:
 						
 						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-						builder.setTitle("Delete File");
-						builder.setMessage("Are you sure you want to delete the file?");
+						builder.setTitle("Delete Folder");
+						builder.setMessage("Are you sure you want to delete the folder?");
 						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
@@ -683,7 +686,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						});
 						builder.show();
 						return true;
-						
+					
 					default:
 						return false;
 				}
@@ -698,7 +701,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
 			
 			if (starred == null) starred = new ArrayList<>();
@@ -724,7 +728,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = linkPreference.getString("LINK_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			links = gson.fromJson(json, type);
 			
 			if (links == null) links = new ArrayList<>();
@@ -764,7 +769,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		recyclerView.setAdapter(mNotesAdapter);
 	}
 	
-	private int starredIndex (int position) {
+	private int starredIndex(int position) {
 		int index = -1;
 		if (starred != null) {
 			for (int i = 0; i < starred.size(); i++) {
@@ -778,7 +783,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		return index;
 	}
 	
-	private boolean isStarred (FileItem item) {
+	private boolean isStarred(FileItem item) {
 		if (starred != null) {
 			for (int i = 0; i < starred.size(); i++) {
 				FileItem starredItem = starred.get(i);
@@ -804,7 +809,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	}
 	
 	private void addFolder() {
-		if(isExternalStorageReadableWritable()) {
+		if (isExternalStorageReadableWritable()) {
 			if (writeReadPermission()) {
 				
 				File file;
@@ -819,17 +824,53 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 					file = new File(noteFolder, newFolder);
 				} while (file.exists());
 				
-				if (file.mkdirs()) {
-					notes.add(new FileItem(file.getPath()));
-					
-					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
-						mEmptyLayout.setVisibility(View.GONE);
+				
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+				alertDialog.setMessage("Name of the folder");
+				final EditText input = new EditText(getContext());
+				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.MATCH_PARENT,
+						LinearLayout.LayoutParams.MATCH_PARENT);
+				input.setLayoutParams(lp);
+				input.setText(file.getName());
+				alertDialog.setView(input);
+				
+				alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						String newName = input.getText().toString().trim();
+						File newFolder = new File(noteFolder, newName);
+						if (newName.isEmpty()) {
+							Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+						} else if (newFolder.exists()) {
+							Toast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT).show();
+						} else if (newName.contains("/")) {
+							Toast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT).show();
+						} else {
+							if (newFolder.mkdirs()) {
+								notes.add(new FileItem(newFolder.getPath()));
+								
+								if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+									mEmptyLayout.setVisibility(View.GONE);
+								}
+								
+								mNotesAdapter.notifyItemInserted(notes.size());
+								
+								sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+							} else {
+								Toast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT).show();
+							}
+						}
 					}
 					
-					mNotesAdapter.notifyItemInserted(notes.size());
-					
-					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
-				}
+				});
+				
+				alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				
+				alertDialog.show();
 			}
 		} else {
 			Toast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT).show();
@@ -931,8 +972,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		final ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
 		
 		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Delete Files");
-		builder.setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " files?");
+		builder.setTitle("Delete Folders");
+		builder.setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " folders?");
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -1013,7 +1054,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		actionMode = null;
 	}
 	
-	private void sort (String text, boolean ascending) {
+	private void sort(String text, boolean ascending) {
 		switch (text) {
 			case SORT_BY_SIZE:
 				

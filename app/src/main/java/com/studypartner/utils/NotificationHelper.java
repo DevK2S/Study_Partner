@@ -1,7 +1,6 @@
 package com.studypartner.utils;
 
 import android.annotation.TargetApi;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,11 +34,12 @@ public class NotificationHelper extends ContextWrapper {
 	
 	@TargetApi(Build.VERSION_CODES.O)
 	private void createChannel() {
-		NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+		NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+		channel.setLightColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
 		channel.enableLights(true);
 		AudioAttributes audioAttributes = new AudioAttributes.Builder()
 				.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-				.setUsage(AudioAttributes.USAGE_NOTIFICATION)
+				.setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
 				.build();
 		channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), audioAttributes);
 		getManager().createNotificationChannel(channel);
@@ -75,17 +75,18 @@ public class NotificationHelper extends ContextWrapper {
 		
 		return new NotificationCompat.Builder(context, channelID)
 				.setAutoCancel(true)
-				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setWhen(System.currentTimeMillis())
+				.setPriority(NotificationCompat.PRIORITY_MAX)
 				.setContentTitle(item.getTitle())
 				.setContentText(item.getDescription())
 				.setContentIntent(openPendingIntent)
 				.addAction(android.R.drawable.ic_menu_view, "OPEN IN APP", openPendingIntent)
 				.addAction(android.R.drawable.ic_delete, "DISMISS", dismissPendingIntent)
-				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.alarm_icon))
+				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_logo))
 				.setSmallIcon(R.drawable.app_logo_transparent)
 				.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-				.setCategory(NotificationCompat.CATEGORY_REMINDER)
-				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-				.setDefaults(Notification.DEFAULT_ALL);
+				.setDefaults(NotificationCompat.DEFAULT_LIGHTS)
+				.setVibrate(new long[] {0, 2000, 1000, 2000, 1000})
+				.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
 	}
 }

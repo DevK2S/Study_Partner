@@ -42,18 +42,15 @@ import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, NavController.OnDestinationChangedListener {
 	private static final String TAG = "MainActivity";
-	
-	private AppBarConfiguration mAppBarConfiguration;
 	public NavController mNavController;
-	
-	private BottomNavigationView mBottomNavigationView;
 	public BottomAppBar mBottomAppBar;
-	private NavigationView mNavigationView;
 	public DrawerLayout mDrawerLayout;
 	public FloatingActionButton fab;
 	public Toolbar mToolbar;
-	
 	public NavOptions.Builder leftToRightBuilder, rightToLeftBuilder;
+	private AppBarConfiguration mAppBarConfiguration;
+	private BottomNavigationView mBottomNavigationView;
+	private NavigationView mNavigationView;
 	
 	@Override
 	public void onBackPressed() {
@@ -61,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 		if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
 			Log.d(TAG, "onBackPressed: closing drawer");
 			mDrawerLayout.closeDrawer(GravityCompat.START);
-		} else if (mNavController.getCurrentDestination().getId() == R.id.nav_home){
+		} else if (mNavController.getCurrentDestination().getId() == R.id.nav_home) {
 			Log.d(TAG, "onBackPressed: closing app");
 			finishAffinity();
 			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -204,7 +201,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			if (item != null) {
 				notificationHelper.getManager().cancel(item.getNotifyId());
 			}
-			mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
+			if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+				mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
+			} else {
+				FirebaseAuth.getInstance().signOut();
+				
+				GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+						.requestIdToken(getString(R.string.default_web_client_id))
+						.requestEmail()
+						.build();
+				GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+				googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						if (task.isSuccessful()) {
+							mNavController.navigate(R.id.nav_logout);
+							finishAffinity();
+							overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+						} else {
+							Toast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+						}
+					}
+				});
+			}
 		}
 	}
 	
@@ -300,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_home, null, rightToLeftBuilder.build());
 				}
 				return true;
-				
+			
 			case R.id.nav_attendance:
 				Log.d(TAG, "onNavigationItemSelected: attendance selected");
 				if (mNavController.getCurrentDestination().getId() == R.id.nav_home) {
@@ -311,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_attendance, null, rightToLeftBuilder.build());
 				}
 				return true;
-				
+			
 			case R.id.nav_starred:
 				Log.d(TAG, "onNavigationItemSelected: starred selected");
 				if (mNavController.getCurrentDestination().getId() == R.id.nav_notes) {
@@ -322,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_starred, null, leftToRightBuilder.build());
 				}
 				return true;
-				
+			
 			case R.id.nav_notes:
 				Log.d(TAG, "onNavigationItemSelected: notes selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_notes) {
@@ -330,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_notes, null, leftToRightBuilder.build());
 				}
 				return true;
-				
+			
 			case R.id.nav_fab:
 				Log.d(TAG, "onNavigationItemSelected: fab selected");
 				return true;
@@ -342,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_reminder, null, leftToRightBuilder.build());
 				}
 				return true;
-				
+			
 			case R.id.nav_profile:
 				Log.d(TAG, "onNavigationItemSelected: profile selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_profile) {
@@ -350,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_profile, null, leftToRightBuilder.build());
 				}
 				return true;
-				
+			
 			case R.id.nav_logout:
 				Log.d(TAG, "onNavigationItemSelected: logging out");
 				FirebaseAuth.getInstance().signOut();
@@ -373,16 +392,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					}
 				});
 				return true;
-				
+			
 			case R.id.nav_feedback:
 				
 				Connection.feedback(this);
 				return true;
-				
+			
 			case R.id.nav_report_bug:
 				Connection.reportBug(this);
 				return true;
-				
+			
 			case R.id.nav_about_us:
 				Log.d(TAG, "onNavigationItemSelected: about us selected");
 				if (mNavController.getCurrentDestination().getId() != R.id.nav_about_us) {
@@ -390,7 +409,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 					mNavController.navigate(R.id.nav_about_us, null, leftToRightBuilder.build());
 				}
 				return true;
-				
+			
 			default:
 				Toast.makeText(this, "This feature is not yet available", Toast.LENGTH_SHORT).show();
 				return false;

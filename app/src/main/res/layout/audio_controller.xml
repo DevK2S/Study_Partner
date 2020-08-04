@@ -42,14 +42,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/audio_play_icon" />
+                android:src="@drawable/audio_play_icon"
+                android:contentDescription="@string/app_name" />
 
             <ImageView
                 android:id="@+id/exo_pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/audio_pause_icon" />
+                android:src="@drawable/audio_pause_icon"
+                android:contentDescription="@string/app_name"  />
         </LinearLayout>
     </LinearLayout>
 

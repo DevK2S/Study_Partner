@@ -16,6 +16,17 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileItem implements Parcelable {
 	
+	public static final Creator<FileItem> CREATOR = new Creator<FileItem>() {
+		@Override
+		public FileItem createFromParcel(Parcel in) {
+			return new FileItem(in);
+		}
+		
+		@Override
+		public FileItem[] newArray(int size) {
+			return new FileItem[size];
+		}
+	};
 	private String path;
 	private String name;
 	private FileType type;
@@ -23,7 +34,8 @@ public class FileItem implements Parcelable {
 	private boolean isStarred;
 	private long size;
 	
-	public FileItem() {}
+	public FileItem() {
+	}
 	
 	public FileItem(String path) {
 		File file = new File(path);
@@ -40,6 +52,16 @@ public class FileItem implements Parcelable {
 		}
 	}
 	
+	protected FileItem(Parcel in) {
+		path = in.readString();
+		name = in.readString();
+		type = FileType.valueOf(in.readString());
+		size = in.readLong();
+		dateModified = in.readString();
+		dateCreated = in.readString();
+		isStarred = Boolean.parseBoolean(in.readString());
+	}
+	
 	public static long getFolderSize(File file) {
 		long size = 0;
 		if (file.isDirectory()) {
@@ -50,7 +72,8 @@ public class FileItem implements Parcelable {
 						size += getFolderSize(f);
 					}
 				}
-			} catch (NullPointerException ignored) {}
+			} catch (NullPointerException ignored) {
+			}
 		} else {
 			size = file.length();
 		}
@@ -65,38 +88,37 @@ public class FileItem implements Parcelable {
 		}
 	}
 	
-	protected FileItem(Parcel in) {
-		path = in.readString();
-		name = in.readString();
-		type = FileType.valueOf(in.readString());
-		size = in.readLong();
-		dateModified = in.readString();
-		dateCreated = in.readString();
-		isStarred = Boolean.parseBoolean(in.readString());
-	}
-	
-	public static final Creator<FileItem> CREATOR = new Creator<FileItem>() {
-		@Override
-		public FileItem createFromParcel(Parcel in) {
-			return new FileItem(in);
-		}
-		
-		@Override
-		public FileItem[] newArray(int size) {
-			return new FileItem[size];
-		}
-	};
-	
 	public String getPath() {
 		return path;
+	}
+	
+	public void setPath(String path) {
+		this.path = path;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
+	public void setName(String name) {
+		this.name = name;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
+	}
+	
 	public FileType getType() {
 		return type;
+	}
+	
+	public void setType(FileType type) {
+		this.type = type;
+		File file = new File(path);
+		this.dateModified = String.valueOf(file.lastModified());
+		this.size = getFolderSize(file);
 	}
 	
 	public long getSize() {
@@ -115,29 +137,8 @@ public class FileItem implements Parcelable {
 		return isStarred;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
-		File file = new File(path);
-		this.dateModified = String.valueOf(file.lastModified());
-		this.size = getFolderSize(file);
-	}
-	
 	public void setStarred(boolean starred) {
 		this.isStarred = starred;
-		File file = new File(path);
-		this.dateModified = String.valueOf(file.lastModified());
-		this.size = getFolderSize(file);
-	}
-	
-	public void setType(FileType type) {
-		this.type = type;
-		File file = new File(path);
-		this.dateModified = String.valueOf(file.lastModified());
-		this.size = getFolderSize(file);
-	}
-	
-	public void setPath(String path) {
-		this.path = path;
 		File file = new File(path);
 		this.dateModified = String.valueOf(file.lastModified());
 		this.size = getFolderSize(file);

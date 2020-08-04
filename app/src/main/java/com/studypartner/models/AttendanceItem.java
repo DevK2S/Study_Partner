@@ -10,7 +10,8 @@ public class AttendanceItem {
 	private double attendedPercentage, requiredPercentage;
 	private String subjectName;
 	
-	public AttendanceItem() {}
+	public AttendanceItem() {
+	}
 	
 	public AttendanceItem(String subjectName, double requiredPercentage, int attendedClasses, int missedClasses) {
 		this.id = String.valueOf(UUID.randomUUID());
@@ -25,6 +26,10 @@ public class AttendanceItem {
 	
 	public String getId() {
 		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	public int getAttendedClasses() {
@@ -51,18 +56,14 @@ public class AttendanceItem {
 		return requiredPercentage;
 	}
 	
-	public String getSubjectName() {
-		return subjectName;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
 	public void setRequiredPercentage(double requiredPercentage) {
 		this.requiredPercentage = requiredPercentage;
 		this.attendedPercentage = attendedPercentage();
 		this.classesNeededToAttend = classesNeededToAttend();
+	}
+	
+	public String getSubjectName() {
+		return subjectName;
 	}
 	
 	public void setSubjectName(String subjectName) {

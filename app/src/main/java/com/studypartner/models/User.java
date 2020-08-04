@@ -9,7 +9,8 @@ public class User {
 	private String fullName, username, email;
 	private Boolean isEmailVerified;
 	
-	public User() {}
+	public User() {
+	}
 	
 	public User(String fullName, String email, Boolean isEmailVerified) {
 		this.fullName = fullName;
@@ -49,12 +50,12 @@ public class User {
 		this.email = email;
 	}
 	
-	public void setEmailVerified(Boolean emailVerified) {
-		isEmailVerified = emailVerified;
+	public void setEmailVerified(Boolean isEmailVerified) {
+		this.isEmailVerified = isEmailVerified;
 	}
 	
 	public void generateUsername() {
-		String newEmail = email.substring(0, email.indexOf("@")) + UUID.randomUUID().toString().substring(0,5);
+		String newEmail = email.substring(0, email.indexOf("@")) + UUID.randomUUID().toString().substring(0, 5);
 		
 		if (newEmail.length() > 25) {
 			this.username = newEmail.substring(0, 25);

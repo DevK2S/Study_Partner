@@ -68,7 +68,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:text="@string/create_account_screen_terms_and_conditions"
             android:textColor="@color/primaryText"
-            android:textSize="@dimen/smallText"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

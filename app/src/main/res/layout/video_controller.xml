@@ -16,7 +16,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/video_play_icon"
             android:background="@drawable/video_play_pause_background"
-            android:tint="@color/colorAccent" />
+            android:tint="@color/colorAccent"
+            android:contentDescription="@string/app_name" />
 
         <ImageView
             android:id="@+id/exo_pause"
@@ -24,7 +25,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/video_pause_icon"
             android:background="@drawable/video_play_pause_background"
-            android:tint="@color/colorAccent"  />
+            android:tint="@color/colorAccent"
+            android:contentDescription="@string/app_name" />
     </LinearLayout>
 
     <LinearLayout

@@ -16,12 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 	private static final String TAG = "SplashScreen";
-	
+	final String ON_BOARDING_SCREEN_VIEWED = "ON_BOARDING_SCREEN_VIEWED";
 	Animation mAnimation;
 	ImageView splashScreenAppLogo;
 	TextView splashScreenAppName;
-	
-	final String ON_BOARDING_SCREEN_VIEWED = "ON_BOARDING_SCREEN_VIEWED";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

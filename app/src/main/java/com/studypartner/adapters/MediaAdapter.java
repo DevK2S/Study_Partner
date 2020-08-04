@@ -9,24 +9,24 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class MediaAdapter extends FragmentStateAdapter {
-    private final ArrayList<Fragment> list = new ArrayList<>();
-    
-    public MediaAdapter(@NonNull FragmentManager fm, Lifecycle lifecycle) {
-        super(fm, lifecycle);
-    }
-
-    public void addFragment(Fragment frag) {
-        list.add(frag);
-    }
-
-    @NonNull
-    @Override
-    public Fragment createFragment(int position) {
-        return list.get(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
+	private final ArrayList<Fragment> list = new ArrayList<>();
+	
+	public MediaAdapter(@NonNull FragmentManager fm, Lifecycle lifecycle) {
+		super(fm, lifecycle);
+	}
+	
+	public void addFragment(Fragment frag) {
+		list.add(frag);
+	}
+	
+	@NonNull
+	@Override
+	public Fragment createFragment(int position) {
+		return list.get(position);
+	}
+	
+	@Override
+	public int getItemCount() {
+		return list.size();
+	}
 }

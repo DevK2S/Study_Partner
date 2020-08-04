@@ -83,7 +83,8 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	private ArrayList<FileItem> starred = new ArrayList<>();
 	private ArrayList<FileItem> links = new ArrayList<>();
 	
-	public StarredFragment() {}
+	public StarredFragment() {
+	}
 	
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -193,7 +194,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 					case SORT_BY_SIZE:
 						radioGroup.check(R.id.sortBySizeRB);
 						break;
-						
+					
 					case SORT_BY_CREATION_TIME:
 						radioGroup.check(R.id.sortByCreationTimeRB);
 						break;
@@ -253,7 +254,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		super.onResume();
 		
 		SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE);
-
+		
 		if (sharedPreferences.getBoolean("NotesSearchExists", false)) {
 			File searchedFile = new File(sharedPreferences.getString("NotesSearch", null));
 			FileItem fileDesc = new FileItem(searchedFile.getPath());
@@ -268,14 +269,14 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				bundle.putBoolean("InStarred", true);
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_starred_to_mediaActivity, bundle);
 			} else if (fileDesc.getType() == FileType.FILE_TYPE_LINK) {
-				FileUtils.openLink(requireContext(),fileDesc);
+				FileUtils.openLink(requireContext(), fileDesc);
 			} else {
 				FileUtils.openFile(requireContext(), fileDesc);
 			}
 		}
-
+		
 		SharedPreferences sortPreferences = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SORTING", MODE_PRIVATE);
-
+		
 		if (sortPreferences.getBoolean("SORTING_ORDER_EXISTS", false)) {
 			sortBy = sortPreferences.getString("SORTING_BY", SORT_BY_NAME);
 			sortOrder = sortPreferences.getString("SORTING_ORDER", ASCENDING_ORDER);
@@ -286,7 +287,8 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = linkPreference.getString("LINK_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			links = gson.fromJson(json, type);
 			
 			if (links == null) links = new ArrayList<>();
@@ -303,7 +305,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		links.removeAll(linkToBeRemoved);
 		
 		sortText.setText(sortBy);
-
+		
 		if (sortOrder.equals(ASCENDING_ORDER)) {
 			sortOrderButton.setImageDrawable(requireActivity().getDrawable(R.drawable.downward_arrow));
 		} else {
@@ -355,7 +357,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				return super.onOptionsItemSelected(item);
 		}
 	}
-
+	
 	@Override
 	public void onClick(int position) {
 		if (actionModeOn) {
@@ -370,16 +372,16 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_starred_to_fileFragment, bundle);
 			
 		} else if (starred.get(position).getType().equals(FileType.FILE_TYPE_VIDEO) || starred.get(position).getType().equals(FileType.FILE_TYPE_AUDIO) || starred.get(position).getType() == FileType.FILE_TYPE_IMAGE) {
-
+			
 			Bundle bundle = new Bundle();
 			bundle.putString("State", "Files");
 			bundle.putString("Media", starred.get(position).getPath());
 			bundle.putBoolean("InStarred", true);
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_nav_starred_to_mediaActivity, bundle);
-
+			
 		} else if (starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
 			
-			FileUtils.openLink(requireContext(),starred.get(position));
+			FileUtils.openLink(requireContext(), starred.get(position));
 			
 		} else {
 			
@@ -387,12 +389,12 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			
 		}
 	}
-
+	
 	@Override
 	public void onLongClick(int position) {
 		enableActionMode(position);
 	}
-
+	
 	@Override
 	public void onOptionsClick(View view, final int position) {
 		PopupMenu popup = new PopupMenu(getContext(), view);
@@ -411,12 +413,12 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
 					case R.id.notes_item_rename:
-
+						
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
 						alertDialog.setMessage("Enter a new name");
-
+						
 						final FileItem fileItem = starred.get(position);
-
+						
 						final EditText input = new EditText(getContext());
 						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 								LinearLayout.LayoutParams.MATCH_PARENT,
@@ -438,9 +440,9 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						alertDialog.setView(input);
 						
 						final String finalExtension = extension;
-
+						
 						alertDialog.setView(input);
-
+						
 						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								String newName = input.getText().toString().trim();
@@ -521,18 +523,18 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 								}
 							}
 						});
-
+						
 						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								dialog.cancel();
 							}
 						});
-
+						
 						alertDialog.show();
 						return true;
-
+					
 					case R.id.notes_item_unstar:
-
+						
 						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
 						
@@ -548,7 +550,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						starredPreferenceEditor.apply();
 						
 						return true;
-
+					
 					case R.id.notes_item_delete:
 
 //						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -582,7 +584,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 //						});
 //						builder.show();
 //						return true;
-					
+						
 						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 						builder.setTitle("Delete File");
 						builder.setMessage("Are you sure you want to delete the file?");
@@ -658,7 +660,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						});
 						builder.show();
 						return true;
-
+					
 					case R.id.notes_item_share:
 						if (starred.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
 							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
@@ -677,7 +679,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 							Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
 						}
 						return true;
-
+					
 					default:
 						return false;
 				}
@@ -685,14 +687,15 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		});
 		popup.show();
 	}
-
+	
 	private void populateDataAndSetAdapter() {
 		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 		
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
 			
 			if (starred == null) starred = new ArrayList<>();
@@ -718,7 +721,8 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = linkPreference.getString("LINK_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			links = gson.fromJson(json, type);
 			
 			if (links == null) links = new ArrayList<>();
@@ -737,11 +741,11 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		if (starred.isEmpty()) {
 			mEmptyLayout.setVisibility(View.VISIBLE);
 		}
-
+		
 		mStarredAdapter = new NotesAdapter(requireActivity(), starred, this, true);
-
+		
 		sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
-
+		
 		recyclerView.setAdapter(mStarredAdapter);
 	}
 	
@@ -892,7 +896,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	private void shareRows() {
 		ArrayList<Integer> selectedItemPositions = mStarredAdapter.getSelectedItems();
 		ArrayList<Integer> positionsToBeRemoved = new ArrayList<>();
-		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+		for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 			if (FileUtils.getFileType(new File(starred.get(selectedItemPositions.get(i)).getPath())) == FileType.FILE_TYPE_FOLDER) {
 				positionsToBeRemoved.add(i);
 			} else if (starred.get(selectedItemPositions.get(i)).getType() == FileType.FILE_TYPE_LINK) {
@@ -905,7 +909,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		ArrayList<FileItem> fileItems = new ArrayList<>();
 		ArrayList<Uri> fileItemsUri = new ArrayList<>();
 		
-		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+		for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 			fileItems.add(starred.get(selectedItemPositions.get(i)));
 			fileItemsUri.add(FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(starred.get(selectedItemPositions.get(i)).getPath())));
 		}
@@ -919,7 +923,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 		startActivity(Intent.createChooser(intentShareFile, "Share File"));
 	}
 	
-	private void sort (String text, boolean ascending) {
+	private void sort(String text, boolean ascending) {
 		switch (text) {
 			case SORT_BY_SIZE:
 				

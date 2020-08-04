@@ -58,7 +58,6 @@ public class AttendanceFragment extends Fragment {
 	private FloatingActionButton attendanceRequiredPercentageFabNext;
 	private NavController mNavController;
 	private LinearLayout mEmptyLayout;
-	private Button addButton, updateButton;
 	private TextView dateText, dayText, percentageAttended, attendanceComment, attendanceName, attendanceRequiredPercentageSetter;
 	private CircularProgressBar attendedProgressBar, requiredProgressBar, attendanceRequiredPercentageProgressBarSetter;
 	private SeekBar attendanceRequiredPercentageSeekBarSetter;
@@ -90,8 +89,8 @@ public class AttendanceFragment extends Fragment {
 		
 		mRecyclerView = rootView.findViewById(R.id.attendanceRecyclerView);
 		mEmptyLayout = rootView.findViewById(R.id.attendanceItemEmptyAttendance);
-		addButton = rootView.findViewById(R.id.attendanceAddButton);
-		updateButton = rootView.findViewById(R.id.attendanceUpdateButton);
+		Button addButton = rootView.findViewById(R.id.attendanceAddButton);
+		Button updateButton = rootView.findViewById(R.id.attendanceUpdateButton);
 		dateText = rootView.findViewById(R.id.attendanceDate);
 		dayText = rootView.findViewById(R.id.attendanceDay);
 		attendanceComment = rootView.findViewById(R.id.attendanceText);
@@ -164,7 +163,7 @@ public class AttendanceFragment extends Fragment {
 				double progress = sharedPreferences.getFloat(REQUIRED_ATTENDANCE, 75);
 				attendanceRequiredPercentageProgressBarSetter.setProgress((float) progress);
 				DecimalFormat decimalFormat = new DecimalFormat("##.#");
-				attendanceRequiredPercentageSetter.setText(requireContext().getString(R.string.attendance_percentage,decimalFormat.format(progress)));
+				attendanceRequiredPercentageSetter.setText(requireContext().getString(R.string.attendance_percentage, decimalFormat.format(progress)));
 				attendanceRequiredPercentageSeekBarSetter.setProgress((int) progress);
 			}
 		});
@@ -174,7 +173,7 @@ public class AttendanceFragment extends Fragment {
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 				attendanceRequiredPercentageProgressBarSetter.setProgress(progress);
 				DecimalFormat decimalFormat = new DecimalFormat("##.#");
-				attendanceRequiredPercentageSetter.setText(requireContext().getString(R.string.attendance_percentage,decimalFormat.format(progress)));
+				attendanceRequiredPercentageSetter.setText(requireContext().getString(R.string.attendance_percentage, decimalFormat.format(progress)));
 			}
 			
 			@Override
@@ -250,7 +249,8 @@ public class AttendanceFragment extends Fragment {
 		
 		if (attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false)) {
 			String json = attendancePreference.getString("ATTENDANCE_ITEMS", "");
-			Type type = new TypeToken<List<AttendanceItem>>() {}.getType();
+			Type type = new TypeToken<List<AttendanceItem>>() {
+			}.getType();
 			mEmptyLayout.setVisibility(View.INVISIBLE);
 			mAttendanceItemArrayList = gson.fromJson(json, type);
 		} else {
@@ -364,7 +364,7 @@ public class AttendanceFragment extends Fragment {
 		if (totalClasses > 0) {
 			totalPercentageAttended = (double) attendedClasses * 100 / totalClasses;
 			DecimalFormat decimalFormat = new DecimalFormat("##.#");
-			percentageAttended.setText(requireContext().getString(R.string.attendance_percentage,decimalFormat.format(totalPercentageAttended)));
+			percentageAttended.setText(requireContext().getString(R.string.attendance_percentage, decimalFormat.format(totalPercentageAttended)));
 		} else {
 			percentageAttended.setText(getString(R.string.attendance_item_empty_percentage));
 		}

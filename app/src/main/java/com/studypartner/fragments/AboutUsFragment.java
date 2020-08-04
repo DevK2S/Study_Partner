@@ -17,8 +17,9 @@ import androidx.fragment.app.Fragment;
 public class AboutUsFragment extends Fragment {
 	private static final String TAG = "AboutUsFragment";
 	
-	public AboutUsFragment() {}
-
+	public AboutUsFragment() {
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {

@@ -85,7 +85,7 @@ public class FileUtils {
 			public void onClick(DialogInterface dialog, int which) {
 				if (isValidUrl(link.getName())) {
 					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link.getName()));
-					context.startActivity(Intent.createChooser(browserIntent,"Select the app to open the link"));
+					context.startActivity(Intent.createChooser(browserIntent, "Select the app to open the link"));
 				} else {
 					Toast.makeText(context, "Link is invalid", Toast.LENGTH_SHORT).show();
 				}

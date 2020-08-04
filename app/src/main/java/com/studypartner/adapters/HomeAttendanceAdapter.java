@@ -42,7 +42,7 @@ public class HomeAttendanceAdapter extends RecyclerView.Adapter<HomeAttendanceAd
 		DecimalFormat decimalFormat = new DecimalFormat("##.#");
 		
 		holder.subjectName.setText(item.getSubjectName());
-		holder.percentageAttended.setText(mContext.getString(R.string.attendance_percentage,decimalFormat.format(item.getAttendedPercentage())));
+		holder.percentageAttended.setText(mContext.getString(R.string.attendance_percentage, decimalFormat.format(item.getAttendedPercentage())));
 		
 		if (item.getClassesNeededToAttend() > 1) {
 			holder.classesText.setText(mContext.getString(R.string.attendance_item_need_to_attend, item.getClassesNeededToAttend(), "es"));
@@ -60,7 +60,7 @@ public class HomeAttendanceAdapter extends RecyclerView.Adapter<HomeAttendanceAd
 		return mAttendanceItems.size();
 	}
 	
-	public static class HomeAttendanceViewHolder extends RecyclerView.ViewHolder{
+	public static class HomeAttendanceViewHolder extends RecyclerView.ViewHolder {
 		
 		private final TextView subjectName;
 		private final TextView classesText;

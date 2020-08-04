@@ -443,7 +443,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				bundle.putBoolean("InStarred", false);
 				((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_to_mediaActivity, bundle);
 			} else if (fileDesc.getType() == FileType.FILE_TYPE_LINK) {
-				FileUtils.openLink(requireContext(),fileDesc);
+				FileUtils.openLink(requireContext(), fileDesc);
 			} else {
 				FileUtils.openFile(requireContext(), fileDesc);
 			}
@@ -469,7 +469,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
 			
 			if (starred == null) starred = new ArrayList<>();
@@ -495,7 +496,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = linkPreference.getString("LINK_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			links = gson.fromJson(json, type);
 			
 			if (links == null) links = new ArrayList<>();
@@ -569,11 +571,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			Bundle bundle = new Bundle();
 			bundle.putString("State", "Files");
 			bundle.putString("Media", notes.get(position).getPath());
-
+			
 			bundle.putBoolean("InStarred", false);
 			((MainActivity) requireActivity()).mNavController.navigate(R.id.action_fileFragment_to_mediaActivity, bundle);
 		} else if (notes.get(position).getType() == FileType.FILE_TYPE_LINK) {
-			FileUtils.openLink(requireContext(),notes.get(position));
+			FileUtils.openLink(requireContext(), notes.get(position));
 		} else {
 			FileUtils.openFile(requireContext(), notes.get(position));
 		}
@@ -684,26 +686,26 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 										Log.d(TAG, "onClick: filename not changed");
 									} else if (newFile.exists()) {
 										Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
-									} else if (newName.contains(".") || newName.contains("/")) {
+									} else if (newName.contains("/")) {
 										Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
 									} else {
 										if (oldFile.renameTo(newFile)) {
-                                            Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
-                                            notes.get(position).setName(newName);
-                                            notes.get(position).setPath(newFile.getPath());
-
-                                            int starredIndex = starredIndex(position);
-                                            if (starredIndex != -1) {
-                                                SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-                                                SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-
-                                                starred.get(starredIndex).setName(newName);
-                                                Gson gson = new Gson();
-                                                starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-                                                starredPreferenceEditor.apply();
-                                            }
-
-                                            if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
+											Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+											notes.get(position).setName(newName);
+											notes.get(position).setPath(newFile.getPath());
+											
+											int starredIndex = starredIndex(position);
+											if (starredIndex != -1) {
+												SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+												SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+												
+												starred.get(starredIndex).setName(newName);
+												Gson gson = new Gson();
+												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+												starredPreferenceEditor.apply();
+											}
+											
+											if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
 												for (FileItem starItem : starred) {
 													if (starItem.getPath().contains(oldFile.getPath())) {
 														starItem.setPath(starItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
@@ -720,19 +722,19 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 												
 												Gson gson = new Gson();
 												linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-                                                linkPreferenceEditor.apply();
-
-                                                SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-                                                SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-
-                                                starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-                                                starredPreferenceEditor.apply();
-                                            }
-
-                                            mNotesAdapter.notifyItemChanged(position);
-                                            populateDataAndSetAdapter();
-                                            sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
-                                        } else {
+												linkPreferenceEditor.apply();
+												
+												SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+												SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+												
+												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+												starredPreferenceEditor.apply();
+											}
+											
+											mNotesAdapter.notifyItemChanged(position);
+											populateDataAndSetAdapter();
+											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+										} else {
 											Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
 										}
 									}
@@ -937,7 +939,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = starredPreference.getString("STARRED_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			starred = gson.fromJson(json, type);
 			
 			if (starred == null) starred = new ArrayList<>();
@@ -963,7 +966,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		if (linkPreference.getBoolean("LINK_ITEMS_EXISTS", false)) {
 			Gson gson = new Gson();
 			String json = linkPreference.getString("LINK_ITEMS", "");
-			Type type = new TypeToken<List<FileItem>>() {}.getType();
+			Type type = new TypeToken<List<FileItem>>() {
+			}.getType();
 			links = gson.fromJson(json, type);
 			
 			if (links == null) links = new ArrayList<>();
@@ -1071,31 +1075,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 		
-		if (firebaseUser != null && firebaseUser.getEmail() != null) {
-			title = noteFolder.getPath().substring(noteFolder.getPath().indexOf(firebaseUser.getEmail()) + firebaseUser.getEmail().length() + 1);
+		if (firebaseUser != null) {
+			title = noteFolder.getPath().substring(noteFolder.getPath().indexOf(firebaseUser.getUid()) + firebaseUser.getUid().length() + 1);
 		}
 		
 		return title.length() > 15 ? "..." + title.substring(title.length() - 12) : title;
-	}
-	
-	private String fileName(FileType fileType) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-		Date date = new Date();
-		
-		String file;
-		if (fileType == FileType.FILE_TYPE_IMAGE) {
-			file = "IMG";
-		} else if (fileType == FileType.FILE_TYPE_VIDEO) {
-			file = "VID";
-		} else if (fileType == FileType.FILE_TYPE_AUDIO) {
-			file = "AUD";
-		} else {
-			file = "DOC";
-		}
-		
-		file += "_" + dateFormat.format(date) + UUID.randomUUID().toString().substring(0, 5);
-		
-		return file;
 	}
 	
 	private void enableActionMode(int position) {
@@ -1281,7 +1265,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	private void shareRows() {
 		ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
 		ArrayList<Integer> positionsToBeRemoved = new ArrayList<>();
-		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+		for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 			if (FileUtils.getFileType(new File(notes.get(selectedItemPositions.get(i)).getPath())) == FileType.FILE_TYPE_FOLDER) {
 				positionsToBeRemoved.add(i);
 			} else if (notes.get(selectedItemPositions.get(i)).getType() == FileType.FILE_TYPE_LINK) {
@@ -1294,7 +1278,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		ArrayList<FileItem> fileItems = new ArrayList<>();
 		ArrayList<Uri> fileItemsUri = new ArrayList<>();
 		
-		for (int i = selectedItemPositions.size() - 1; i >= 0 ; i--) {
+		for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 			fileItems.add(notes.get(selectedItemPositions.get(i)));
 			fileItemsUri.add(FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(notes.get(selectedItemPositions.get(i)).getPath())));
 		}
@@ -1534,10 +1518,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	}
 	
 	private void addFolder() {
+		
 		File file;
 		
 		int count = 0;
-		
 		do {
 			String newFolder = "New Folder";
 			if (count > 0) {
@@ -1547,23 +1531,59 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			file = new File(noteFolder, newFolder);
 		} while (file.exists());
 		
-		if (file.mkdirs()) {
-			notes.add(new FileItem(file.getPath()));
-			mNotesAdapter.notifyItemInserted(notes.size());
-			
-			if (mEmptyLayout.getVisibility() == View.VISIBLE) {
-				mEmptyLayout.setVisibility(View.GONE);
+		
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+		alertDialog.setMessage("Name of the folder");
+		final EditText input = new EditText(getContext());
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.MATCH_PARENT);
+		input.setLayoutParams(lp);
+		input.setText(file.getName());
+		alertDialog.setView(input);
+		
+		alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				String newName = input.getText().toString().trim();
+				File newFolder = new File(noteFolder, newName);
+				if (newName.isEmpty()) {
+					Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+				} else if (newFolder.exists()) {
+					Toast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT).show();
+				} else if (newName.contains("/")) {
+					Toast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT).show();
+				} else {
+					if (newFolder.mkdirs()) {
+						notes.add(new FileItem(newFolder.getPath()));
+						
+						if (mEmptyLayout.getVisibility() == View.VISIBLE) {
+							mEmptyLayout.setVisibility(View.GONE);
+						}
+						
+						mNotesAdapter.notifyItemInserted(notes.size());
+						
+						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+					} else {
+						Toast.makeText(requireActivity(), "Cannot create new folder", Toast.LENGTH_SHORT).show();
+					}
+				}
 			}
-			
-			sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
-		}
+		});
+		
+		alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		
+		alertDialog.show();
 	}
 	
 	private void getDocument() {
 		String[] mimeTypes =
-				{"application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx
-						"application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
-						"application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
+				{"application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx
+						"application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
+						"application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
 						"text/plain",
 						"application/pdf",
 						"application/zip"};
@@ -1573,7 +1593,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		getDocument.setType("*/*");
 		getDocument.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
 		getDocument.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-		startActivityForResult(Intent.createChooser(getDocument,"ChooseFile"), DOC_REQUEST_CODE);
+		startActivityForResult(Intent.createChooser(getDocument, "ChooseFile"), DOC_REQUEST_CODE);
 		
 	}
 	
@@ -1720,7 +1740,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 	}
 	
-	private void addLink () {
+	private void addLink() {
 		
 		final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
 		
@@ -1813,7 +1833,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	}
 	
 	private void recordAudio() {
-		audioFile = new File(noteFolder, fileName(FileType.FILE_TYPE_AUDIO) + ".wav");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+		Date date = new Date();
+		
+		String file = "AUD_" + dateFormat.format(date) + UUID.randomUUID().toString().substring(0, 5) + ".wav";
+		audioFile = new File(noteFolder, file);
 		AndroidAudioRecorder.with(FileFragment.this)
 				.setColor(getResources().getColor(R.color.colorPrimary, requireActivity().getTheme()))
 				.setFilePath(audioFile.getPath())

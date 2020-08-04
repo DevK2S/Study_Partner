@@ -26,7 +26,7 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class Connection {
 	
-	public static void checkConnection (final Fragment fragment) {
+	public static void checkConnection(final Fragment fragment) {
 		
 		ConnectivityManager connectivityManager = (ConnectivityManager) fragment.requireActivity().getSystemService(CONNECTIVITY_SERVICE);
 		
@@ -59,7 +59,7 @@ public class Connection {
 		}
 	}
 	
-	public static void checkConnection (final Activity activity) {
+	public static void checkConnection(final Activity activity) {
 		
 		ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(CONNECTIVITY_SERVICE);
 		
@@ -92,18 +92,18 @@ public class Connection {
 		}
 	}
 	
-	public static void feedback (final Activity activity) {
+	public static void feedback(final Activity activity) {
 		
 		Connection.checkConnection(activity);
 		Intent feedbackIntent = new Intent(Intent.ACTION_SENDTO);
 		feedbackIntent.setData(Uri.parse("mailto:"));
 		feedbackIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"studypartnerapp@gmail.com"});
-		feedbackIntent.putExtra(Intent.EXTRA_SUBJECT,"Feedback on Study Partner");
-		activity.startActivity(Intent.createChooser(feedbackIntent,"Choose your email client"));
+		feedbackIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback on Study Partner");
+		activity.startActivity(Intent.createChooser(feedbackIntent, "Choose your email client"));
 		
 	}
 	
-	public static void reportBug (final Activity activity) {
+	public static void reportBug(final Activity activity) {
 		
 		Connection.checkConnection(activity);
 		TelephonyManager telephonyManager = (TelephonyManager) activity.getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
@@ -113,7 +113,7 @@ public class Connection {
 		ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
 		activityManager.getMemoryInfo(memoryInfo);
 		long ramSizeInMB = memoryInfo.totalMem / (1024 * 1024);
-		
+
 //		String networkType;
 //
 //		switch (telephonyManager.getNetworkType()) {
@@ -216,9 +216,9 @@ public class Connection {
 		Intent reportBugIntent = new Intent(Intent.ACTION_SENDTO);
 		reportBugIntent.setData(Uri.parse("mailto:"));
 		reportBugIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"studypartnerapp@gmail.com"});
-		reportBugIntent.putExtra(Intent.EXTRA_SUBJECT,"Bug Report for Study Partner");
-		reportBugIntent.putExtra(Intent.EXTRA_TEXT,builder.toString());
-		activity.startActivity(Intent.createChooser(reportBugIntent,"Choose your email client"));
+		reportBugIntent.putExtra(Intent.EXTRA_SUBJECT, "Bug Report for Study Partner");
+		reportBugIntent.putExtra(Intent.EXTRA_TEXT, builder.toString());
+		activity.startActivity(Intent.createChooser(reportBugIntent, "Choose your email client"));
 		
 	}
 }

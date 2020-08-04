@@ -57,29 +57,25 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment implements NotesAdapter.NotesClickListener {
 	private static final String TAG = "HomeFragment";
-
-	private File noteFolder;
-
-	private MainActivity activity;
-
 	private final ArrayList<FileItem> notes = new ArrayList<>();
 	private final ArrayList<FileItem> docsList = new ArrayList<>();
 	private final ArrayList<FileItem> imagesList = new ArrayList<>();
 	private final ArrayList<FileItem> videosList = new ArrayList<>();
-	
+	private File noteFolder;
+	private MainActivity activity;
 	private ArrayList<ReminderItem> reminders = new ArrayList<>();
 	private CardView reminderCard, emptyReminderCard;
 	private ReminderItem reminderItemToBeDisplayed;
-
+	
 	private ArrayList<AttendanceItem> attendances = new ArrayList<>();
-
+	
 	public HomeFragment() {
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
-
+		
 		return inflater.inflate(R.layout.fragment_home, container, false);
 	}
 	
@@ -87,22 +83,25 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		
-		FirebaseUser firebaseUser= FirebaseAuth.getInstance().getCurrentUser();
+		FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 		activity = (MainActivity) requireActivity();
 		
-		if (firebaseUser != null && firebaseUser.getEmail() != null) {
+		if (firebaseUser != null) {
 			File studyPartnerFolder = new File(String.valueOf(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(Objects.requireNonNull(requireContext().getExternalFilesDir(null)).getParentFile()).getParentFile()).getParentFile()).getParentFile()), "StudyPartner");
 			if (!studyPartnerFolder.exists()) {
 				if (studyPartnerFolder.mkdirs()) {
-					noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
-					if (!noteFolder.exists()) Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
+					noteFolder = new File(studyPartnerFolder, firebaseUser.getUid());
+					if (!noteFolder.exists())
+						Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
 				} else {
-					noteFolder = new File(requireContext().getExternalFilesDir(null), firebaseUser.getEmail());
-					if (!noteFolder.exists()) Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
+					noteFolder = new File(requireContext().getExternalFilesDir(null), firebaseUser.getUid());
+					if (!noteFolder.exists())
+						Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
 				}
 			} else {
-				noteFolder = new File(studyPartnerFolder, firebaseUser.getEmail());
-				if (!noteFolder.exists()) Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
+				noteFolder = new File(studyPartnerFolder, firebaseUser.getUid());
+				if (!noteFolder.exists())
+					Log.d(TAG, "onViewCreated: making note folder returned " + noteFolder.mkdirs());
 			}
 		} else {
 			FirebaseAuth.getInstance().signOut();
@@ -160,7 +159,8 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		if (reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
 			String json = reminderPreference.getString("REMINDER_ITEMS", "");
-			Type type = new TypeToken<ArrayList<ReminderItem>>() {}.getType();
+			Type type = new TypeToken<ArrayList<ReminderItem>>() {
+			}.getType();
 			reminders = gson.fromJson(json, type);
 		} else {
 			reminders = new ArrayList<>();
@@ -226,7 +226,7 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 			int month = Integer.parseInt(stringDate.substring(3, 5)) - 1;
 			int day = Integer.parseInt(stringDate.substring(0, 2));
 			
-			calendar.set(year,month,day);
+			calendar.set(year, month, day);
 			
 			SimpleDateFormat dateFormat;
 			
@@ -248,16 +248,16 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 						break;
 				}
 			}
-
+			
 			Date date = calendar.getTime();
-
+			
 			SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.getDefault());
-
+			
 			reminderDate.setText(dateFormat.format(date));
 			reminderDay.setText(dayFormat.format(date));
-
+			
 		}
-
+		
 		initializeAttendance(view);
 		
 	}
@@ -281,7 +281,8 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		if (attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false)) {
 			String json = attendancePreference.getString("ATTENDANCE_ITEMS", "");
-			Type type = new TypeToken<List<AttendanceItem>>() {}.getType();
+			Type type = new TypeToken<List<AttendanceItem>>() {
+			}.getType();
 			attendances = gson.fromJson(json, type);
 		}
 		
@@ -311,7 +312,8 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				if (attendancePreference.getBoolean("ATTENDANCE_ITEMS_EXISTS", false)) {
 					String json = attendancePreference.getString("ATTENDANCE_ITEMS", "");
-					Type type = new TypeToken<List<AttendanceItem>>() {}.getType();
+					Type type = new TypeToken<List<AttendanceItem>>() {
+					}.getType();
 					attendances = gson.fromJson(json, type);
 				} else {
 					attendances = new ArrayList<>();
@@ -359,21 +361,21 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				HomeAttendanceAdapter attendanceAdapter = new HomeAttendanceAdapter(requireContext(), attendances);
 				attendanceRecyclerView.setAdapter(attendanceAdapter);
-				LinearLayoutManager manager = new LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false);
+				LinearLayoutManager manager = new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false);
 				attendanceRecyclerView.setLayoutManager(manager);
 				attendanceRecyclerView.setItemAnimator(new DefaultItemAnimator());
 			}
-
+			
 		} else { // no attendance item exists
-
+			
 			attendanceRecyclerView.setVisibility(View.INVISIBLE);
 			highAttendanceCard.setVisibility(View.INVISIBLE);
 			emptyAttendanceCard.setVisibility(View.VISIBLE);
-
+			
 		}
-
+		
 	}
-
+	
 	private void populateDataAndSetAdapter(View view) {
 		
 		RecyclerView imageRecyclerView = view.findViewById(R.id.homeImageRecyclerView);
@@ -403,15 +405,15 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 			if (fileItem.getType() == FileType.FILE_TYPE_IMAGE && imagesList.size() < 9) {
 				
 				imagesList.add(fileItem);
-			
+				
 			} else if (fileItem.getType() == FileType.FILE_TYPE_VIDEO && videosList.size() < 9) {
 				
 				videosList.add(fileItem);
-			
+				
 			} else if ((fileItem.getType() == FileType.FILE_TYPE_APPLICATION || fileItem.getType() == FileType.FILE_TYPE_TEXT || fileItem.getType() == FileType.FILE_TYPE_OTHER) && docsList.size() < 9) {
 				
 				docsList.add(fileItem);
-			
+				
 			}
 		}
 		
@@ -494,19 +496,19 @@ public class HomeFragment extends Fragment implements NotesAdapter.NotesClickLis
 			}
 		}
 	}
-
+	
 	@Override
 	public void onClick(int position) {
 		FileUtils.openFile(requireContext(), docsList.get(position));
 	}
-
+	
 	@Override
 	public void onLongClick(int position) {
-
+	
 	}
-
+	
 	@Override
 	public void onOptionsClick(View view, int position) {
-
+	
 	}
 }

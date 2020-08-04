@@ -59,7 +59,8 @@ public class ReminderDialogFragment extends DialogFragment {
 	
 	private ArrayList<ReminderItem> mReminderList = new ArrayList<>();
 	
-	public ReminderDialogFragment() { }
+	public ReminderDialogFragment() {
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,7 +102,8 @@ public class ReminderDialogFragment extends DialogFragment {
 		if (reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
 			
 			String json = reminderPreference.getString("REMINDER_ITEMS", "");
-			Type type = new TypeToken<ArrayList<ReminderItem>>() {}.getType();
+			Type type = new TypeToken<ArrayList<ReminderItem>>() {
+			}.getType();
 			mReminderList = gson.fromJson(json, type);
 		}
 		
@@ -141,7 +143,7 @@ public class ReminderDialogFragment extends DialogFragment {
 							selectedDay = "0" + selectedDay;
 						}
 						
-						date = selectedDay +  "-" + selectedMonth  + "-" + selectedYear;
+						date = selectedDay + "-" + selectedMonth + "-" + selectedYear;
 						
 						mDateEditText.setText(date);
 						
@@ -226,13 +228,13 @@ public class ReminderDialogFragment extends DialogFragment {
 						Intent intent = new Intent(requireContext(), AlertReceiver.class);
 						Bundle bundle = new Bundle();
 						bundle.putParcelable("BUNDLE_REMINDER_ITEM", mReminderList.get(finalPositionToEdit));
-
+						
 						intent.putExtra("EXTRA_REMINDER_ITEM", bundle);
-
+						
 						PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
+						
 						alarmManager.cancel(pendingIntent);
-
+						
 						mReminderList.get(finalPositionToEdit).edit(title, content, time, date);
 						mReminderList.get(finalPositionToEdit).setActive(true);
 						
@@ -245,7 +247,7 @@ public class ReminderDialogFragment extends DialogFragment {
 						createNotification(mReminderList.get(0));
 					} else {
 						ReminderItem item = new ReminderItem(title, content, time, date);
-
+						
 						mReminderList.add(0, item);
 						createNotification(item);
 					}
@@ -272,7 +274,8 @@ public class ReminderDialogFragment extends DialogFragment {
 		Gson gson = new Gson();
 		
 		String json = reminderPreference.getString("REMINDER_ITEMS", "");
-		Type type = new TypeToken<ArrayList<ReminderItem>>() {}.getType();
+		Type type = new TypeToken<ArrayList<ReminderItem>>() {
+		}.getType();
 		mReminderList = gson.fromJson(json, type);
 		
 		if (mReminderList != null && mReminderList.size() > position) {
@@ -325,7 +328,7 @@ public class ReminderDialogFragment extends DialogFragment {
 		
 	}
 	
-	private String  getCurrentDate() {
+	private String getCurrentDate() {
 		
 		Calendar calendar = Calendar.getInstance();
 		int year = calendar.get(Calendar.YEAR);
@@ -333,7 +336,7 @@ public class ReminderDialogFragment extends DialogFragment {
 		int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 		
 		String selectedYear = String.valueOf(year);
-		String selectedMonth = String.valueOf( month+ 1); // starts with 0
+		String selectedMonth = String.valueOf(month + 1); // starts with 0
 		String selectedDay = String.valueOf(dayOfMonth);
 		
 		if (month < 9) { // to make 01 - 09
@@ -344,7 +347,7 @@ public class ReminderDialogFragment extends DialogFragment {
 			selectedDay = "0" + selectedDay;
 		}
 		
-		return selectedDay +  "-" + selectedMonth  + "-" + selectedYear;
+		return selectedDay + "-" + selectedMonth + "-" + selectedYear;
 		
 	}
 	

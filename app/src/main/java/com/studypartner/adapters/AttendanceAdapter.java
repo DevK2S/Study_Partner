@@ -19,22 +19,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.AttendanceViewHolder> {
-
-	public interface AttendanceItemClickListener {
-		
-		void onAttendedPlusButtonClicked (int position);
-		void onAttendedMinusButtonClicked (int position);
-		void onMissedPlusButtonClicked (int position);
-		void onMissedMinusButtonClicked (int position);
-		void editButtonClicked (int position);
-		void deleteButtonClicked (int position);
-	}
 	
 	private final Context mContext;
 	private final AttendanceItemClickListener mAttendanceItemClickListener;
 	private final ArrayList<AttendanceItem> mAttendanceItemArrayList;
 	
-	public AttendanceAdapter (Context context, ArrayList<AttendanceItem> attendanceItemArrayList, AttendanceItemClickListener attendanceItemClickListener) {
+	public AttendanceAdapter(Context context, ArrayList<AttendanceItem> attendanceItemArrayList, AttendanceItemClickListener attendanceItemClickListener) {
 		mContext = context;
 		mAttendanceItemArrayList = attendanceItemArrayList;
 		mAttendanceItemClickListener = attendanceItemClickListener;
@@ -101,7 +91,22 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		return mAttendanceItemArrayList.size();
 	}
 	
-	static class AttendanceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+	public interface AttendanceItemClickListener {
+		
+		void onAttendedPlusButtonClicked(int position);
+		
+		void onAttendedMinusButtonClicked(int position);
+		
+		void onMissedPlusButtonClicked(int position);
+		
+		void onMissedMinusButtonClicked(int position);
+		
+		void editButtonClicked(int position);
+		
+		void deleteButtonClicked(int position);
+	}
+	
+	static class AttendanceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 		
 		private final TextView subjectName;
 		private final TextView percentageAttended;
@@ -147,29 +152,29 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 		
 		@Override
 		public void onClick(View v) {
-
+			
 			if (v.getId() == attendedPlusButton.getId()) {
-
+				
 				mClickListener.onAttendedPlusButtonClicked(getAdapterPosition());
-
+				
 			} else if (v.getId() == attendedMinusButton.getId()) {
-
+				
 				mClickListener.onAttendedMinusButtonClicked(getAdapterPosition());
-
+				
 			} else if (v.getId() == missedPlusButton.getId()) {
-
+				
 				mClickListener.onMissedPlusButtonClicked(getAdapterPosition());
-
+				
 			} else if (v.getId() == missedMinusButton.getId()) {
-
+				
 				mClickListener.onMissedMinusButtonClicked(getAdapterPosition());
-
+				
 			} else if (v.getId() == editButton.getId()) {
 				
 				mClickListener.editButtonClicked(getAdapterPosition());
-
+				
 			} else if (v.getId() == deleteButton.getId()) {
-
+				
 				mClickListener.deleteButtonClicked(getAdapterPosition());
 				deleteButton.setClickable(false);
 			}

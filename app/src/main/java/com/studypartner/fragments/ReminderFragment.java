@@ -35,21 +35,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import static android.content.Context.MODE_PRIVATE;
 
 public class ReminderFragment extends Fragment implements ReminderAdapter.ReminderItemClickListener {
-
-    private LinearLayout mEmptyLayout;
-    private FloatingActionButton mfab;
-    private RecyclerView mRecyclerView;
-    private ArrayList<ReminderItem> mReminderList;
-    private ReminderAdapter reminderAdapter;
-
-    public ReminderFragment() {
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
+	
+	private LinearLayout mEmptyLayout;
+	private FloatingActionButton mfab;
+	private RecyclerView mRecyclerView;
+	private ArrayList<ReminderItem> mReminderList;
+	private ReminderAdapter reminderAdapter;
+	
+	public ReminderFragment() {
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	                         Bundle savedInstanceState) {
+		
+		View rootView = inflater.inflate(R.layout.fragment_reminder, container, false);
 		
 		final MainActivity activity = (MainActivity) requireActivity();
 		mfab = rootView.findViewById(R.id.reminderFab);
@@ -67,19 +67,19 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		mEmptyLayout = rootView.findViewById(R.id.reminderEmptyLayout);
 		mRecyclerView = rootView.findViewById(R.id.recyclerview);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-
-        mfab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activity.mNavController.navigate(R.id.reminderDialogFragment);
-                mfab.setVisibility(View.GONE);
-            }
-        });
-
-        populateDataAndSetAdapter();
-        
-        return rootView;
-    }
+		
+		mfab.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				activity.mNavController.navigate(R.id.reminderDialogFragment);
+				mfab.setVisibility(View.GONE);
+			}
+		});
+		
+		populateDataAndSetAdapter();
+		
+		return rootView;
+	}
 	
 	@Override
 	public void onResume() {
@@ -109,14 +109,15 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 	}
 	
 	private void populateDataAndSetAdapter() {
-
+		
 		SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
 		Gson gson = new Gson();
 		SharedPreferences.Editor reminderPreferenceEditor = reminderPreference.edit();
 		
 		if (reminderPreference.getBoolean("REMINDER_ITEMS_EXISTS", false)) {
 			String json = reminderPreference.getString("REMINDER_ITEMS", "");
-			Type type = new TypeToken<ArrayList<ReminderItem>>() {}.getType();
+			Type type = new TypeToken<ArrayList<ReminderItem>>() {
+			}.getType();
 			mReminderList = gson.fromJson(json, type);
 		} else {
 			mReminderList = new ArrayList<>();
@@ -124,7 +125,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		
 		Calendar calendar = Calendar.getInstance();
 		Calendar today = Calendar.getInstance();
-
+		
 		for (int position = 0; position < mReminderList.size(); position++) {
 			
 			ReminderItem item = mReminderList.get(position);
@@ -149,27 +150,27 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		} else {
 			mEmptyLayout.setVisibility(View.GONE);
 		}
-
-        String json = gson.toJson(mReminderList);
-
-        reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
-        reminderPreferenceEditor.apply();
-
-        reminderAdapter = new ReminderAdapter(getContext(), mReminderList, this);
-
-        mRecyclerView.setAdapter(reminderAdapter);
-    }
-
-    private void deleteReminder(final int position) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        builder.setTitle("Delete Reminder");
-        builder.setMessage("Are you sure you want to remove the reminder");
-
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+		
+		String json = gson.toJson(mReminderList);
+		
+		reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
+		reminderPreferenceEditor.apply();
+		
+		reminderAdapter = new ReminderAdapter(getContext(), mReminderList, this);
+		
+		mRecyclerView.setAdapter(reminderAdapter);
+	}
+	
+	private void deleteReminder(final int position) {
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		
+		builder.setTitle("Delete Reminder");
+		builder.setMessage("Are you sure you want to remove the reminder");
+		
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
 				
 				AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
 				Intent intent = new Intent(requireContext(), AlertReceiver.class);
@@ -182,18 +183,18 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 				alarmManager.cancel(pendingIntent);
 				mReminderList.remove(position);
 				reminderAdapter.notifyItemRemoved(position);
-
+				
 				SharedPreferences reminderPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "REMINDER", MODE_PRIVATE);
 				SharedPreferences.Editor reminderPreferenceEditor = reminderPreference.edit();
 				Gson gson = new Gson();
-
+				
 				String json = gson.toJson(mReminderList);
-
+				
 				if (mReminderList.size() == 0) {
 					reminderPreferenceEditor.putBoolean("REMINDER_ITEMS_EXISTS", false);
 					mEmptyLayout.setVisibility(View.VISIBLE);
 				}
-
+				
 				reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
 				reminderPreferenceEditor.apply();
 				
@@ -203,13 +204,13 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-
+			
 			}
 		});
 		
 		builder.show();
 	}
-
+	
 	private void editReminder(int position) {
 		
 		Bundle bundle = new Bundle();
@@ -218,19 +219,18 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 		mfab.setVisibility(View.GONE);
 		
 	}
-
-    @Override
-    public void onClick(int position) {
-        editReminder(position);
-    }
-
-    @Override
-    public void onLongClick(int position) {
-        editReminder(position);
-    }
-
-    @Override
-    public void deleteView(int adapterPosition) {
-        deleteReminder(adapterPosition);
-    }
+	
+	@Override
+	public void onClick(int position) {
+		editReminder(position);
+	}
+	
+	@Override
+	public void onLongClick(int position) {
+	}
+	
+	@Override
+	public void deleteView(int adapterPosition) {
+		deleteReminder(adapterPosition);
+	}
 }

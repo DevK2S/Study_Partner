@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
 		Log.d(TAG, "onCreate: ends");
 	}
 	
-	private void checkConnection (Activity activity) {
+	private void checkConnection(Activity activity) {
 		Log.d(TAG, "isConnected: internet check");
 		
 		ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(CONNECTIVITY_SERVICE);

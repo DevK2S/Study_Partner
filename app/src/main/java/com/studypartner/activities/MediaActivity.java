@@ -34,9 +34,9 @@ public class MediaActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "Media Activity");
 		setContentView(R.layout.activity_media);
-
+		
 		getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "NOTES_SEARCH", MODE_PRIVATE).edit().putBoolean("NotesSearchExists", false).apply();
-
+		
 		viewPager = findViewById(R.id.viewPager2);
 		Intent intent = getIntent();
 		String state = intent.getStringExtra("State");
@@ -57,7 +57,7 @@ public class MediaActivity extends AppCompatActivity {
 			
 		}
 	}
-
+	
 	private void homeMediaDisplay(ArrayList<FileItem> homeMedia, int value) {
 		
 		ArrayList<String> mediaFiles = new ArrayList<>();
@@ -68,7 +68,7 @@ public class MediaActivity extends AppCompatActivity {
 		for (String s : mediaFiles) {
 			mediaAdapter.addFragment(MediaFragment.newInstance(s));
 		}
-
+		
 		viewPager.setAdapter(mediaAdapter);
 		viewPager.setCurrentItem(value, false);
 		viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -78,26 +78,26 @@ public class MediaActivity extends AppCompatActivity {
 				try {
 					(mediaAdapter.createFragment(position - 1)).isHidden();
 					(mediaAdapter.createFragment(position)).isVisible();
-
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
+				
 			}
-
+			
 			@Override
 			public void onPageSelected(int position) {
 				super.onPageSelected(position);
 			}
-
+			
 			@Override
 			public void onPageScrollStateChanged(int state) {
 				super.onPageScrollStateChanged(state);
 			}
 		});
-
+		
 	}
-
+	
 	public void mediaData(File parent, File child) {
 		ArrayList<String> mediafiles = new ArrayList<>();
 		
@@ -107,7 +107,7 @@ public class MediaActivity extends AppCompatActivity {
 			assert files != null;
 			for (File f : files) {
 				FileItem newFile = new FileItem(f.getPath());
-
+				
 				if (newFile.getType() == FileType.FILE_TYPE_VIDEO || newFile.getType() == FileType.FILE_TYPE_AUDIO || newFile.getType() == FileType.FILE_TYPE_IMAGE) {
 					mediafiles.add(newFile.getPath());
 					if (f.getName().equals(child.getName()))
@@ -122,7 +122,8 @@ public class MediaActivity extends AppCompatActivity {
 			if (starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
 				Gson gson = new Gson();
 				String json = starredPreference.getString("STARRED_ITEMS", "");
-				Type type = new TypeToken<List<FileItem>>() {}.getType();
+				Type type = new TypeToken<List<FileItem>>() {
+				}.getType();
 				starredFiles = gson.fromJson(json, type);
 			} else {
 				starredFiles = new ArrayList<>();

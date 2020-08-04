@@ -93,7 +93,8 @@ public class ProfileFragment extends Fragment {
 	
 	private String fullName, username, email, password, oldPassword, newPassword, confirmPassword, deleteAccountPassword;
 	
-	public ProfileFragment() {}
+	public ProfileFragment() {
+	}
 	
 	@Override
 	public void onResume() {
@@ -121,11 +122,12 @@ public class ProfileFragment extends Fragment {
 			Log.d(TAG, "onActivityResult: image received");
 			filePath = data.getData();
 			try {
-				Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),filePath);
+				Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
 				Log.d(TAG, "onActivityResult: setting image");
 				profileImageView.setImageBitmap(bitmap);
 				uploadImage();
-			} catch (IOException ignored) {}
+			} catch (IOException ignored) {
+			}
 		}
 	}
 	
@@ -133,7 +135,7 @@ public class ProfileFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView: starts");
 		
-		View rootView = inflater.inflate(R.layout.fragment_profile,container, false);
+		View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 		
 		Log.d(TAG, "onCreateView: checking connection");
 		
@@ -346,7 +348,7 @@ public class ProfileFragment extends Fragment {
 			}
 		});
 		
-		for (UserInfo userInfo: currentUser.getProviderData()) {
+		for (UserInfo userInfo : currentUser.getProviderData()) {
 			if (userInfo.getProviderId().equals("google.com")) {
 				Log.d(TAG, "onCreate: logged in with google");
 				signedInWithGoogle = true;
@@ -399,7 +401,7 @@ public class ProfileFragment extends Fragment {
 						}
 					});
 				} else {
-					updateProfile();;
+					updateProfile();
 				}
 			}
 		});
@@ -772,7 +774,7 @@ public class ProfileFragment extends Fragment {
 						}
 					});
 		} else {
-			Toast.makeText(requireContext(),"Name and Username are same as before", Toast.LENGTH_SHORT).show();
+			Toast.makeText(requireContext(), "Name and Username are same as before", Toast.LENGTH_SHORT).show();
 			enableViews();
 		}
 		
@@ -1037,7 +1039,7 @@ public class ProfileFragment extends Fragment {
 				public void onFailure(@NonNull Exception e) {
 					Log.d(TAG, "onFailure: photo upload failed");
 					progressDialog.dismiss();
-					Toast.makeText(getContext(),"Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+					Toast.makeText(getContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
 				}
 			});
 		}

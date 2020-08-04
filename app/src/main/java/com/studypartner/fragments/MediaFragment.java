@@ -26,18 +26,19 @@ import androidx.fragment.app.Fragment;
 
 
 public class MediaFragment extends Fragment {
-
+	
 	private String mediaPath;
 	private SimpleExoPlayer player;
 	private PlayerView videoPlayerView;
 	private PlayerView audioPlayerView;
 	private FileItem mediaFileItem;
 	private PhotoView photoView;
-
-	public MediaFragment() {}
-
+	
+	public MediaFragment() {
+	}
+	
 	public static MediaFragment newInstance(String path) {
-
+		
 		Bundle bundle = new Bundle();
 		
 		MediaFragment fragment = new MediaFragment();
@@ -109,12 +110,12 @@ public class MediaFragment extends Fragment {
 							ContextCompat.getColor(requireContext(), R.color.audioColor2),
 							ContextCompat.getColor(requireContext(), R.color.audioColor3),
 							ContextCompat.getColor(requireContext(), R.color.audioColor4),
-							ContextCompat.getColor(requireContext(),R.color.audioColor5)});
+							ContextCompat.getColor(requireContext(), R.color.audioColor5)});
 			audioPlayerView.findViewById(R.id.audio_controller_bg).setBackground(gradientDrawable);
 			
 			if (audioPlayerView != null)
 				audioPlayerView.setPlayer(player);
-
+			
 		}
 	}
 	
@@ -125,7 +126,7 @@ public class MediaFragment extends Fragment {
 		if (player != null)
 			player.stop();
 	}
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -133,7 +134,7 @@ public class MediaFragment extends Fragment {
 		if (!mediaFileItem.getType().equals(FileType.FILE_TYPE_IMAGE))
 			initializePlayer();
 	}
-
+	
 	@Override
 	public void onStop() {
 		super.onStop();

@@ -26,18 +26,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
 	
-	public interface NotesClickListener {
-		void onClick(int position);
-		void onLongClick(int position);
-		void onOptionsClick(View view, int position);
-	}
-	
 	private final Activity mActivity;
 	private final ArrayList<FileItem> mFileItems;
 	private final ArrayList<FileItem> mFileItemsCopy;
 	private final SparseBooleanArray selectedItems;
 	private final NotesClickListener listener;
-	
 	private final boolean isOptionsVisible;
 	
 	public NotesAdapter(Activity activity, ArrayList<FileItem> fileItems, NotesClickListener listener, boolean isOptionVisible) {
@@ -114,15 +107,15 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		} else {
 			if (fileItem.getName().contains(".doc") || fileItem.getName().contains(".docx")) {
 				holder.fileImage.setImageResource(R.drawable.doc_icon);
-			} else if(fileItem.getName().contains(".pdf")) {
+			} else if (fileItem.getName().contains(".pdf")) {
 				holder.fileImage.setImageResource(R.drawable.pdf_icon);
-			} else if(fileItem.getName().contains(".ppt") || fileItem.getName().contains(".pptx")) {
+			} else if (fileItem.getName().contains(".ppt") || fileItem.getName().contains(".pptx")) {
 				holder.fileImage.setImageResource(R.drawable.ppt_icon);
-			} else if(fileItem.getName().contains(".xls") || fileItem.getName().contains(".xlsx")) {
+			} else if (fileItem.getName().contains(".xls") || fileItem.getName().contains(".xlsx")) {
 				holder.fileImage.setImageResource(R.drawable.excel_icon);
-			} else if(fileItem.getName().contains(".zip") || fileItem.getName().contains(".rar")) {
+			} else if (fileItem.getName().contains(".zip") || fileItem.getName().contains(".rar")) {
 				holder.fileImage.setImageResource(R.drawable.zip_icon);
-			} else if(fileItem.getName().contains(".txt")) {
+			} else if (fileItem.getName().contains(".txt")) {
 				holder.fileImage.setImageResource(R.drawable.txt_icon);
 			} else {
 				holder.fileImage.setImageResource(R.drawable.file_icon);
@@ -154,7 +147,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		holder.fileOptions.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				listener.onOptionsClick(v,holder.getAdapterPosition());
+				listener.onOptionsClick(v, holder.getAdapterPosition());
 			}
 		});
 		
@@ -175,7 +168,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 		});
 	}
 	
-	public void filter (String query) {
+	public void filter(String query) {
 		mFileItems.clear();
 		
 		if (!query.isEmpty()) {
@@ -236,6 +229,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 	@Override
 	public int getItemCount() {
 		return mFileItems.size();
+	}
+	
+	public interface NotesClickListener {
+		void onClick(int position);
+		
+		void onLongClick(int position);
+		
+		void onOptionsClick(View view, int position);
 	}
 	
 	public class NotesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
