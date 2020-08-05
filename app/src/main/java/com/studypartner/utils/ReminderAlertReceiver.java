@@ -13,7 +13,7 @@ import com.studypartner.models.ReminderItem;
 
 import androidx.core.app.NotificationCompat;
 
-public class AlertReceiver extends BroadcastReceiver {
+public class ReminderAlertReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		

@@ -21,8 +21,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 public class NotificationHelper extends ContextWrapper {
-	public static final String channelID = "channelID";
-	public static final String channelName = "Reminder";
+	public static final String channelID = "StudyPartnerChannelId";
+	public static final String channelName = "Reminders";
 	private NotificationManager mManager;
 	
 	public NotificationHelper(Context base) {
@@ -68,13 +68,14 @@ public class NotificationHelper extends ContextWrapper {
 		openIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		PendingIntent openPendingIntent = PendingIntent.getActivity(context,1,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 		
-		Intent dismissIntent = new Intent(context, AlertReceiver.class);
+		Intent dismissIntent = new Intent(context, ReminderAlertReceiver.class);
 		dismissIntent.putExtra("EXTRA_REMINDER_ITEM", bundle);
 		dismissIntent.putExtra("CANCEL", true);
 		PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(context, 1, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
 		return new NotificationCompat.Builder(context, channelID)
 				.setAutoCancel(true)
+				.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 				.setPriority(NotificationCompat.PRIORITY_MAX)
 				.setContentTitle(item.getTitle())
 				.setContentText(item.getDescription())
@@ -84,6 +85,7 @@ public class NotificationHelper extends ContextWrapper {
 				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_logo))
 				.setSmallIcon(R.drawable.app_logo_transparent)
 				.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-				.setDefaults(NotificationCompat.DEFAULT_ALL);
+				.setLights(ContextCompat.getColor(this, R.color.colorPrimaryDark), 1000, 1000)
+				.setDefaults(NotificationCompat.DEFAULT_VIBRATE);
 	}
 }

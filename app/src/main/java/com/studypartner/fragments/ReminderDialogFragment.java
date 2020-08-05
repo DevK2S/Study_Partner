@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.studypartner.R;
 import com.studypartner.models.ReminderItem;
-import com.studypartner.utils.AlertReceiver;
+import com.studypartner.utils.ReminderAlertReceiver;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -225,7 +225,7 @@ public class ReminderDialogFragment extends DialogFragment {
 						
 						AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
 						
-						Intent intent = new Intent(requireContext(), AlertReceiver.class);
+						Intent intent = new Intent(requireContext(), ReminderAlertReceiver.class);
 						Bundle bundle = new Bundle();
 						bundle.putParcelable("BUNDLE_REMINDER_ITEM", mReminderList.get(finalPositionToEdit));
 						
@@ -316,7 +316,7 @@ public class ReminderDialogFragment extends DialogFragment {
 		calendar.set(Calendar.SECOND, 0);
 		
 		AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(requireContext(), AlertReceiver.class);
+		Intent intent = new Intent(requireContext(), ReminderAlertReceiver.class);
 		
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("BUNDLE_REMINDER_ITEM", item);

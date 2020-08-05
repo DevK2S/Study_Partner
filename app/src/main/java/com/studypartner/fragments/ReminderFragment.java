@@ -21,7 +21,7 @@ import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.ReminderAdapter;
 import com.studypartner.models.ReminderItem;
-import com.studypartner.utils.AlertReceiver;
+import com.studypartner.utils.ReminderAlertReceiver;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -173,7 +173,7 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 			public void onClick(DialogInterface dialog, int which) {
 				
 				AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
-				Intent intent = new Intent(requireContext(), AlertReceiver.class);
+				Intent intent = new Intent(requireContext(), ReminderAlertReceiver.class);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable("BUNDLE_REMINDER_ITEM", mReminderList.get(position));
 				intent.putExtra("EXTRA_REMINDER_ITEM", bundle);
