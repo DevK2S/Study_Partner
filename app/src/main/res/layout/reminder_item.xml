@@ -15,19 +15,21 @@
         android:id="@+id/reminderItemDeleteIconLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="end|center_vertical"
+        android:layout_gravity="end"
+        android:layout_marginBottom="@dimen/smallMargin"
+        android:layout_marginEnd="@dimen/smallMargin"
         android:background="@drawable/reminder_delete_item_background"
-        android:paddingStart="@dimen/largePadding"
-        android:paddingEnd="@dimen/largePadding">
+        android:paddingEnd="@dimen/largePadding"
+        android:paddingStart="@dimen/largePadding">
 
         <ImageView
             android:id="@+id/reminderItemDeleteIcon"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:layout_centerInParent="true"
             android:contentDescription="@string/delete_icon_cd"
-            android:tint="@color/alternativeIconTint"
             android:src="@drawable/delete_icon"
-            android:layout_centerInParent="true"/>
+            android:tint="@color/alternativeIconTint" />
 
     </RelativeLayout>
 
@@ -35,7 +37,9 @@
         android:id="@+id/reminderItemCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="24dp"
+        android:layout_marginBottom="@dimen/smallMargin"
+        android:layout_marginEnd="@dimen/smallMargin"
+        app:cardCornerRadius="@dimen/mediumMargin"
         app:cardElevation="@dimen/mediumElevation"
         app:contentPadding="@dimen/mediumPadding">
 

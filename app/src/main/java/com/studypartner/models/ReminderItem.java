@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
+
 public class ReminderItem implements Parcelable {
 	private String time;
 	private String date;
@@ -98,12 +100,8 @@ public class ReminderItem implements Parcelable {
 	}
 	
 	public void createNotifyId() {
-		String dn = "0";
-		String mdate = date.substring(0, 2) + date.substring(3, 5);
-		if (time.substring(6).equals("PM"))
-			dn = "1";
-		String mtime = time.substring(0, 2) + time.substring(3, 5) + dn;
-		notifyId = Integer.parseInt(mdate + mtime);
+		Random random = new Random();
+		notifyId = random.nextInt();
 	}
 	
 	@Override

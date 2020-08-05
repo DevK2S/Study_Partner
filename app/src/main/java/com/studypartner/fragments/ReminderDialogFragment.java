@@ -231,7 +231,7 @@ public class ReminderDialogFragment extends DialogFragment {
 						
 						intent.putExtra("EXTRA_REMINDER_ITEM", bundle);
 						
-						PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+						PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), mReminderList.get(finalPositionToEdit).getNotifyId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 						
 						alarmManager.cancel(pendingIntent);
 						
@@ -323,7 +323,7 @@ public class ReminderDialogFragment extends DialogFragment {
 		
 		intent.putExtra("EXTRA_REMINDER_ITEM", bundle);
 		
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), item.getNotifyId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 		
 	}

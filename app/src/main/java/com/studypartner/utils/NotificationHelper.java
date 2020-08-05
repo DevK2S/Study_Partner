@@ -75,7 +75,6 @@ public class NotificationHelper extends ContextWrapper {
 		
 		return new NotificationCompat.Builder(context, channelID)
 				.setAutoCancel(true)
-				.setWhen(System.currentTimeMillis())
 				.setPriority(NotificationCompat.PRIORITY_MAX)
 				.setContentTitle(item.getTitle())
 				.setContentText(item.getDescription())
@@ -85,8 +84,6 @@ public class NotificationHelper extends ContextWrapper {
 				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_logo))
 				.setSmallIcon(R.drawable.app_logo_transparent)
 				.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
-				.setDefaults(NotificationCompat.DEFAULT_LIGHTS)
-				.setVibrate(new long[] {0, 2000, 1000, 2000, 1000})
-				.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+				.setDefaults(NotificationCompat.DEFAULT_ALL);
 	}
 }
