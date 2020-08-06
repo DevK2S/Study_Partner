@@ -657,7 +657,6 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 										int linkIndex = linkIndex(position);
 										if (linkIndex != -1) {
 											links.get(linkIndex).setName(newName);
-											notes.get(position).setName(newName);
 											
 											SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
 											SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
@@ -675,6 +674,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 												starredPreferenceEditor.apply();
 											}
+											notes.get(position).setName(newName);
 											
 											mNotesAdapter.notifyItemChanged(position);
 											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
@@ -682,7 +682,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 										
 									}
 								} else {
-									if (newName.equals(fileItem.getName()) || newName.equals("")) {
+									if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
 										Log.d(TAG, "onClick: filename not changed");
 									} else if (newFile.exists()) {
 										Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
@@ -691,15 +691,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 									} else {
 										if (oldFile.renameTo(newFile)) {
 											Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
-											notes.get(position).setName(newName);
-											notes.get(position).setPath(newFile.getPath());
 											
 											int starredIndex = starredIndex(position);
 											if (starredIndex != -1) {
 												SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 												SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
 												
-												starred.get(starredIndex).setName(newName);
+												starred.get(starredIndex).setName(newFile.getName());
+												starred.get(starredIndex).setPath(newFile.getPath());
 												Gson gson = new Gson();
 												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 												starredPreferenceEditor.apply();
@@ -730,6 +729,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 												starredPreferenceEditor.apply();
 											}
+											notes.get(position).setName(newFile.getName());
+											notes.get(position).setPath(newFile.getPath());
 											
 											mNotesAdapter.notifyItemChanged(position);
 											populateDataAndSetAdapter();

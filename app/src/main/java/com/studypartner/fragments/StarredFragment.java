@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,6 +52,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 public class StarredFragment extends Fragment implements NotesAdapter.NotesClickListener {
@@ -414,15 +416,21 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				switch (item.getItemId()) {
 					case R.id.notes_item_rename:
 						
-						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-						alertDialog.setMessage("Enter a new name");
-						
 						final FileItem fileItem = starred.get(position);
+						
+						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+						if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
+							alertDialog.setMessage("Edit this link");
+						} else {
+							alertDialog.setMessage("Enter a new name");
+						}
 						
 						final EditText input = new EditText(getContext());
 						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 								LinearLayout.LayoutParams.MATCH_PARENT,
 								LinearLayout.LayoutParams.MATCH_PARENT);
+						lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
+						lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
 						input.setLayoutParams(lp);
 						
 						String extension = "";
@@ -440,9 +448,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						alertDialog.setView(input);
 						
 						final String finalExtension = extension;
-						
-						alertDialog.setView(input);
-						
 						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								String newName = input.getText().toString().trim();
@@ -450,10 +455,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 								File newFile = new File(oldFile.getParent(), newName + finalExtension);
 								if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
 									if (newName.equals(fileItem.getName()) || newName.equals("")) {
+										Log.d(TAG, "onClick: link not changed");
 									} else if (!FileUtils.isValidUrl(newName)) {
 										Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
 									} else {
-										
 										int linkIndex = linkIndex(position);
 										if (linkIndex != -1) {
 											links.get(linkIndex).setName(newName);
@@ -468,8 +473,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 											
 											SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 											SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+											
 											starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 											starredPreferenceEditor.apply();
+											
 											
 											mStarredAdapter.notifyItemChanged(position);
 											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
@@ -477,15 +484,16 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 										
 									}
 								} else {
-									if (newName.equals(fileItem.getName()) || newName.equals("")) {
+									if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
+										Log.d(TAG, "onClick: filename not changed");
 									} else if (newFile.exists()) {
 										Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
-									} else if (newName.contains(".") || newName.contains("/")) {
+									} else if (newName.contains("/")) {
 										Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
 									} else {
 										if (oldFile.renameTo(newFile)) {
 											Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
-											starred.get(position).setName(newName);
+											starred.get(position).setName(newFile.getName());
 											starred.get(position).setPath(newFile.getPath());
 											Gson gson = new Gson();
 											
@@ -523,7 +531,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 								}
 							}
 						});
-						
 						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								dialog.cancel();
@@ -552,38 +559,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 						return true;
 					
 					case R.id.notes_item_delete:
-
-//						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//						builder.setTitle("Delete File");
-//						builder.setMessage("Are you sure you want to delete the file?");
-//						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//							@Override
-//							public void onClick(DialogInterface dialog, int which) {
-//								File file = new File(starred.get(position).getPath());
-//								starred.remove(position);
-//								deleteRecursive(file);
-//								SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-//								SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-//
-//								if (starred.size() == 0) {
-//									starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-//								}
-//								Gson gson = new Gson();
-//								starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-//								starredPreferenceEditor.apply();
-//								activity.mBottomAppBar.performShow();
-//
-//								mStarredAdapter.notifyDataSetChanged();
-//							}
-//						});
-//						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//							@Override
-//							public void onClick(DialogInterface dialog, int which) {
-//
-//							}
-//						});
-//						builder.show();
-//						return true;
 						
 						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 						builder.setTitle("Delete File");
