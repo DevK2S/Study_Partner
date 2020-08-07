@@ -760,6 +760,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		
 		if (notes.isEmpty()) {
 			mEmptyLayout.setVisibility(View.VISIBLE);
+		} else {
+			mEmptyLayout.setVisibility(View.INVISIBLE);
 		}
 		
 		mNotesAdapter = new NotesAdapter(requireActivity(), notes, this, true);
