@@ -82,7 +82,7 @@ public class NotificationHelper extends ContextWrapper {
 				.setContentIntent(openPendingIntent)
 				.addAction(android.R.drawable.ic_menu_view, "OPEN IN APP", openPendingIntent)
 				.addAction(android.R.drawable.ic_delete, "DISMISS", dismissPendingIntent)
-				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_logo))
+				.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.app_logo_round))
 				.setSmallIcon(R.drawable.app_logo_transparent)
 				.setColor(ContextCompat.getColor(this, R.color.colorPrimaryDark))
 				.setLights(ContextCompat.getColor(this, R.color.colorPrimaryDark), 1000, 1000)

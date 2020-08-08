@@ -3,6 +3,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="bottomSheetDialogTheme">@style/CustomBottomSheetDialog</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
     </style>

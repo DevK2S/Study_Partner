@@ -18,9 +18,9 @@
     <dimen name="mediumElevation">8dp</dimen>
 
     <dimen name="splashScreenAppLogoHeight">250dp</dimen>
-    <dimen name="splashScreenAppLogoWidth">250dp</dimen>
-    <dimen name="splashScreenAppLogoTopMargin">125dp</dimen>
-    <dimen name="splashScreenAppNameTopMargin">150dp</dimen>
+    <dimen name="splashScreenAppLogoWidth">200dp</dimen>
+    <dimen name="splashScreenAppLogoMargin">100dp</dimen>
+    <dimen name="splashScreenAppNameTopMargin">0dp</dimen>
 
     <dimen name="onBoardingScreenAppNameTopMargin">48dp</dimen>
     <dimen name="onBoardingScreenGetStartedBottomMargin">96dp</dimen>

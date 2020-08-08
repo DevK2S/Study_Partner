@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#1867AA</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="lightColorPrimary">#41A7FE</color>
+    <color name="launcher_background_icon">#FFFFFF</color>
 
     <color name="primaryBlack">#000000</color>
     <color name="primaryWhite">#FFFFFF</color>
@@ -27,10 +28,6 @@
 
     <color name="bottomNavigationItemSelected">#FFFFFF</color>
     <color name="bottomNavigationItem">#444444</color>
-
-    <color name="splashScreenGradientStartColor">#2193b0</color>
-    <color name="splashScreenGradientEndColor">#6dd5ed</color>
-    <color name="splashScreenAppNameText">#FFFFFF</color>
 
     <color name="onBoardingScreenBackground">#FFFFFF</color>
     <color name="onBoardingScreenButtonBackground">#FFFFFF</color>

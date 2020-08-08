@@ -100,11 +100,11 @@ public class ProfileFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		
-		Log.d(TAG, "onResume: checking internet connection");
-		Connection.checkConnection(this);
-		
 		oldPasswordTextInput.setEnabled(true);
-		emailTextInput.setEnabled(true);
+		
+		if (!signedInWithGoogle) {
+			emailTextInput.setEnabled(true);
+		}
 		
 		passwordTextInput.getEditText().setText("");
 		oldPasswordTextInput.getEditText().setText("");
@@ -434,10 +434,13 @@ public class ProfileFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "onClick: delete account button pressed");
-				
 				deleteAccount();
 			}
 		});
+		
+		if (signedInWithGoogle) {
+			emailTextInput.setEnabled(false);
+		}
 		
 		Log.d(TAG, "onCreate: ends");
 		
@@ -480,7 +483,7 @@ public class ProfileFragment extends Fragment {
 								
 								final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 								builder.setTitle("Deleting your account");
-								builder.setMessage("Are you sure you want to delete the account?");
+								builder.setMessage("Are you sure you want to delete the account? All the data will be lost and cannot be retrieved later.");
 								builder.setCancelable(false);
 								builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
 									@Override
@@ -575,8 +578,14 @@ public class ProfileFragment extends Fragment {
 								});
 								
 								builder.show();
+							} else if (task.getException().getMessage().contains("The supplied auth credential is malformed or has expired.")){
+								Toast.makeText(requireContext(), "We are facing some errors! Please login again and then try deleting your account", Toast.LENGTH_SHORT).show();
+								enableViews();
+							} else if (task.getException().getMessage().contains("The password is invalid or the user does not have a password.")){
+								Toast.makeText(requireContext(), "The given password is incorrect.", Toast.LENGTH_SHORT).show();
+								enableViews();
 							} else {
-								Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+								Toast.makeText(requireContext(), "We have blocked all requests from this device due to unusual activity. Try again later.", Toast.LENGTH_SHORT).show();
 								enableViews();
 							}
 						}

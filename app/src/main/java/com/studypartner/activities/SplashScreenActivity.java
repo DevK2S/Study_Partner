@@ -2,9 +2,12 @@ package com.studypartner.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -27,6 +30,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash_screen);
+		
+		Window window = getWindow();
+		window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+		window.setStatusBarColor(Color.WHITE);
 		
 		overridePendingTransition(0, R.anim.slide_out_left);
 		
@@ -53,7 +60,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 				overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 				finish();
 			}
-		}, 2000);
+		}, 1500);
 		
 		Log.d(TAG, "onCreate: ends");
 	}
