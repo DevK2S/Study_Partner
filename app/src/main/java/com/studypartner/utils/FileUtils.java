@@ -101,6 +101,17 @@ public class FileUtils {
 		
 	}
 	
+	public static void openLink(final Context context, final String link) {
+		
+		if (isValidUrl(link)) {
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+			context.startActivity(Intent.createChooser(browserIntent, "Select the app to open the link"));
+		} else {
+			Toast.makeText(context, "Link is invalid", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+	
 	public static void openFile(Context context, FileItem file) {
 		
 		Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", new File(file.getPath()));

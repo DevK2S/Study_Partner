@@ -174,4 +174,17 @@
     <string name="home_videos">Videos</string>
     <string name="home_recents">RECENTS</string>
     <string name="home_media_item_cd">Home Media Item</string>
+
+    <string name="about_us_text">An Application developed to help students with their daily school/college activities. This application will store all your notes, attendance, reminders in a single place and you won\'t have to install multiple applications for each individual task.</string>
+    <string name="about_us_subtext">A goal to help Students worldwide we have made this application to be available for free.</string>
+    <string name="about_us_team">TEAM</string>
+    <string name="about_us_github_icon">Github Icon</string>
+    <string name="about_us_linked_in_icon">LinkedIn Icon</string>
+    <string name="about_us_contact_us">CONTACT US</string>
+
+    <string name="team_karanveer_singh">Karanveer Singh</string>
+    <string name="team_designer_amp_developer"><![CDATA[Designer & Developer]]></string>
+    <string name="team_saket_agarwal">Saket Agarwal</string>
+    <string name="team_developer">Lead Developer</string>
+    <string name="team_karan_gourisaria">Karan Gourisaria</string>
 </resources>

@@ -26,9 +26,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/splashScreenAppNameTopMargin"
+        android:fontFamily="@font/roboto"
         android:text="@string/app_name"
+        android:textAllCaps="true"
         android:textColor="@color/primaryBlack"
-        android:textSize="@dimen/extraLargeText"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -40,5 +42,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7"/>
+        app:layout_constraintGuide_percent="0.85"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
