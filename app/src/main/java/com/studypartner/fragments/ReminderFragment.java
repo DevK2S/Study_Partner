@@ -226,10 +226,6 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 	}
 	
 	@Override
-	public void onLongClick(int position) {
-	}
-	
-	@Override
 	public void deleteView(int adapterPosition) {
 		deleteReminder(adapterPosition);
 	}

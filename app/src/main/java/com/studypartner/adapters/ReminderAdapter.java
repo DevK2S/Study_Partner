@@ -78,13 +78,6 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 				mReminderItemClickListener.onClick(holder.getAdapterPosition());
 			}
 		});
-		holder.reminderLayout.setOnLongClickListener(new View.OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				mReminderItemClickListener.onLongClick(holder.getAdapterPosition());
-				return true;
-			}
-		});
 		holder.delete.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -102,12 +95,10 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 	public interface ReminderItemClickListener {
 		void onClick(int position);
 		
-		void onLongClick(int position);
-		
 		void deleteView(int position);
 	}
 	
-	public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+	public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 		
 		private final TextView title;
 		private final TextView date;
@@ -133,20 +124,12 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
 			delete = itemView.findViewById(R.id.reminderItemDeleteIcon);
 			
 			itemView.setOnClickListener(this);
-			itemView.setOnLongClickListener(this);
 		}
 		
 		@Override
 		public void onClick(View view) {
 			mReminderItemClickListener.onClick(getAdapterPosition());
 		}
-		
-		@Override
-		public boolean onLongClick(View v) {
-			mReminderItemClickListener.onLongClick(getAdapterPosition());
-			return true;
-		}
-		
 		
 	}
 }
