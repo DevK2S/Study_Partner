@@ -3,8 +3,11 @@ package com.studypartner.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,7 +25,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 	final String ON_BOARDING_SCREEN_VIEWED = "ON_BOARDING_SCREEN_VIEWED";
 	Animation mAnimation;
 	ImageView splashScreenAppLogo;
-	TextView splashScreenAppName;
+	TextView splashScreenAppName, splashScreenMadeInIndia;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +44,21 @@ public class SplashScreenActivity extends AppCompatActivity {
 		
 		splashScreenAppLogo = findViewById(R.id.splashScreenAppLogo);
 		splashScreenAppName = findViewById(R.id.splashScreenAppName);
+		splashScreenMadeInIndia = findViewById(R.id.splashScreenMadeInIndia);
+		
+		TextPaint paint = splashScreenMadeInIndia.getPaint();
+		float width = paint.measureText("Made in India");
+		Shader textShader = new LinearGradient(0, 0, width, splashScreenMadeInIndia.getTextSize(),
+				new int[]{
+						Color.parseColor("#FF8000"),
+						Color.parseColor("#BBBBBB"),
+						Color.parseColor("#008000"),
+				}, null, Shader.TileMode.CLAMP);
+		splashScreenMadeInIndia.getPaint().setShader(textShader);
 		
 		splashScreenAppLogo.setAnimation(mAnimation);
 		splashScreenAppName.setAnimation(mAnimation);
+		splashScreenMadeInIndia.setAnimation(mAnimation);
 		
 		new Handler().postDelayed(new Runnable() {
 			@Override

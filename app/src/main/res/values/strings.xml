@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">Study Partner</string>
+    <string name="made_in_india">Made in India</string>
 
     <string name="splash_screen_logo_cd">Application Logo</string>
 
