@@ -466,13 +466,8 @@ public class LoginActivity extends AppCompatActivity {
 	private void updateDetails() {
 		Log.d(TAG, "updateDetails: starts");
 		
-		String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-		
-		Log.d(TAG, "updateDetails: updating email verification");
-		FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("emailVerified").setValue(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified());
-		
 		Log.d(TAG, "updateDetails: updating email");
-		FirebaseDatabase.getInstance().getReference().child("users").child(uid).child("email").setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+		FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("email").setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 		
 		if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
 			FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();

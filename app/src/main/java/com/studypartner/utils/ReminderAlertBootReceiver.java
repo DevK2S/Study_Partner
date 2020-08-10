@@ -25,7 +25,7 @@ public class ReminderAlertBootReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		if (intent.getAction() != null && (intent.getAction().equals("android.intent.action.BOOT_COMPLETED") || intent.getAction().equals("android.intent.action.TIME_SET") || intent.getAction().equals("android.intent.action.QUICKBOOT_POWERON"))) {
+		if (intent.getAction() != null && (intent.getAction().equals("android.intent.action.BOOT_COMPLETED") || intent.getAction().equals("android.intent.action.TIME_SET") || intent.getAction().equals("android.intent.action.QUICKBOOT_POWERON")) && FirebaseAuth.getInstance().getCurrentUser() != null) {
 			Log.d("TAG", "onReceive: " + intent.getAction());
 			
 			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

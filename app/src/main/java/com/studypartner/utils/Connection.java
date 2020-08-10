@@ -175,9 +175,11 @@ public class Connection {
 //		}
 		
 		StringBuilder builder = new StringBuilder();
-		builder.append("UID: ").append(FirebaseAuth.getInstance().getCurrentUser().getUid()).append("\n");
-		builder.append("EMAIL ADDRESS: ").append(FirebaseAuth.getInstance().getCurrentUser().getEmail()).append("\n");
-		builder.append("EMAIL VERIFIED: ").append(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()).append("\n");
+		if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+			builder.append("UID: ").append(FirebaseAuth.getInstance().getCurrentUser().getUid()).append("\n");
+			builder.append("EMAIL ADDRESS: ").append(FirebaseAuth.getInstance().getCurrentUser().getEmail()).append("\n");
+			builder.append("EMAIL VERIFIED: ").append(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()).append("\n");
+		}
 //		builder.append("SERIAL: ").append(Build.SERIAL).append("\n");
 //		builder.append("APP: ").append(BuildConfig.APPLICATION_ID).append("\n");
 		builder.append("MODEL: ").append(Build.MODEL).append("\n");
