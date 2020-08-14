@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,6 +31,8 @@ public class MediaActivity extends AppCompatActivity {
 	private boolean inStarred = false;
 	private ViewPager2 viewPager;
 	private MediaAdapter mediaAdapter;
+	
+	private InterstitialAd mInterstitialAd;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,10 @@ public class MediaActivity extends AppCompatActivity {
 			homeMediaDisplay(homeMedia, position);
 			
 		}
+		
+		mInterstitialAd = new InterstitialAd(this);
+		mInterstitialAd.setAdUnitId(getString(R.string.notes_interstitial_ad));
+		mInterstitialAd.loadAd(new AdRequest.Builder().build());
 	}
 	
 	private void homeMediaDisplay(ArrayList<FileItem> homeMedia, int value) {
@@ -75,19 +84,28 @@ public class MediaActivity extends AppCompatActivity {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 				super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-				try {
-					(mediaAdapter.createFragment(position - 1)).isHidden();
-					(mediaAdapter.createFragment(position)).isVisible();
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
 			}
 			
 			@Override
-			public void onPageSelected(int position) {
+			public void onPageSelected(final int position) {
 				super.onPageSelected(position);
+				try {
+					(mediaAdapter.createFragment(position - 1)).isHidden();
+					if (position != 0 && position % 3 == 0 && mInterstitialAd.isLoaded()) {
+						mInterstitialAd.show();
+						mInterstitialAd.setAdListener(new AdListener() {
+							@Override
+							public void onAdClosed() {
+								(mediaAdapter.createFragment(position)).isVisible();
+								mInterstitialAd.loadAd(new AdRequest.Builder().build());
+							}
+						});
+					} else {
+						(mediaAdapter.createFragment(position)).isVisible();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			@Override
@@ -150,18 +168,28 @@ public class MediaActivity extends AppCompatActivity {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 				super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-				try {
-					(mediaAdapter.createFragment(position - 1)).isHidden();
-					(mediaAdapter.createFragment(position)).isVisible();
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 			}
 			
 			@Override
-			public void onPageSelected(int position) {
+			public void onPageSelected(final int position) {
 				super.onPageSelected(position);
+				try {
+					(mediaAdapter.createFragment(position - 1)).isHidden();
+					if (position != 0 && position % 3 == 0 && mInterstitialAd.isLoaded()) {
+						mInterstitialAd.show();
+						mInterstitialAd.setAdListener(new AdListener() {
+							@Override
+							public void onAdClosed() {
+								(mediaAdapter.createFragment(position)).isVisible();
+								mInterstitialAd.loadAd(new AdRequest.Builder().build());
+							}
+						});
+					} else {
+						(mediaAdapter.createFragment(position)).isVisible();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			
 			@Override

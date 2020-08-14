@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.MobileAds;
 import com.studypartner.R;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,6 +60,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 		splashScreenAppLogo.setAnimation(mAnimation);
 		splashScreenAppName.setAnimation(mAnimation);
 		splashScreenMadeInIndia.setAnimation(mAnimation);
+		
+		MobileAds.initialize(this);
 		
 		new Handler().postDelayed(new Runnable() {
 			@Override

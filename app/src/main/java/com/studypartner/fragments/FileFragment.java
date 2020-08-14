@@ -29,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
@@ -116,6 +119,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	private ArrayList<FileItem> notes = new ArrayList<>();
 	private ArrayList<FileItem> starred = new ArrayList<>();
 	private ArrayList<FileItem> links = new ArrayList<>();
+	
+	private InterstitialAd mInterstitialAd;
 	
 	public FileFragment() {
 	}
@@ -418,6 +423,16 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		
 		toolbar.setTitle(getTitle());
 		
+		mInterstitialAd = new InterstitialAd(requireContext());
+		mInterstitialAd.setAdUnitId(getString(R.string.notes_interstitial_ad));
+		mInterstitialAd.loadAd(new AdRequest.Builder().build());
+		mInterstitialAd.setAdListener(new AdListener() {
+			@Override
+			public void onAdClosed() {
+				mInterstitialAd.loadAd(new AdRequest.Builder().build());
+			}
+		});
+		
 		populateDataAndSetAdapter();
 		
 		return rootView;
@@ -644,6 +659,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						final String finalExtension = extension;
 						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
+								if (mInterstitialAd.isLoaded()) {
+									
+									mInterstitialAd.show();
+								}
+								
 								String newName = input.getText().toString().trim();
 								File oldFile = new File(fileItem.getPath());
 								File newFile = new File(noteFolder, newName + finalExtension);
@@ -812,6 +832,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
+								
+								if (mInterstitialAd.isLoaded()) {
+									mInterstitialAd.show();
+								}
+								
 								if (notes.get(position).getType() != FileType.FILE_TYPE_LINK) {
 									File file = new File(notes.get(position).getPath());
 									deleteRecursive(file);
@@ -1172,6 +1197,9 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				if (mInterstitialAd.isLoaded()) {
+					mInterstitialAd.show();
+				}
 				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 					if (notes.get(selectedItemPositions.get(i)).getType() != FileType.FILE_TYPE_LINK) {
 						File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
@@ -1712,6 +1740,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					try {
 						if (!file.exists()) {
 							Log.d(TAG, "onClick: creating file " + file.createNewFile());
+						}
+						
+						if (mInterstitialAd.isLoaded()) {
+							mInterstitialAd.show();
 						}
 						
 						FileOutputStream fos = new FileOutputStream(file);

@@ -188,4 +188,8 @@
     <string name="team_saket_agarwal">Saket Agarwal</string>
     <string name="team_developer">Lead Developer</string>
     <string name="team_karan_gourisaria">Karan Gourisaria</string>
+
+<!--    <string name="notes_interstitial_ad">ca-app-pub-4955404294529066/1479765372</string>!-->
+    <string name="notes_interstitial_ad">ca-app-pub-3940256099942544/1033173712</string>
+
 </resources>

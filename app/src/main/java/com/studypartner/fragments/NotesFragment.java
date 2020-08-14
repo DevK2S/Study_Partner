@@ -24,6 +24,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -91,6 +94,8 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private ArrayList<FileItem> notes = new ArrayList<>();
 	private ArrayList<FileItem> starred = new ArrayList<>();
 	private ArrayList<FileItem> links = new ArrayList<>();
+	
+	private InterstitialAd mInterstitialAd;
 	
 	public NotesFragment() {
 	}
@@ -306,6 +311,16 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			}
 		});
 		
+		mInterstitialAd = new InterstitialAd(requireContext());
+		mInterstitialAd.setAdUnitId(getString(R.string.notes_interstitial_ad));
+		mInterstitialAd.loadAd(new AdRequest.Builder().build());
+		mInterstitialAd.setAdListener(new AdListener() {
+			@Override
+			public void onAdClosed() {
+				mInterstitialAd.loadAd(new AdRequest.Builder().build());
+			}
+		});
+		
 		populateDataAndSetAdapter();
 		
 		return rootView;
@@ -491,6 +506,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						
 						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
+								
+								if (mInterstitialAd.isLoaded()) {
+									mInterstitialAd.show();
+								}
+								
 								String newName = input.getText().toString().trim();
 								File oldFile = new File(fileItem.getPath());
 								File newFile = new File(noteFolder, newName);
@@ -614,6 +634,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
+								
+								if (mInterstitialAd.isLoaded()) {
+									mInterstitialAd.show();
+								}
+								
 								File file = new File(notes.get(position).getPath());
 								deleteRecursive(file);
 								
@@ -979,6 +1004,9 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
+				if (mInterstitialAd.isLoaded()) {
+					mInterstitialAd.show();
+				}
 				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 					File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
 					deleteRecursive(file);
