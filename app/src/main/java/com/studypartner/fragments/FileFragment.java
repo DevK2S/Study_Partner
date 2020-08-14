@@ -1490,25 +1490,30 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					for (int i = 0; i < data.getClipData().getItemCount(); i++) {
 						Uri uri = data.getClipData().getItemAt(i).getUri();
 						String filePath = FileUtils.getFilePath(requireContext(), uri);
-						notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
+						FileItem audioFileItem = new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath()));
+						audioFileItem.setType(FileType.FILE_TYPE_AUDIO);
+						notes.add(audioFileItem);
 						mNotesAdapter.notifyItemInserted(notes.size() - 1);
-						
+
 						if (mEmptyLayout.getVisibility() == View.VISIBLE) {
 							mEmptyLayout.setVisibility(View.GONE);
 						}
 					}
-					
+
 					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				} else {
 					Uri uri = data.getData();
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
-					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
+					FileItem audioFileItem = new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath()));
+					audioFileItem.setType(FileType.FILE_TYPE_AUDIO);
+
+					notes.add(audioFileItem);
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);
-					
+
 					if (mEmptyLayout.getVisibility() == View.VISIBLE) {
 						mEmptyLayout.setVisibility(View.GONE);
 					}
-					
+
 					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {

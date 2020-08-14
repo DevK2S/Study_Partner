@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -46,6 +47,7 @@ import java.util.Objects;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -386,282 +388,284 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			FileUtils.openLink(requireContext(), starred.get(position));
 			
 		} else {
-			
-			FileUtils.openFile(requireContext(), starred.get(position));
-			
-		}
-	}
-	
-	@Override
-	public void onLongClick(int position) {
-		enableActionMode(position);
-	}
-	
-	@Override
-	public void onOptionsClick(View view, final int position) {
-		PopupMenu popup = new PopupMenu(getContext(), view);
-		popup.inflate(R.menu.notes_item_menu_unstar);
-		
-		if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER || starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
-			popup.getMenu().removeItem(R.id.notes_item_share);
-		}
-		
-		if (starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
-			popup.getMenu().getItem(0).setTitle("Edit Link");
-		}
-		
-		popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				switch (item.getItemId()) {
-					case R.id.notes_item_rename:
-						
-						final FileItem fileItem = starred.get(position);
-						
-						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-						if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
-							alertDialog.setMessage("Edit this link");
-						} else {
-							alertDialog.setMessage("Enter a new name");
-						}
-						
-						final EditText input = new EditText(getContext());
-						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.MATCH_PARENT,
-								LinearLayout.LayoutParams.MATCH_PARENT);
-						lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-						lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-						input.setLayoutParams(lp);
-						
-						String extension = "";
-						if (fileItem.getType() == FileType.FILE_TYPE_FOLDER || fileItem.getType() == FileType.FILE_TYPE_LINK) {
-							input.setText(fileItem.getName());
-						} else {
-							String name = fileItem.getName();
-							if (name.indexOf(".") > 0) {
-								extension = name.substring(name.lastIndexOf("."));
-								name = name.substring(0, name.lastIndexOf("."));
-							}
-							input.setText(name);
-						}
-						
-						alertDialog.setView(input);
-						
-						final String finalExtension = extension;
-						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								String newName = input.getText().toString().trim();
-								File oldFile = new File(fileItem.getPath());
-								File newFile = new File(oldFile.getParent(), newName + finalExtension);
-								if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
-									if (newName.equals(fileItem.getName()) || newName.equals("")) {
-										Log.d(TAG, "onClick: link not changed");
-									} else if (!FileUtils.isValidUrl(newName)) {
-										Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
-									} else {
-										int linkIndex = linkIndex(position);
-										if (linkIndex != -1) {
-											links.get(linkIndex).setName(newName);
-											starred.get(position).setName(newName);
-											
-											SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-											SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-											
-											Gson gson = new Gson();
-											linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-											linkPreferenceEditor.apply();
-											
-											SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-											SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-											
-											starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-											starredPreferenceEditor.apply();
-											
-											
-											mStarredAdapter.notifyItemChanged(position);
-											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
-										}
-										
-									}
-								} else {
-									if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
-										Log.d(TAG, "onClick: filename not changed");
-									} else if (newFile.exists()) {
-										Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
-									} else if (newName.contains("/")) {
-										Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
-									} else {
-										if (oldFile.renameTo(newFile)) {
-											Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
-											starred.get(position).setName(newFile.getName());
-											starred.get(position).setPath(newFile.getPath());
-											Gson gson = new Gson();
-											
-											if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
-												for (FileItem starItem : starred) {
-													if (starItem.getPath().contains(oldFile.getPath())) {
-														starItem.setPath(starItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
-													}
-												}
-												for (FileItem linkItem : links) {
-													if (linkItem.getPath().contains(oldFile.getPath())) {
-														linkItem.setPath(linkItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
-													}
-												}
-												
-												SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-												SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-												
-												linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-												linkPreferenceEditor.apply();
-											}
-											
-											SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-											SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-											
-											starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-											starredPreferenceEditor.apply();
-											
-											mStarredAdapter.notifyItemChanged(position);
-											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
-										} else {
-											Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
-										}
-									}
-								}
-							}
-						});
-						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.cancel();
-							}
-						});
-						
-						alertDialog.show();
-						return true;
-					
-					case R.id.notes_item_unstar:
-						
-						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-						
-						mStarredAdapter.notifyItemRemoved(position);
-						starred.remove(position);
-						activity.mBottomAppBar.performShow();
-						if (starred.size() == 0) {
-							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-							mEmptyLayout.setVisibility(View.VISIBLE);
-						}
-						Gson gson = new Gson();
-						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-						starredPreferenceEditor.apply();
-						
-						return true;
-					
-					case R.id.notes_item_delete:
-						
-						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-						builder.setTitle("Delete File");
-						builder.setMessage("Are you sure you want to delete the file?");
-						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								if (starred.get(position).getType() != FileType.FILE_TYPE_LINK) {
-									File file = new File(starred.get(position).getPath());
-									deleteRecursive(file);
-									
-									if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
-										ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
-										for (FileItem linkItem : links) {
-											if (linkItem.getPath().contains(file.getPath())) {
-												linksToBeRemoved.add(linkItem);
-											}
-										}
-										links.removeAll(linksToBeRemoved);
-										
-										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-										
-										if (links.size() == 0) {
-											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-										}
-										Gson gson = new Gson();
-										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-										linkPreferenceEditor.apply();
-										
-										ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-										for (FileItem starItem : starred) {
-											if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
-												starredToBeRemoved.add(starItem);
-											}
-										}
-										starredToBeRemoved.add(starred.get(position));
-										starred.removeAll(starredToBeRemoved);
-										
-										SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-										SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-										
-										if (starred.size() == 0) {
-											starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-											mEmptyLayout.setVisibility(View.VISIBLE);
-										}
-										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-										starredPreferenceEditor.apply();
-									}
-									
-								} else {
-									int linkPosition = linkIndex(position);
-									if (linkPosition != -1) {
-										links.remove(linkPosition);
-										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-										
-										if (links.size() == 0) {
-											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-										}
-										Gson gson = new Gson();
-										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-										linkPreferenceEditor.apply();
-									}
-								}
-								mStarredAdapter.notifyDataSetChanged();
-							}
-						});
-						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-							
-							}
-						});
-						builder.show();
-						return true;
-					
-					case R.id.notes_item_share:
-						if (starred.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
-							Intent intentShareFile = new Intent(Intent.ACTION_SEND);
-							File shareFile = new File(starred.get(position).getPath());
-							ArrayList<FileItem> fileItems = new ArrayList<>();
-							fileItems.add(starred.get(position));
-							if (shareFile.exists()) {
-								intentShareFile.setType(FileUtils.getFileType(fileItems));
-								intentShareFile.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(starred.get(position).getPath())));
-								intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-								intentShareFile.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-								intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application");
-								startActivity(Intent.createChooser(intentShareFile, "Share File"));
-							}
-						} else {
-							Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
-						}
-						return true;
-					
-					default:
-						return false;
-				}
-			}
-		});
-		popup.show();
-	}
+
+            FileUtils.openFile(requireContext(), starred.get(position));
+
+        }
+    }
+
+    @Override
+    public void onLongClick(int position) {
+        enableActionMode(position);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    public void onOptionsClick(View view, final int position) {
+        PopupMenu popup = new PopupMenu(getContext(), view);
+        popup.inflate(R.menu.notes_item_menu_unstar);
+
+        if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER || starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
+            popup.getMenu().removeItem(R.id.notes_item_share);
+        }
+
+        if (starred.get(position).getType() == FileType.FILE_TYPE_LINK) {
+            popup.getMenu().getItem(0).setTitle("Edit Link");
+        }
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.notes_item_rename:
+
+                        final FileItem fileItem = starred.get(position);
+
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                        if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
+                            alertDialog.setMessage("Edit this link");
+                        } else {
+                            alertDialog.setMessage("Enter a new name");
+                        }
+
+                        final EditText input = new EditText(getContext());
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT);
+                        lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
+                        lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
+                        input.setLayoutParams(lp);
+
+                        String extension = "";
+                        if (fileItem.getType() == FileType.FILE_TYPE_FOLDER || fileItem.getType() == FileType.FILE_TYPE_LINK) {
+                            input.setText(fileItem.getName());
+                        } else {
+                            String name = fileItem.getName();
+                            if (name.indexOf(".") > 0) {
+                                extension = name.substring(name.lastIndexOf("."));
+                                name = name.substring(0, name.lastIndexOf("."));
+                            }
+                            input.setText(name);
+                        }
+
+                        alertDialog.setView(input);
+
+                        final String finalExtension = extension;
+                        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String newName = input.getText().toString().trim();
+                                File oldFile = new File(fileItem.getPath());
+                                File newFile = new File(oldFile.getParent(), (newName + finalExtension));
+                                if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
+                                    if (newName.equals(fileItem.getName()) || newName.equals("")) {
+                                        Log.d(TAG, "onClick: link not changed");
+                                    } else if (!FileUtils.isValidUrl(newName)) {
+                                        Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        int linkIndex = linkIndex(position);
+                                        if (linkIndex != -1) {
+                                            links.get(linkIndex).setName(newName);
+                                            starred.get(position).setName(newName);
+
+                                            SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+                                            SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+                                            Gson gson = new Gson();
+                                            linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+                                            linkPreferenceEditor.apply();
+
+                                            SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+                                            SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+                                            starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+                                            starredPreferenceEditor.apply();
+
+
+                                            mStarredAdapter.notifyItemChanged(position);
+                                            sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+                                        }
+
+                                    }
+                                } else {
+                                    if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
+                                        Log.d(TAG, "onClick: filename not changed");
+                                    } else if (newFile.exists()) {
+                                        Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+                                    } else if (newName.contains("/")) {
+                                        Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        if (oldFile.renameTo(newFile)) {
+                                            Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+                                            starred.get(position).setName(newFile.getName());
+                                            starred.get(position).setPath(newFile.getPath());
+                                            Log.d("Rename", starred.get(position).getPath());
+                                            Gson gson = new Gson();
+
+                                            if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
+                                                for (FileItem starItem : starred) {
+                                                    if (starItem.getPath().contains(oldFile.getPath())) {
+                                                        starItem.setPath(starItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
+                                                    }
+                                                }
+                                                for (FileItem linkItem : links) {
+                                                    if (linkItem.getPath().contains(oldFile.getPath())) {
+                                                        linkItem.setPath(linkItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
+                                                    }
+                                                }
+
+                                                SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+                                                SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+                                                linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+                                                linkPreferenceEditor.apply();
+                                            }
+
+                                            SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+                                            SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+                                            starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+                                            starredPreferenceEditor.apply();
+
+                                            mStarredAdapter.notifyItemChanged(position);
+                                            sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
+                                        } else {
+                                            Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        alertDialog.show();
+                        return true;
+
+                    case R.id.notes_item_unstar:
+
+                        SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+                        SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+                        mStarredAdapter.notifyItemRemoved(position);
+                        starred.remove(position);
+                        activity.mBottomAppBar.performShow();
+                        if (starred.size() == 0) {
+                            starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+                            mEmptyLayout.setVisibility(View.VISIBLE);
+                        }
+                        Gson gson = new Gson();
+                        starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+                        starredPreferenceEditor.apply();
+
+                        return true;
+
+                    case R.id.notes_item_delete:
+
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Delete File");
+                        builder.setMessage("Are you sure you want to delete the file?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (starred.get(position).getType() != FileType.FILE_TYPE_LINK) {
+                                    File file = new File(starred.get(position).getPath());
+                                    deleteRecursive(file);
+
+                                    if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
+                                        ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+                                        for (FileItem linkItem : links) {
+                                            if (linkItem.getPath().contains(file.getPath())) {
+                                                linksToBeRemoved.add(linkItem);
+                                            }
+                                        }
+                                        links.removeAll(linksToBeRemoved);
+
+                                        SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+                                        SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+                                        if (links.size() == 0) {
+                                            linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+                                        }
+                                        Gson gson = new Gson();
+                                        linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+                                        linkPreferenceEditor.apply();
+
+                                        ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+                                        for (FileItem starItem : starred) {
+                                            if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+                                                starredToBeRemoved.add(starItem);
+                                            }
+                                        }
+                                        starredToBeRemoved.add(starred.get(position));
+                                        starred.removeAll(starredToBeRemoved);
+
+                                        SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+                                        SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+                                        if (starred.size() == 0) {
+                                            starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+                                            mEmptyLayout.setVisibility(View.VISIBLE);
+                                        }
+                                        starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+                                        starredPreferenceEditor.apply();
+                                    }
+
+                                } else {
+                                    int linkPosition = linkIndex(position);
+                                    if (linkPosition != -1) {
+                                        links.remove(linkPosition);
+                                        SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+                                        SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+                                        if (links.size() == 0) {
+                                            linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+                                        }
+                                        Gson gson = new Gson();
+                                        linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+                                        linkPreferenceEditor.apply();
+                                    }
+                                }
+                                mStarredAdapter.notifyDataSetChanged();
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        builder.show();
+                        return true;
+
+                    case R.id.notes_item_share:
+                        if (starred.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
+                            Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+                            File shareFile = new File(starred.get(position).getPath());
+                            ArrayList<FileItem> fileItems = new ArrayList<>();
+                            fileItems.add(starred.get(position));
+                            if (shareFile.exists()) {
+                                intentShareFile.setType(FileUtils.getFileType(fileItems));
+                                intentShareFile.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".provider", new File(starred.get(position).getPath())));
+                                intentShareFile.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                intentShareFile.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                                intentShareFile.putExtra(Intent.EXTRA_TEXT, "Shared using Study Partner application");
+                                startActivity(Intent.createChooser(intentShareFile, "Share File"));
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
+                        }
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.show();
+    }
 	
 	private void populateDataAndSetAdapter() {
 		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);

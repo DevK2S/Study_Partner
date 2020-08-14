@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.util.Patterns;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
@@ -331,6 +332,9 @@ public class FileUtils {
 					return Environment.getExternalStorageDirectory() + "/" + split[1];
 				} else if ("home".equalsIgnoreCase(type)) {
 					return Environment.getExternalStorageDirectory() + "/documents/" + split[1];
+				} else {
+					String sdFile = "/storage/" + type + "/" + split[1];
+					return sdFile;
 				}
 			}
 			// DownloadsProvider
