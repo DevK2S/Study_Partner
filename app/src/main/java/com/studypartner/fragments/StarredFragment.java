@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -47,7 +46,6 @@ import java.util.Objects;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -399,7 +397,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
         enableActionMode(position);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void onOptionsClick(View view, final int position) {
         PopupMenu popup = new PopupMenu(getContext(), view);

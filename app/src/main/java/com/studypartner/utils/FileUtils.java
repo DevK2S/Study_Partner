@@ -261,6 +261,14 @@ public class FileUtils {
 	}
 	
 	/**
+	 * @param uri The Uri to check.
+	 * @return Whether the Uri authority is Google Drive.
+	 */
+	public static boolean isGoogleDriveUri(Uri uri) {
+		return "com.google.android.apps.docs.storage".equals(uri.getAuthority()) || "com.google.android.apps.docs.storage.legacy".equals(uri.getAuthority());
+	}
+	
+	/**
 	 * Get the value of the data column for this Uri. This is useful for
 	 * MediaStore Uris, and other file-based ContentProviders.
 	 *
@@ -299,8 +307,7 @@ public class FileUtils {
 	/**
 	 * Get a file path from a Uri. This will get the the path for Storage Access
 	 * Framework Documents, as well as the _data field for the MediaStore and
-	 * other file-based ContentProviders.<br>
-	 * <br>
+	 * other file-based ContentProviders.
 	 * Callers should check whether the path is local before assuming it
 	 * represents a local file.
 	 *
@@ -333,17 +340,18 @@ public class FileUtils {
 				} else if ("home".equalsIgnoreCase(type)) {
 					return Environment.getExternalStorageDirectory() + "/documents/" + split[1];
 				} else {
-					String sdFile = "/storage/" + type + "/" + split[1];
-					return sdFile;
+					return "/storage/" + type + "/" + split[1];
 				}
 			}
 			// DownloadsProvider
 			else if (isDownloadsDocument(uri)) {
 				
-				final String id = DocumentsContract.getDocumentId(uri);
+				String id = DocumentsContract.getDocumentId(uri);
 				
 				if (id != null && id.startsWith("raw:")) {
-					return id.substring(4);
+					id = id.substring(4);
+				} else if (id != null && id.startsWith("msf:")) {
+					id = id.substring(4);
 				}
 				
 				String[] contentUriPrefixesToTry = new String[]{
@@ -352,7 +360,7 @@ public class FileUtils {
 				};
 				
 				for (String contentUriPrefix : contentUriPrefixesToTry) {
-					Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
+					Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.parseLong(id));
 					try {
 						String path = getDataColumn(context, contentUri, null, null);
 						if (path != null) {
@@ -394,6 +402,33 @@ public class FileUtils {
 				};
 				
 				return getDataColumn(context, contentUri, selection, selectionArgs);
+			}
+			//GoogleDrive
+			else if (isGoogleDriveUri(uri)) {
+				Log.d("TAG", "getLocalPath: uri is " + uri + " authority is " + uri.getAuthority());
+				
+				Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
+				int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+				returnCursor.moveToFirst();
+				String name = (returnCursor.getString(nameIndex));
+				File file = new File(context.getCacheDir(), name);
+				try {
+					InputStream inputStream = context.getContentResolver().openInputStream(uri);
+					FileOutputStream outputStream = new FileOutputStream(file);
+					int read;
+					int maxBufferSize = 1024 * 1024;
+					int bytesAvailable = inputStream.available();
+					
+					int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+					
+					final byte[] buffers = new byte[bufferSize];
+					while ((read = inputStream.read(buffers)) != -1) {
+						outputStream.write(buffers, 0, read);
+					}
+					inputStream.close();
+					outputStream.close();
+				} catch (Exception ignored) {}
+				return file.getPath();
 			}
 		}
 		// MediaStore (and general)

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
@@ -75,6 +76,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 						.asBitmap()
 						.load(image)
 						.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+						.error(R.drawable.image_add_icon_bs)
 						.into(holder.fileImage);
 				
 			} else {
@@ -90,6 +92,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 						.asBitmap()
 						.load(video)
 						.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+						.error(R.drawable.video_add_icon_bs)
 						.into(holder.fileImage);
 				
 			} else {
@@ -122,14 +125,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 			}
 		}
 		
-		holder.fileLayout.setBackground(mActivity.getDrawable(R.drawable.notes_item_background_odd));
+		holder.fileLayout.setBackground(ContextCompat.getDrawable(mActivity,R.drawable.notes_item_background_odd));
 		
 		if (selectedItems.get(position, false)) {
 			holder.itemView.setActivated(true);
 		} else {
 			holder.itemView.setActivated(false);
 			if (position % 2 == 0) {
-				holder.fileLayout.setBackground(mActivity.getDrawable(R.drawable.notes_item_background_even));
+				holder.fileLayout.setBackground(ContextCompat.getDrawable(mActivity,R.drawable.notes_item_background_even));
 			}
 		}
 		
