@@ -1519,6 +1519,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						Uri uri = data.getClipData().getItemAt(i).getUri();
 						String filePath = FileUtils.getFilePath(requireContext(), uri);
 						FileItem audioFileItem = new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath()));
+						audioFileItem.setName(audioFileItem.getName().replaceAll(" ", "_"));
 						audioFileItem.setType(FileType.FILE_TYPE_AUDIO);
 						notes.add(audioFileItem);
 						mNotesAdapter.notifyItemInserted(notes.size() - 1);
@@ -1534,6 +1535,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					FileItem audioFileItem = new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath()));
 					audioFileItem.setType(FileType.FILE_TYPE_AUDIO);
+					audioFileItem.setName(audioFileItem.getName().replaceAll(" ", "_"));
 
 					notes.add(audioFileItem);
 					mNotesAdapter.notifyItemInserted(notes.size() - 1);

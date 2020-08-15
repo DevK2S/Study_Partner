@@ -150,18 +150,19 @@ public class FileUtils {
 	}
 	
 	public static String copyFile (String inputFilePath, String outputDirectoryPath) {
-		
+
 		String fileName = new File(inputFilePath).getName();
-		
+		//if(getFileType(new File(inputFilePath))==FileType.FILE_TYPE_AUDIO)
+		fileName = fileName.replaceAll(" ", "_");
 		String outputFilePath = new File(outputDirectoryPath, fileName).getPath();
-		
-		
+
+
 		try (InputStream in = new FileInputStream(inputFilePath)) {
-			
+
 			OutputStream out = new FileOutputStream(outputFilePath);
-			
+
 			byte[] buffer = new byte[1024];
-			
+
 			int read;
 			while ((read = in.read(buffer)) != -1) {
 				out.write(buffer, 0, read);
@@ -172,7 +173,6 @@ public class FileUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return outputFilePath;
 	}
 	
