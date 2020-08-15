@@ -160,15 +160,17 @@
 
             <TextView
                 android:id="@+id/attendanceItemSubjectName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/mediumMargin"
+                android:layout_marginEnd="@dimen/smallMargin"
                 android:textAllCaps="true"
                 android:textColor="@color/alternativeText"
                 android:textSize="@dimen/largeText"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/attendanceItemEditButton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:text="Java" />
 

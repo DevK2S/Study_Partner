@@ -1427,6 +1427,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			if (resultCode == Activity.RESULT_OK) {
 				assert data != null;
 				ArrayList<Uri> imagePaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA)));
+				if (imagePaths.size() > 2) {
+					if (mInterstitialAd.isLoaded()) {
+						mInterstitialAd.show();
+					}
+				}
+				
 				for (Uri uri : imagePaths) {
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
@@ -1463,6 +1469,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				assert data != null;
 				if (null != data.getClipData()) {
 					Log.d(TAG, "onActivityResult: document count = " + data.getClipData().getItemCount());
+					
+					if (data.getClipData().getItemCount() > 2) {
+						if (mInterstitialAd.isLoaded()) {
+							mInterstitialAd.show();
+						}
+					}
+					
 					for (int i = 0; i < data.getClipData().getItemCount(); i++) {
 						Uri uri = data.getClipData().getItemAt(i).getUri();
 						String filePath = FileUtils.getFilePath(requireContext(), uri);
@@ -1494,6 +1507,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			if (resultCode == Activity.RESULT_OK) {
 				assert data != null;
 				ArrayList<Uri> videoPaths = new ArrayList<>(Objects.requireNonNull(data.<Uri>getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA)));
+				
+				if (videoPaths.size() > 2) {
+					if (mInterstitialAd.isLoaded()) {
+						mInterstitialAd.show();
+					}
+				}
+				
 				for (Uri uri : videoPaths) {
 					String filePath = FileUtils.getFilePath(requireContext(), uri);
 					notes.add(new FileItem(FileUtils.copyFile(filePath, noteFolder.getPath())));
@@ -1515,6 +1535,14 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				assert data != null;
 				if (null != data.getClipData()) {
 					Log.d(TAG, "onActivityResult: audio count = " + data.getClipData().getItemCount());
+					
+					if (data.getClipData().getItemCount() > 2) {
+						if (mInterstitialAd.isLoaded()) {
+							mInterstitialAd.show();
+						}
+					}
+					
+					
 					for (int i = 0; i < data.getClipData().getItemCount(); i++) {
 						Uri uri = data.getClipData().getItemAt(i).getUri();
 						String filePath = FileUtils.getFilePath(requireContext(), uri);
