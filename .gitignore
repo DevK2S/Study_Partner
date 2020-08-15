@@ -9,3 +9,6 @@
 /captures
 .externalNativeBuild
 .cxx
+/deployment_cert.der
+/studypartnerkeystore.jks
+/upload_cert.der
