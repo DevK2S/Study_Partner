@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
 import com.studypartner.models.ReminderItem;
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 						FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
 							@Override
 							public void onSuccess(Void aVoid) {
-								Toast.makeText(MainActivity.this, "Verification email sent successfully", Toast.LENGTH_SHORT).show();
+								StyleableToast.makeText(MainActivity.this, "Verification email sent successfully", Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 							}
 						});
 					}
@@ -219,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 							finishAffinity();
 							overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 						} else {
-							Toast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 						}
 					}
 				});
@@ -387,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 							finishAffinity();
 							overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 						} else {
-							Toast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 						}
 					}
 				});
@@ -411,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 				return true;
 			
 			default:
-				Toast.makeText(this, "This feature is not yet available", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(this, "This feature is not yet available", Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 				return false;
 		}
 	}

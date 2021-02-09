@@ -32,4 +32,17 @@
         <item name="cornerSizeBottomRight">@dimen/mediumMargin</item>
         <item name="cornerSizeBottomLeft">@dimen/mediumMargin</item>
     </style>
+
+    <style name="loggoutToast">
+        <item name="stTextBold">true</item>
+        <item name="stTextColor">#ffffff</item>
+        <item name="stTextSize">15sp</item>
+        <item name="stColorBackground">#2699FB</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stStrokeWidth">0sp</item>
+        <item name="stStrokeColor">#2699FB</item>
+        <item name="stLength">LONG</item> LONG or SHORT
+        <item name="stRadius">30sp</item>
+    </style>
+
 </resources>

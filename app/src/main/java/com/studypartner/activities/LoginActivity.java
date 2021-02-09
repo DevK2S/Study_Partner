@@ -39,6 +39,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.R;
 import com.studypartner.models.User;
 
@@ -223,7 +224,7 @@ public class LoginActivity extends AppCompatActivity {
 				Log.d(TAG, "onClick: forget password clicked");
 				if (validateEmail(emailEditText.getText().toString()) != null) {
 					Log.d(TAG, "onClick: invalid email address entered");
-					Toast.makeText(LoginActivity.this, "Put a valid email associated with an account to change the password", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(LoginActivity.this, "Put a valid email associated with an account to change the password", Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 				} else {
 					FirebaseAuth.getInstance().sendPasswordResetEmail(emailEditText.getText().toString())
 							.addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -231,10 +232,10 @@ public class LoginActivity extends AppCompatActivity {
 								public void onComplete(@NonNull Task<Void> task) {
 									if (task.isSuccessful()) {
 										Log.d(TAG, "onComplete: email sent to user for password reset");
-										Toast.makeText(LoginActivity.this, "A password reset email has been sent to your email address", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(LoginActivity.this, "A password reset email has been sent to your email address", Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 									} else {
 										Log.d(TAG, "onComplete: email for password reset cannot be sent");
-										Toast.makeText(LoginActivity.this, "Couldn't send a password reset email", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(LoginActivity.this, "Couldn't send a password reset email", Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 										task.getException().printStackTrace();
 									}
 								}
@@ -300,7 +301,7 @@ public class LoginActivity extends AppCompatActivity {
 							storeUserDetails();
 						} else {
 							findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
-							Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 							task.getException().printStackTrace();
 						}
 					}
@@ -387,8 +388,8 @@ public class LoginActivity extends AppCompatActivity {
 											Log.d(TAG, "onComplete: email already in use");
 											
 											findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
-											
-											Toast.makeText(LoginActivity.this, "Email already in use by other account. Cannot sign in", Toast.LENGTH_LONG).show();
+
+											StyleableToast.makeText(LoginActivity.this, "Email already in use by other account. Cannot sign in", Toast.LENGTH_LONG, R.style.loggoutToast).show();
 											
 											GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 													.requestIdToken(getString(R.string.default_web_client_id))
@@ -456,7 +457,7 @@ public class LoginActivity extends AppCompatActivity {
 							overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 						} else {
 							findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
-							Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT, R.style.loggoutToast).show();
 							task.getException().printStackTrace();
 						}
 					}
