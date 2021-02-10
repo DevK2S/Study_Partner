@@ -3,5 +3,5 @@
 <!-- By: Karan Gourisaria -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <corners android:radius="100dp" />
-    <solid android:color="@color/progressBarBg" />
+    <solid android:color="@color/lightColorPrimary" />
 </shape>

@@ -80,6 +80,7 @@
         android:elevation="@dimen/mediumElevation"
         android:padding="@dimen/mediumPadding"
         android:visibility="invisible"
+        android:indeterminateTint="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
