@@ -1903,27 +1903,25 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 		SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
 		final ArrayList<Integer> starredIndexes = new ArrayList<>( positions );
+
+		if (!starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
+			starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", true);
+			starred = new ArrayList<>();
+		}
+
 		for(Integer position : starredIndexes) {
 			if (starredIndex(position) == -1) {
-				if (!starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
-					starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", true);
-					starred = new ArrayList<>();
-				}
 				Log.d(TAG, "onMenuItemClick: starring position " + position);
 
 				notes.get(position).setStarred(true);
 				starred.add(notes.get(position));
 				Gson gson = new Gson();
 				starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-				starredPreferenceEditor.apply();
-				mNotesAdapter.notifyItemChanged(position);
 			}
-			/*
-			else {
-				Toast.makeText(getContext(), "You are some sort of wizard aren't you", Toast.LENGTH_SHORT).show();
-			}
-			*/
+
 		}
+		starredPreferenceEditor.apply();
+		mNotesAdapter.notifyDataSetChanged();
 	}
 
 	private void addToStarred(int position) {
