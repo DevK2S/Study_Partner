@@ -1170,11 +1170,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 
 				notes.get(position).setStarred(true);
 				starred.add(notes.get(position));
-				Gson gson = new Gson();
-				starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 			}
 
 		}
+		Gson gson = new Gson();
+		starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 		starredPreferenceEditor.apply();
 		mNotesAdapter.notifyDataSetChanged();
 	}

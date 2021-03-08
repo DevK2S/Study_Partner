@@ -1915,11 +1915,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 
 				notes.get(position).setStarred(true);
 				starred.add(notes.get(position));
-				Gson gson = new Gson();
-				starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 			}
-
 		}
+		Gson gson = new Gson();
+		starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 		starredPreferenceEditor.apply();
 		mNotesAdapter.notifyDataSetChanged();
 	}
