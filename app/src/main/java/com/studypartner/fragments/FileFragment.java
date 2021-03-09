@@ -772,28 +772,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						return true;
 					
 					case R.id.notes_item_star:
-						
-						final int starredIndex = starredIndex(position);
-						if (starredIndex == -1) {
-							SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-							SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-							
-							if (!starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
-								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", true);
-								starred = new ArrayList<>();
-							}
-							Log.d(TAG, "onMenuItemClick: starring position " + position);
-							
-							notes.get(position).setStarred(true);
-							starred.add(notes.get(position));
-							Gson gson = new Gson();
-							starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-							starredPreferenceEditor.apply();
-							mNotesAdapter.notifyItemChanged(position);
-						} else {
-							Toast.makeText(getContext(), "You are some sort of wizard aren't you", Toast.LENGTH_SHORT).show();
-						}
-						
+
+						addToStarred( position );
 						return true;
 					
 					case R.id.notes_item_unstar:
@@ -1115,7 +1095,8 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				@Override
 				public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 					mode.getMenuInflater().inflate(R.menu.menu_notes_action_mode, menu);
-					menu.removeItem(R.id.notes_action_unstar);
+					MenuItem unStarred = menu.findItem(R.id.notes_action_unstar);
+					unStarred.setIcon(R.drawable.starred_icon);
 					actionModeOn = true;
 					fab.hide();
 					mLinearLayout.setVisibility(View.GONE);
@@ -1141,6 +1122,10 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 							return true;
 						case R.id.notes_action_select_all:
 							selectAll();
+							return true;
+						case R.id.notes_action_unstar:
+							addToStarred(mNotesAdapter.getSelectedItems());
+							mode.finish();
 							return true;
 						default:
 							return false;
@@ -1913,4 +1898,35 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				.setKeepDisplayOn(false)
 				.recordFromFragment();
 	}
+
+	private void addToStarred(ArrayList<Integer> positions) {
+		SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+		SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+		final ArrayList<Integer> starredIndexes = new ArrayList<>( positions );
+
+		if (!starredPreference.getBoolean("STARRED_ITEMS_EXISTS", false)) {
+			starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", true);
+			starred = new ArrayList<>();
+		}
+
+		for(Integer position : starredIndexes) {
+			if (starredIndex(position) == -1) {
+				Log.d(TAG, "onMenuItemClick: starring position " + position);
+
+				notes.get(position).setStarred(true);
+				starred.add(notes.get(position));
+			}
+		}
+		Gson gson = new Gson();
+		starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+		starredPreferenceEditor.apply();
+		mNotesAdapter.notifyDataSetChanged();
+	}
+
+	private void addToStarred(int position) {
+		ArrayList<Integer> positions = new ArrayList<>(1);
+		positions.add( position );
+		addToStarred( positions );
+	}
+
 }
