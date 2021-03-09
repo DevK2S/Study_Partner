@@ -1185,7 +1185,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			actionMode.invalidate();
 		}
 		
-		actionMode = null;
+		actionMode.invalidate();
 	}
 	
 	private void deleteRows() {

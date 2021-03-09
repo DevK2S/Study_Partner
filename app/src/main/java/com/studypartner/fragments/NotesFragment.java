@@ -992,7 +992,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			actionMode.invalidate();
 		}
 		
-		actionMode = null;
+		actionMode.invalidate();
 	}
 	
 	private void deleteRows() {
