@@ -7,6 +7,10 @@ assignees: ''
 
 ---
 
+## Are you a part of GSSOC' 21?
+- [ ] Yes
+- [ ] No
+
 ## Describe the bug
 A clear and concise description of what the bug is.
 
