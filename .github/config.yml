@@ -6,7 +6,7 @@ newIssueWelcomeComment: >
   Hello there!👋 Welcome to the project!🚀⚡
   
   Thank you and congrats🎉 for opening your very first issue in this project.
-  Please adhere to our [Code of Conduct](../CODE_OF_CONDUCT.md).🙌
+  Please adhere to our [Code of Conduct](https://github.com/krayong/Study_Partner/blob/c77d43a232dfa2f8d1b4b51878c302e44d56300d/CODE_OF_CONDUCT.md).🙌
   Please make sure not to start working on the issue, unless you get assigned to it.😄
   
   
@@ -17,7 +17,7 @@ newPRWelcomeComment: >
   Hello there!👋 Welcome to the project!💖
   
   Thank you and congrats🎉 for opening your first pull request.
-  Please make sure you have fololowed [contributing guidlines](../CONTRIBUTING.md).🙌🙌 We will get back to you as soon as we can 😄.
+  Please make sure you have fololowed [contributing guidlines](https://github.com/krayong/Study_Partner/blob/c77d43a232dfa2f8d1b4b51878c302e44d56300d/CONTRIBUTING.md).🙌🙌 We will get back to you as soon as we can 😄.
   
   
 # Configuration for first-pr-merge - https://github.com/behaviorbot/first-pr-merge
