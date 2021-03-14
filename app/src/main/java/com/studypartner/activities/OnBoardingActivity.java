@@ -53,7 +53,7 @@ public class OnBoardingActivity extends AppCompatActivity {
 		Log.d(TAG, "onCreate: Initialising screens for onBoarding");
 		
 		final List<OnBoardingItem> screenList = new ArrayList<>();
-		screenList.add(new OnBoardingItem("NOTES KEEPER", "One step to keep and arrange all your notes!", R.drawable.on_boarding_screen_notes_image));
+		screenList.add(new OnBoardingItem("NOTES KEEPER", "One step to keep and arrange all your notes!", R.drawable.notebook_1));
 		screenList.add(new OnBoardingItem("ALL TYPES OF NOTES", "Store Images, Documents, Videos and much more", R.drawable.on_boarding_screen_types_of_notes_image));
 		screenList.add(new OnBoardingItem("ATTENDANCE MANAGER", "We manage your attendance too", R.drawable.on_boarding_screen_attendance_image));
 		
