@@ -12,17 +12,51 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary">
 
-        <ImageView
-            android:id="@+id/createAccountBackArrow"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="@dimen/smallMargin"
-            android:contentDescription="@string/create_account_screen_back_arrow_cd"
-            app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:tint="@color/alternativeIconTint"
-            app:srcCompat="@drawable/back_arrow_icon" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:id="@+id/createAccountBackArrow"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:contentDescription="@string/create_account_screen_back_arrow_cd"
+                app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/back_arrow_icon"
+                app:tint="@color/alternativeIconTint"
+                tools:ignore="NotSibling" />
+
+            <TextView
+                android:id="@+id/createAccountWelcomeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/createAccountBackArrow"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:text="@string/create_account_screen_welcome"
+                android:textColor="@color/alternativeText"
+                android:textSize="@dimen/extraLargeText"
+                android:textStyle="bold"
+                android:transitionName="welcome_transition"
+                tools:ignore="NotSibling" />
+
+            <ImageView
+                android:id="@+id/loginScreenAppLogo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="40dp"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/app_logo"/>
+
+        </RelativeLayout>
+
+<!--        imageView arrow-->
 
         <Button
             android:id="@+id/createAccountScreenCreateAccountButton"
@@ -102,19 +136,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create_account_screen_welcome"
-            android:textColor="@color/alternativeText"
-            android:textSize="@dimen/extraLargeText"
-            android:textStyle="bold"
-            android:transitionName="welcome_transition"
-            app:layout_constraintBottom_toTopOf="@+id/createAccountScreenBackgroundRectangle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        TextView Welcome Back-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/createAccountScreenFullNameTextInput"
