@@ -5,6 +5,9 @@ One stop solution for organizing and maintaining notes, attendance, reminders an
 
 Download it now at https://play.google.com/store/apps/details?id=com.studypartner&hl=en_IN
 
+## Tech Stack
+[![forthebadge made-with-java](http://ForTheBadge.com/images/badges/made-with-java.svg)](https://www.java.org/)
+
 ### Tools required
 In order to use this demo application you must first have installed:
 * [Android Studio](https://developer.android.com/studio/index.html)
