@@ -7,12 +7,13 @@ STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution
 
 ### Screenshots
 <p float="left">
-	<img src="https://github.com/krayong/Study_Partner/blob/master/Home%20Screen.jpg" alt="Home Screen" width="150">
-	<img src="https://github.com/krayong/Study_Partner/blob/master/File%20Screen.jpg" alt="File Screen" width="150">
-	<img src="https://github.com/krayong/Study_Partner/blob/master/Attendance%20Screen.jpg" alt="Attendance Screen" width="150">
-	<img src="https://github.com/krayong/Study_Partner/blob/master/Reminder%20Screen.jpg" alt="Reminder Screen" width="150">
-	<img src="https://github.com/krayong/Study_Partner/blob/master/Star%20Screen.jpg" alt="Star Screen" width="150">
+	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/Home%20Screen.jpg" alt="Home Screen" width="150">
+	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/File%20Screen.jpg" alt="File Screen" width="150">
+	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/Attendance%20Screen.jpg" alt="Attendance Screen" width="150">
+	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/Reminder%20Screen.jpg" alt="Reminder Screen" width="150">
+	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/Star%20Screen.jpg" alt="Star Screen" width="150">
 </p>
+
 
 ### Tools required
 In order to use this demo application you must first have installed:
