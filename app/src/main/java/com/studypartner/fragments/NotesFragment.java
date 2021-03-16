@@ -821,20 +821,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private void addFolder() {
 		if (isExternalStorageReadableWritable()) {
 			if (writeReadPermission()) {
-				
-				File file;
-				
-				int count = 0;
-				do {
-					String newFolder = "New Folder";
-					if (count > 0) {
-						newFolder += " " + count;
-					}
-					++count;
-					file = new File(noteFolder, newFolder);
-				} while (file.exists());
-				
-				
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
 				alertDialog.setMessage("Name of the folder");
 				final EditText input = new EditText(getContext());
@@ -842,7 +828,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						LinearLayout.LayoutParams.MATCH_PARENT,
 						LinearLayout.LayoutParams.MATCH_PARENT);
 				input.setLayoutParams(lp);
-				input.setText(file.getName());
+				input.setHint("Enter folder name");//added hint for editText in notes fragment for entering folder name instead of text
 				alertDialog.setView(input);
 				
 				alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
