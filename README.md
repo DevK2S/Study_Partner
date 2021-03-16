@@ -9,7 +9,7 @@ STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution
 <p float="left">
 	<img src="https://github.com/sakshamgurbhele/Study_Partner/blob/master/Screenshots/Home%20Screen.jpg" alt="Home Screen" width="150">
 	<img src="https://github.com/sakshamgurbhele/Study_Partner/blob/master/Screenshots/File%20Screen.jpg" alt="File Screen" width="150">
-	<img src="https://github.com/sakshamgurbhele/Study_Partner/blob/master/Screenshots/Attendance%20Screen.jpg" width="150">
+	<img src="https://github.com/sakshamgurbhele/Study_Partner/blob/master/Screenshots/Attendance%20Screen.jpg" alt="Attendance Screen" width="150">
 	<img src="https://github.com/sakshamgurbhele/Study_Partner/blob/master/Screenshots/Reminder%20Screen.jpg" alt="Reminder Screen" width="150">
 	<img src="https://github.com/sakshamgurbhele/Study_Partner/blob/master/Screenshots/Star%20Screen.jpg" alt="Star Screen" width="150">
 </p>
