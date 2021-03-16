@@ -14,6 +14,9 @@ STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution
 	<img src="https://github.com/krayong/Study_Partner/blob/master/Star%20Screen.jpg" alt="Star Screen" width="150">
 </p>
 
+## Tech Stack
+[![forthebadge made-with-java](http://ForTheBadge.com/images/badges/made-with-java.svg)](https://www.java.org/)	<img alt="Android" src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />	<img alt="Firebase" src="https://img.shields.io/badge/firebase%20-%23039BE5.svg?&style=for-the-badge&logo=firebase"/>	<img alt="MVC pattern" src="https://img.shields.io/badge/MVC pattern%20-%234f0599.svg?&style=for-the-badge&logo=MVCpattern&logoColor=white"/>	<img alt="JetPack" src="https://img.shields.io/badge/Jetpack%20-%234f0599.svg?&style=for-the-badge&logo=jetpack&logoColor=white"/>
+
 ### Tools required
 In order to use this demo application you must first have installed:
 * [Android Studio](https://developer.android.com/studio/index.html)
