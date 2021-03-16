@@ -1,4 +1,4 @@
-<b>Fixes:</b> #[issue number that will be closed through this PR]
+Fixes #[issue number that will be closed through this PR]
 
 ## Are you a part of GSSOC' 21?
 - [ ] Yes
