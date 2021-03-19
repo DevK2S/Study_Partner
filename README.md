@@ -6,9 +6,9 @@ STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution
 [![GitHub issues](https://img.shields.io/github/issues/krayong/Study_Partner?style=plastic)](https://github.com/krayong/Study_Partner/issues)
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/krayong/Study_Partner)](https://github.com/krayong/Study_Partner/pull/)
 [![GitHub contributors](https://img.shields.io/github/contributors/krayong/Study_Partner.svg)](https://GitHub.com/krayong/Study_Partner/graphs/contributors/)
-[![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Stars&style=plastic)](https://github.com/krayong/Study_Partner/stars)
-[![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch&style=plastic)](https://github.com/krayong/Study_Partner/watchers)
-[![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork&style=plastic)](https://github.com/krayong/Study_Partner/forks)
+[![GitHub forks](https://img.shields.io/github/forks/krayong/Study_Partner?label=Fork&style=social)](https://github.com/krayong/Study_Partner/network/members)
+[![GitHub stars](https://img.shields.io/github/stars/krayong/Study_Partner?label=Star&style=social)](https://github.com/krayong/Study_Partner/stars)
+[![GitHub watchers](https://img.shields.io/github/watchers/krayong/Study_Partner?style=social&label=Watch)](https://github.com/krayong/Study_Partner/watchers)
 <br>
 [![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
