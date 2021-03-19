@@ -1,6 +1,22 @@
 # Study Partner
 STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution for organizing and maintaining notes, attendance, reminders, and much more. STUDY PARTNER helps you organize your student life just at your fingertips. Coherent and utilitarian tool for storing notes. A true partner a student need. An application made for students by students.
 
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![GitHub release](https://img.shields.io/github/release/krayong/Study_Partner)](https://github.com/krayong/Study_Partner/releases/) 
+[![GitHub issues](https://img.shields.io/github/issues/krayong/Study_Partner?style=plastic)](https://github.com/krayong/Study_Partner/issues)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/krayong/Study_Partner)](https://github.com/krayong/Study_Partner/pull/)
+[![GitHub contributors](https://img.shields.io/github/contributors/krayong/Study_Partner.svg)](https://GitHub.com/krayong/Study_Partner/graphs/contributors/)
+[![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Stars&style=plastic)](https://github.com/krayong/Study_Partner/stars)
+[![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch&style=plastic)](https://github.com/krayong/Study_Partner/watchers)
+[![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork&style=plastic)](https://github.com/krayong/Study_Partner/forks)
+<br>
+[![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/krayong/Study_Partner/issues)
+<br>
+[![discord](https://img.shields.io/badge/Chat-on%20discord-red)](https://discord.com/channels/811724426965811210/815030597843419156)
+
+
 ![Logo](https://github.com/krayong/Study_Partner/blob/master/app/src/main/app_logo-playstore.png)
 
  Download it now at https://play.google.com/store/apps/details?id=com.studypartner&hl=en_IN
