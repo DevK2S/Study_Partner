@@ -4,14 +4,14 @@ STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution
 [![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 [![GitHub release](https://img.shields.io/github/release/krayong/Study_Partner)](https://github.com/krayong/Study_Partner/releases/) 
 [![GitHub issues](https://img.shields.io/github/issues/krayong/Study_Partner?style=plastic)](https://github.com/krayong/Study_Partner/issues)
-[![GitHub pull-requests](https://img.shields.io/github/issues-pr/krayong/Study_Partner)](https://github.com/krayong/Study_Partner/pull/)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/krayong/Study_Partner)](https://github.com/krayong/Study_Partner/pulls/)
 [![GitHub contributors](https://img.shields.io/github/contributors/krayong/Study_Partner.svg)](https://GitHub.com/krayong/Study_Partner/graphs/contributors/)
 [![GitHub forks](https://img.shields.io/github/forks/krayong/Study_Partner?label=Fork&style=social)](https://github.com/krayong/Study_Partner/network/members)
-[![GitHub stars](https://img.shields.io/github/stars/krayong/Study_Partner?label=Star&style=social)](https://github.com/krayong/Study_Partner/stars)
+[![GitHub stars](https://img.shields.io/github/stars/krayong/Study_Partner?label=Star&style=social)](https://github.com/krayong/Study_Partner/stargazers)
 [![GitHub watchers](https://img.shields.io/github/watchers/krayong/Study_Partner?style=social&label=Watch)](https://github.com/krayong/Study_Partner/watchers)
 <br>
-[![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/ellerbrock/open-source-badges/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Open Source Love png1](https://badges.frapsoft.com/os/v1/open-source.png?v=103)](https://github.com/krayong/Study_Partner)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/krayong/Study_Partner)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/krayong/Study_Partner/issues)
 <br>
 [![discord](https://img.shields.io/badge/Chat-on%20discord-red)](https://discord.com/channels/811724426965811210/815030597843419156)
