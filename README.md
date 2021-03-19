@@ -65,3 +65,16 @@ In order to use this demo application you must first have installed:
 The recommended IDE for Android development is [Android Studio](https://developer.android.com/studio) because it is developed and constantly updated by Google, has good support for Gradle, contains a range of useful monitoring and analysis tools, and is fully tailored for Android development.
 
 Avoid adding Android Studio's specific configuration files, such as .iml files to the version control system as these often contain configurations specific to your local machine, which won't work for your colleagues.
+
+## Contributors:
+### Credits goes to these people:✨
+
+<table>
+<tr>
+<td>
+   <a href="https://github.com/krayong/Study_Partner/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=krayong/Study_Partner" />
+</a>
+</td>
+</tr>
+</table>
