@@ -119,6 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:inputType="textLongMessage|textMultiLine" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -145,6 +146,7 @@
             android:id="@+id/titleEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:inputType="textShortMessage" />
 
     </com.google.android.material.textfield.TextInputLayout>
