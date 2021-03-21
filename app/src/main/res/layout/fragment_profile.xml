@@ -133,6 +133,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_full_name"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -163,6 +164,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_username"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -193,6 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_email"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -223,6 +226,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_password"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -254,6 +258,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_old_password"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -284,6 +289,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_new_password"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -314,6 +320,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_confirm_password"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -345,6 +352,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/profile_screen_password"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 

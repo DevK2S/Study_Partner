@@ -1,11 +1,14 @@
 package com.studypartner.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -372,25 +375,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 			
 			case R.id.nav_logout:
 				Log.d(TAG, "onNavigationItemSelected: logging out");
-				FirebaseAuth.getInstance().signOut();
-				
-				GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-						.requestIdToken(getString(R.string.default_web_client_id))
-						.requestEmail()
-						.build();
-				GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-				googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-					@Override
-					public void onComplete(@NonNull Task<Void> task) {
-						if (task.isSuccessful()) {
-							mNavController.navigate(R.id.nav_logout);
-							finishAffinity();
-							overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-						} else {
-							Toast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
-						}
-					}
-				});
+
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								MainActivity.this);
+						View view=getLayoutInflater().inflate(R.layout.logout_dialog_box,null);
+
+						Button logoutYesButton=view.findViewById(R.id.logout_yes);
+						Button logoutNoButton=view.findViewById(R.id.logout_no);
+
+						builder.setView(view);
+
+						final AlertDialog alertDialog= builder.create();
+						alertDialog.setCanceledOnTouchOutside(true);
+
+						logoutYesButton.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+
+								FirebaseAuth.getInstance().signOut();
+
+								GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+										.requestIdToken(getString(R.string.default_web_client_id))
+										.requestEmail()
+										.build();
+								GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(MainActivity.this, gso);
+								googleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+									@Override
+									public void onComplete(@NonNull Task<Void> task) {
+										if (task.isSuccessful()) {
+											mNavController.navigate(R.id.nav_logout);
+											finishAffinity();
+											overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+										} else {
+											Toast.makeText(MainActivity.this, "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+										}
+									}
+								});
+
+								alertDialog.dismiss();
+							}
+						});
+
+						logoutNoButton.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								alertDialog.dismiss();
+							}
+						});
+
+						alertDialog.show();
+
 				return true;
 			
 			case R.id.nav_feedback:
