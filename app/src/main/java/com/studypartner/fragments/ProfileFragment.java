@@ -480,14 +480,28 @@ public class ProfileFragment extends Fragment {
 							if (task.isSuccessful()) {
 								Log.d(TAG, "onComplete: re authenticating successful");
 								enableViews();
-								
-								final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-								builder.setTitle("Deleting your account");
-								builder.setMessage("Are you sure you want to delete the account? All the data will be lost and cannot be retrieved later.");
-								builder.setCancelable(false);
-								builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+								AlertDialog.Builder builder = new AlertDialog.Builder(
+										getContext());
+								View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+								Button yesButton=view.findViewById(R.id.yes_button);
+								Button noButton=view.findViewById(R.id.no_button);
+								TextView title = view.findViewById(R.id.title_dialog);
+								TextView detail = view.findViewById(R.id.detail_dialog);
+								yesButton.setText("Delete");
+								noButton.setText("Cancel");
+								title.setText("Deleting your account");
+								detail.setText("Are you sure you want to delete the account? All the data will be lost and cannot be retrieved later.");
+
+								builder.setView(view);
+
+								final AlertDialog dialog= builder.create();
+								dialog.setCancelable(false);
+
+								yesButton.setOnClickListener(new View.OnClickListener() {
 									@Override
-									public void onClick(DialogInterface dialog, int which) {
+									public void onClick(View v) {
 										Log.d(TAG, "onClick: deleting account");
 										
 										mDatabaseReference.child("users").child(currentUser.getUid()).removeValue(new DatabaseReference.CompletionListener() {
@@ -565,11 +579,12 @@ public class ProfileFragment extends Fragment {
 												}
 											}
 										});
+										dialog.dismiss();
 									}
 								});
-								builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								noButton.setOnClickListener(new View.OnClickListener() {
 									@Override
-									public void onClick(DialogInterface dialog, int which) {
+									public void onClick(View v) {
 										dialog.dismiss();
 										deleteAccountPasswordTextInput.getEditText().setText("");
 										deleteAccountPasswordTextInput.setVisibility(View.GONE);
@@ -577,7 +592,7 @@ public class ProfileFragment extends Fragment {
 									}
 								});
 								
-								builder.show();
+								dialog.show();
 							} else if (task.getException().getMessage().contains("The supplied auth credential is malformed or has expired.")){
 								Toast.makeText(requireContext(), "We are facing some errors! Please login again and then try deleting your account", Toast.LENGTH_SHORT).show();
 								enableViews();

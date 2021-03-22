@@ -4,14 +4,15 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -162,15 +163,26 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 	}
 	
 	private void deleteReminder(final int position) {
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		
-		builder.setTitle("Delete Reminder");
-		builder.setMessage("Are you sure you want to remove the reminder");
-		
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				getContext());
+		View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+		Button yesButton=view.findViewById(R.id.yes_button);
+		Button noButton=view.findViewById(R.id.no_button);
+		TextView title = view.findViewById(R.id.title_dialog);
+		TextView detail = view.findViewById(R.id.detail_dialog);
+		title.setText("Delete Reminder");
+		detail.setText("Are you sure you want to remove the reminder");
+
+		builder.setView(view);
+
+		final AlertDialog dialog= builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+
+		yesButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
 				
 				AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
 				Intent intent = new Intent(requireContext(), ReminderAlertReceiver.class);
@@ -197,18 +209,19 @@ public class ReminderFragment extends Fragment implements ReminderAdapter.Remind
 				
 				reminderPreferenceEditor.putString("REMINDER_ITEMS", json);
 				reminderPreferenceEditor.apply();
-				
+
+				dialog.dismiss();
 			}
 		});
 		
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		noButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			
+			public void onClick(View v) {
+				dialog.dismiss();
 			}
 		});
 		
-		builder.show();
+		dialog.show();
 	}
 	
 	private void editReminder(int position) {
