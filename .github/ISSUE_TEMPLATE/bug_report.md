@@ -22,7 +22,7 @@ Steps to reproduce the behavior:
 4. 
 
 ## Expected behavior
-A clear and concise description of what you have expected to happen.
+A clear and concise description of what you are expecting to happen.
 
 ## Logs
 If applicable, add logs to explain your problem (e.g. the error message and/or the exception traceback).
