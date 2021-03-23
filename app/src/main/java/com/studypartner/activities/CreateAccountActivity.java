@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.R;
 import com.studypartner.models.User;
 
@@ -242,7 +243,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 							storeUserDetails();
 						} else {
 							findViewById(R.id.createAccountScreenProgressBar).setVisibility(View.INVISIBLE);
-							Toast.makeText(CreateAccountActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(CreateAccountActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 					}
 				});

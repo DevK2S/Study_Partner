@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.AttendanceAdapter;
@@ -433,7 +434,7 @@ public class AttendanceFragment extends Fragment {
 					attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
 					attendancePreferenceEditor.apply();
 				} else {
-					Toast.makeText(getContext(), "Subject name cannot be empty", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Subject name cannot be empty", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				}
 				builder.dismiss();
 			}
@@ -482,7 +483,7 @@ public class AttendanceFragment extends Fragment {
 					attendancePreferenceEditor.apply();
 					
 				} else {
-					Toast.makeText(getContext(), "Subject name cannot be empty", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Subject name cannot be empty", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				}
 			}
 		});
