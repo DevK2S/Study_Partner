@@ -196,6 +196,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/login_screen_password"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -228,6 +229,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/login_screen_email"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

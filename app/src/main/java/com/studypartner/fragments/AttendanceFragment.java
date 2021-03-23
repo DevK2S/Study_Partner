@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -493,13 +492,27 @@ public class AttendanceFragment extends Fragment {
 	}
 	
 	private void deleteSubject(final int position) {
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Delete Subject");
-		builder.setMessage("Are you sure you want to delete attendance record for this subject?");
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				getContext());
+		View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+		Button yesButton=view.findViewById(R.id.yes_button);
+		Button noButton=view.findViewById(R.id.no_button);
+		TextView title = view.findViewById(R.id.title_dialog);
+		TextView detail = view.findViewById(R.id.detail_dialog);
+		title.setText("Delete Subject");
+		detail.setText("Are you sure you want to delete attendance record for this subject?");
+
+		builder.setView(view);
+
+		final AlertDialog dialog= builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+
+		yesButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
 				mAttendanceItemArrayList.remove(position);
 				attendanceAdapter.notifyItemRemoved(position);
 				
@@ -518,14 +531,18 @@ public class AttendanceFragment extends Fragment {
 				
 				attendancePreferenceEditor.putString("ATTENDANCE_ITEMS", json);
 				attendancePreferenceEditor.apply();
+
+				dialog.dismiss();
 			}
 		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		noButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
 				attendanceAdapter.notifyItemChanged(position);
+
+				dialog.dismiss();
 			}
 		});
-		builder.show();
+		dialog.show();
 	}
 }

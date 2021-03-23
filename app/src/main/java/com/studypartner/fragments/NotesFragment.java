@@ -488,31 +488,31 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
 					case R.id.notes_item_rename:
-						
+
 						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
 						alertDialog.setMessage("New Name");
-						
+
 						final FileItem fileItem = notes.get(position);
-						
+
 						final EditText input = new EditText(getContext());
 						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
 								LinearLayout.LayoutParams.MATCH_PARENT,
 								LinearLayout.LayoutParams.MATCH_PARENT);
 						input.setLayoutParams(lp);
-						
+
 						if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
 							input.setText(fileItem.getName());
 						}
-						
+
 						alertDialog.setView(input);
-						
+
 						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
-								
+
 								if (mInterstitialAd.isLoaded()) {
 									mInterstitialAd.show();
 								}
-								
+
 								String newName = input.getText().toString().trim();
 								File oldFile = new File(fileItem.getPath());
 								File newFile = new File(noteFolder, newName);
@@ -527,19 +527,19 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										StyleableToast.makeText(getContext(), "Folder renamed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 										notes.get(position).setName(newName);
 										notes.get(position).setPath(newFile.getPath());
-										
+
 										int starredIndex = starredIndex(position);
 										if (starredIndex != -1) {
 											SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 											SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-											
+
 											starred.get(starredIndex).setName(newName);
-											
+
 											Gson gson = new Gson();
 											starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 											starredPreferenceEditor.apply();
 										}
-										
+
 										for (FileItem starItem : starred) {
 											if (starItem.getPath().contains(oldFile.getPath())) {
 												starItem.setPath(starItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
@@ -550,20 +550,20 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 												linkItem.setPath(linkItem.getPath().replaceFirst(oldFile.getPath(), newFile.getPath()));
 											}
 										}
-										
+
 										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
 										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-										
+
 										Gson gson = new Gson();
 										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
 										linkPreferenceEditor.apply();
-										
+
 										SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 										SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-										
+
 										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 										starredPreferenceEditor.apply();
-										
+
 										mNotesAdapter.notifyItemChanged(position);
 										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 									} else {
@@ -572,30 +572,30 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								}
 							}
 						});
-						
+
 						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int which) {
 								dialog.cancel();
 							}
 						});
-						
+
 						alertDialog.show();
 						return true;
-					
+
 					case R.id.notes_item_star:
-						
+
 						addToStarred( position );
 						return true;
-					
+
 					case R.id.notes_item_unstar:
-						
+
 						int unstarredIndex = starredIndex(position);
 						if (unstarredIndex != -1) {
 							SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 							SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-							
+
 							starred.remove(unstarredIndex);
-							
+
 							notes.get(position).setStarred(false);
 							if (starred.size() == 0) {
 								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
@@ -607,25 +607,38 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						} else {
 							StyleableToast.makeText(activity, "You are some sort of wizard aren't you", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
-						
+
 						return true;
-					
+
 					case R.id.notes_item_delete:
-						
-						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-						builder.setTitle("Delete Folder");
-						builder.setMessage("Are you sure you want to delete the folder?");
-						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getContext());
+						View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+						Button yesButton=view.findViewById(R.id.yes_button);
+						Button noButton=view.findViewById(R.id.no_button);
+						TextView title = view.findViewById(R.id.title_dialog);
+						TextView detail = view.findViewById(R.id.detail_dialog);
+						title.setText("Delete Folder");
+						detail.setText("Are you sure you want to delete the folder?");
+
+						builder.setView(view);
+
+						final AlertDialog dialog= builder.create();
+						dialog.setCanceledOnTouchOutside(true);
+
+						yesButton.setOnClickListener(new View.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								
+							public void onClick(View v) {
+
 								if (mInterstitialAd.isLoaded()) {
 									mInterstitialAd.show();
 								}
-								
+
 								File file = new File(notes.get(position).getPath());
 								deleteRecursive(file);
-								
+
 								if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
 									ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
 									for (FileItem linkItem : links) {
@@ -634,17 +647,17 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										}
 									}
 									links.removeAll(linksToBeRemoved);
-									
+
 									SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
 									SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-									
+
 									if (links.size() == 0) {
 										linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
 									}
 									Gson gson = new Gson();
 									linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
 									linkPreferenceEditor.apply();
-									
+
 									ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
 									for (FileItem starItem : starred) {
 										if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
@@ -652,25 +665,25 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										}
 									}
 									starred.removeAll(starredToBeRemoved);
-									
+
 									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-									
+
 									if (starred.size() == 0) {
 										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
 									}
 									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 									starredPreferenceEditor.apply();
 								}
-								
+
 								int starPosition = starredIndex(position);
 								if (starPosition != -1) {
-									
+
 									starred.remove(starPosition);
-									
+
 									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
 									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-									
+
 									if (starred.size() == 0) {
 										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
 									}
@@ -681,19 +694,22 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								activity.mBottomAppBar.performShow();
 								mNotesAdapter.notifyItemRemoved(position);
 								notes.remove(position);
-								
+
 								if (notes.isEmpty()) {
 									mEmptyLayout.setVisibility(View.VISIBLE);
 								}
+
+								dialog.dismiss();
 							}
 						});
-						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+						noButton.setOnClickListener(new View.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-							
+							public void onClick(View v) {
+								dialog.dismiss();
 							}
 						});
-						builder.show();
+
+						dialog.show();
 						return true;
 					
 					default:
@@ -822,20 +838,6 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private void addFolder() {
 		if (isExternalStorageReadableWritable()) {
 			if (writeReadPermission()) {
-				
-				File file;
-				
-				int count = 0;
-				do {
-					String newFolder = "New Folder";
-					if (count > 0) {
-						newFolder += " " + count;
-					}
-					++count;
-					file = new File(noteFolder, newFolder);
-				} while (file.exists());
-				
-				
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
 				alertDialog.setMessage("Name of the folder");
 				final EditText input = new EditText(getContext());
@@ -843,7 +845,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						LinearLayout.LayoutParams.MATCH_PARENT,
 						LinearLayout.LayoutParams.MATCH_PARENT);
 				input.setLayoutParams(lp);
-				input.setText(file.getName());
+				input.setHint("Enter folder name");//added hint for editText in notes fragment for entering folder name instead of text
 				alertDialog.setView(input);
 				
 				alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -986,13 +988,27 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	
 	private void deleteRows() {
 		final ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Delete Folders");
-		builder.setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " folders?");
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				getContext());
+		View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+		Button yesButton=view.findViewById(R.id.yes_button);
+		Button noButton=view.findViewById(R.id.no_button);
+		TextView title = view.findViewById(R.id.title_dialog);
+		TextView detail = view.findViewById(R.id.detail_dialog);
+		title.setText("Delete Folders");
+		detail.setText("Are you sure you want to delete " + selectedItemPositions.size() + " folders?");
+
+		builder.setView(view);
+
+		final AlertDialog dialog= builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+
+		yesButton.setOnClickListener( new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
 				if (mInterstitialAd.isLoaded()) {
 					mInterstitialAd.show();
 				}
@@ -1060,15 +1076,16 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				}
 				
 				activity.mBottomAppBar.performShow();
+				dialog.dismiss();
 			}
 		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		noButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			
+			public void onClick(View v) {
+				dialog.dismiss();
 			}
 		});
-		builder.show();
+		dialog.show();
 		
 		actionMode = null;
 	}

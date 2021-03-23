@@ -166,6 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_account_screen_full_name"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -196,6 +197,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_account_screen_username"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -227,6 +229,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_account_screen_email"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textEmailAddress"
                 android:transitionName="email_transition" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -259,6 +262,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_account_screen_password"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPassword"
                 android:transitionName="password_transition" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -290,6 +294,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_account_screen_confirm_password"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 

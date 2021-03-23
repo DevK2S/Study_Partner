@@ -562,12 +562,25 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 
                     case R.id.notes_item_delete:
 
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Delete File");
-                        builder.setMessage("Are you sure you want to delete the file?");
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getContext());
+						View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+						Button yesButton=view.findViewById(R.id.yes_button);
+						Button noButton=view.findViewById(R.id.no_button);
+						TextView title = view.findViewById(R.id.title_dialog);
+						TextView detail = view.findViewById(R.id.detail_dialog);
+						title.setText("Delete File");
+						detail.setText("Are you sure you want to delete the file?");
+
+						builder.setView(view);
+
+						final AlertDialog dialog= builder.create();
+						dialog.setCanceledOnTouchOutside(true);
+
+                        yesButton.setOnClickListener( new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(View v) {
                                 if (starred.get(position).getType() != FileType.FILE_TYPE_LINK) {
                                     File file = new File(starred.get(position).getPath());
                                     deleteRecursive(file);
@@ -627,15 +640,16 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                     }
                                 }
                                 mStarredAdapter.notifyDataSetChanged();
+                                dialog.dismiss();
                             }
                         });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        noButton.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
+                            public void onClick( View v) {
+                            	dialog.dismiss();
                             }
                         });
-                        builder.show();
+                        dialog.show();
                         return true;
 
                     case R.id.notes_item_share:
@@ -834,13 +848,26 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	
 	private void unstarRows() {
 		final ArrayList<Integer> selectedItemPositions = mStarredAdapter.getSelectedItems();
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Unstar Files");
-		builder.setMessage("Are you sure you want to unstar " + selectedItemPositions.size() + " files?");
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				getContext());
+		View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+		Button yesButton=view.findViewById(R.id.yes_button);
+		Button noButton=view.findViewById(R.id.no_button);
+		TextView title = view.findViewById(R.id.title_dialog);
+		TextView detail = view.findViewById(R.id.detail_dialog);
+		title.setText("Unstar Files");
+		detail.setText("Are you sure you want to unstar " + selectedItemPositions.size() + " files?");
+
+		builder.setView(view);
+
+		final AlertDialog dialog= builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+
+		yesButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
 				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 					starred.remove(selectedItemPositions.get(i).intValue());
 					mStarredAdapter.notifyItemRemoved(selectedItemPositions.get(i));
@@ -857,15 +884,16 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 				starredPreferenceEditor.apply();
 				activity.mBottomAppBar.performShow();
+				dialog.dismiss();
 			}
 		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		noButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			
+			public void onClick(View v) {
+				dialog.dismiss();
 			}
 		});
-		builder.show();
+		dialog.show();
 		
 		actionMode = null;
 	}
