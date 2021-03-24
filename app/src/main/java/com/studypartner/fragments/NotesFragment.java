@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
 import com.studypartner.adapters.NotesAdapter;
@@ -518,12 +519,12 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								if (newName.equals(fileItem.getName()) || newName.equals("")) {
 									Log.d(TAG, "onClick: filename not changed");
 								} else if (newFile.exists()) {
-									Toast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT).show();
+									StyleableToast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
 								} else if (newName.contains("/")) {
-									Toast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT).show();
+									StyleableToast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 								} else {
 									if (oldFile.renameTo(newFile)) {
-										Toast.makeText(getContext(), "Folder renamed successfully", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "Folder renamed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 										notes.get(position).setName(newName);
 										notes.get(position).setPath(newFile.getPath());
 
@@ -566,7 +567,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										mNotesAdapter.notifyItemChanged(position);
 										sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 									} else {
-										Toast.makeText(getContext(), "Folder could not be renamed", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "Folder could not be renamed", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									}
 								}
 							}
@@ -604,7 +605,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 							starredPreferenceEditor.apply();
 							mNotesAdapter.notifyItemChanged(position);
 						} else {
-							Toast.makeText(activity, "You are some sort of wizard aren't you", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(activity, "You are some sort of wizard aren't you", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 
 						return true;
@@ -852,11 +853,11 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 						String newName = input.getText().toString().trim();
 						File newFolder = new File(noteFolder, newName);
 						if (newName.isEmpty()) {
-							Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						} else if (newFolder.exists()) {
-							Toast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						} else if (newName.contains("/")) {
-							Toast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						} else {
 							if (newFolder.mkdirs()) {
 								notes.add(new FileItem(newFolder.getPath()));
@@ -869,7 +870,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								
 								sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 							} else {
-								Toast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT).show();
+								StyleableToast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT, R.style.designedToast).show();
 							}
 						}
 					}
@@ -885,7 +886,7 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				alertDialog.show();
 			}
 		} else {
-			Toast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT, R.style.designedToast).show();
 		}
 	}
 	

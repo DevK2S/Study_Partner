@@ -27,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.BuildConfig;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
@@ -457,7 +458,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                     if (newName.equals(fileItem.getName()) || newName.equals("")) {
                                         Log.d(TAG, "onClick: link not changed");
                                     } else if (!FileUtils.isValidUrl(newName)) {
-                                        Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
+                                        StyleableToast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                     } else {
                                         int linkIndex = linkIndex(position);
                                         if (linkIndex != -1) {
@@ -487,12 +488,12 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                     if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
                                         Log.d(TAG, "onClick: filename not changed");
                                     } else if (newFile.exists()) {
-                                        Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+                                        StyleableToast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                     } else if (newName.contains("/")) {
-                                        Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
+                                        StyleableToast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                     } else {
                                         if (oldFile.renameTo(newFile)) {
-                                            Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+                                            StyleableToast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                             starred.get(position).setName(newFile.getName());
                                             starred.get(position).setPath(newFile.getPath());
                                             Log.d("Rename", starred.get(position).getPath());
@@ -526,7 +527,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                             mStarredAdapter.notifyItemChanged(position);
                                             sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
                                         } else {
-                                            Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
+                                            StyleableToast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                         }
                                     }
                                 }
@@ -666,7 +667,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                 startActivity(Intent.createChooser(intentShareFile, "Share File"));
                             }
                         } else {
-                            Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
+                            StyleableToast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT, R.style.designedToast).show();
                         }
                         return true;
 
@@ -760,7 +761,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			}
 		}
 		if (!fileOrDirectory.delete()) {
-			Toast.makeText(activity, "Cannot delete some files", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(activity, "Cannot delete some files", Toast.LENGTH_SHORT, R.style.designedToast).show();
 		}
 	}
 	

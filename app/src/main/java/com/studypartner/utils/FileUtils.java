@@ -18,7 +18,9 @@ import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.BuildConfig;
+import com.studypartner.R;
 import com.studypartner.models.FileItem;
 
 import java.io.BufferedOutputStream;
@@ -88,7 +90,7 @@ public class FileUtils {
 					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link.getName()));
 					context.startActivity(Intent.createChooser(browserIntent, "Select the app to open the link"));
 				} else {
-					Toast.makeText(context, "Link is invalid", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(context, "Link is invalid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				}
 			}
 		});
@@ -108,7 +110,7 @@ public class FileUtils {
 			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
 			context.startActivity(Intent.createChooser(browserIntent, "Select the app to open the link"));
 		} else {
-			Toast.makeText(context, "Link is invalid", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(context, "Link is invalid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 		}
 		
 	}
@@ -145,7 +147,7 @@ public class FileUtils {
 		try {
 			context.startActivity(intent);
 		} catch (ActivityNotFoundException e) {
-			Toast.makeText(context, "No application found to open this file", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(context, "No application found to open this file", Toast.LENGTH_SHORT, R.style.designedToast).show();
 		}
 	}
 	

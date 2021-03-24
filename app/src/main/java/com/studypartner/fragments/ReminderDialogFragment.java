@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.R;
 import com.studypartner.models.ReminderItem;
 import com.studypartner.utils.ReminderAlertReceiver;
@@ -213,9 +214,9 @@ public class ReminderDialogFragment extends DialogFragment {
 				Calendar cal = Calendar.getInstance();
 				
 				if (date.equals(currentDate) && time.equals(currentTime)) {
-					Toast.makeText(requireContext(), "Cannot set reminder for now", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(requireContext(), "Cannot set reminder for now", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else if (date.equals(currentDate) && (hourSelected < cal.get(Calendar.HOUR_OF_DAY) || (hourSelected == cal.get(Calendar.HOUR_OF_DAY) && minuteSelected < cal.get(Calendar.MINUTE)))) {
-					Toast.makeText(requireContext(), "Cannot set reminder for previous times", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(requireContext(), "Cannot set reminder for previous times", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else {
 					String title = mTitleEditText.getText().toString().trim();
 					String content = mContentEditText.getText().toString().trim();
