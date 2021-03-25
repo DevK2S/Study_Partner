@@ -82,6 +82,10 @@ public class LoginActivity extends AppCompatActivity {
 			} catch (ApiException e) {
 				e.printStackTrace();
 				findViewById(R.id.loginScreenProgressBar).setVisibility(View.INVISIBLE);
+				// In case of Login failed because of any reason
+				StyleableToast.makeText(this,"Login unsuccessful, Please try again",
+						Toast.LENGTH_LONG,R.style.designedToast)
+						.show();
 			}
 		}
 	}
@@ -111,7 +115,6 @@ public class LoginActivity extends AppCompatActivity {
 		
 		Log.d(TAG, "onCreate: Checking internet connection");
 		checkConnection(this);
-		
 		if (FirebaseAuth.getInstance().getCurrentUser() != null) {
 			Log.d(TAG, "onCreate: User already logged in");
 			
