@@ -115,7 +115,6 @@ public class LoginActivity extends AppCompatActivity {
 		
 		Log.d(TAG, "onCreate: Checking internet connection");
 		checkConnection(this);
-		Log.d(TAG, "onCreate: User already logged in");
 		if (FirebaseAuth.getInstance().getCurrentUser() != null) {
 			Log.d(TAG, "onCreate: User already logged in");
 			
