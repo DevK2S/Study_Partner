@@ -88,14 +88,6 @@ public class FileItem implements Parcelable {
 		}
 	}
 
-	public String getCreationTime() {
-		return dateCreated;
-	}
-
-	public void setCreationTime(String str) {
-		this.dateCreated = str;
-	}
-	
 	public String getPath() {
 		return path;
 	}

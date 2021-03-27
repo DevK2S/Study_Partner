@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.BuildConfig;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
@@ -671,7 +672,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 									if (newName.equals(fileItem.getName()) || newName.equals("")) {
 										Log.d(TAG, "onClick: link not changed");
 									} else if (!FileUtils.isValidUrl(newName)) {
-										Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									} else {
 										
 										int linkIndex = linkIndex(position);
@@ -705,12 +706,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 									if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
 										Log.d(TAG, "onClick: filename not changed");
 									} else if (newFile.exists()) {
-										Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									} else if (newName.contains("/")) {
-										Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									} else {
 										if (oldFile.renameTo(newFile)) {
-											Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 											
 											int starredIndex = starredIndex(position);
 											if (starredIndex != -1) {
@@ -756,7 +757,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 											populateDataAndSetAdapter();
 											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 										} else {
-											Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT, R.style.designedToast).show();
 										}
 									}
 								}
@@ -799,19 +800,32 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 							starredPreferenceEditor.apply();
 							mNotesAdapter.notifyItemChanged(position);
 						} else {
-							Toast.makeText(getContext(), "You are some sort of wizard aren't you", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "You are some sort of wizard aren't you", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 						
 						return true;
 					
 					case R.id.notes_item_delete:
-						
-						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-						builder.setTitle("Delete File");
-						builder.setMessage("Are you sure you want to delete the file?");
-						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getContext());
+						View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+						Button yesButton=view.findViewById(R.id.yes_button);
+						Button noButton=view.findViewById(R.id.no_button);
+						TextView title = view.findViewById(R.id.title_dialog);
+						TextView detail = view.findViewById(R.id.detail_dialog);
+						title.setText("Delete File");
+						detail.setText("Are you sure you want to delete the file?");
+
+						builder.setView(view);
+
+						final AlertDialog dialog= builder.create();
+						dialog.setCanceledOnTouchOutside(true);
+
+						yesButton.setOnClickListener( new View.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(View v) {
 								
 								if (mInterstitialAd.isLoaded()) {
 									mInterstitialAd.show();
@@ -892,15 +906,16 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 								if (notes.isEmpty()) {
 									mEmptyLayout.setVisibility(View.VISIBLE);
 								}
+								dialog.dismiss();
 							}
 						});
-						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+						noButton.setOnClickListener(new View.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-							
+							public void onClick(View v) {
+								dialog.dismiss();
 							}
 						});
-						builder.show();
+						dialog.show();
 						return true;
 					
 					case R.id.notes_item_share:
@@ -928,7 +943,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 								
 							}
 						} else {
-							Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 						return true;
 					default:
@@ -1175,13 +1190,26 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	
 	private void deleteRows() {
 		final ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Delete Files");
-		builder.setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " files?");
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				getContext());
+		View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+		Button yesButton=view.findViewById(R.id.yes_button);
+		Button noButton=view.findViewById(R.id.no_button);
+		TextView title = view.findViewById(R.id.title_dialog);
+		TextView detail = view.findViewById(R.id.detail_dialog);
+		title.setText("Delete Files");
+		detail.setText("Are you sure you want to delete " + selectedItemPositions.size() + " files?");
+
+		builder.setView(view);
+
+		final AlertDialog dialog= builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+
+		yesButton.setOnClickListener( new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
 				if (mInterstitialAd.isLoaded()) {
 					mInterstitialAd.show();
 				}
@@ -1262,16 +1290,16 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				if (notes.isEmpty()) {
 					mEmptyLayout.setVisibility(View.VISIBLE);
 				}
-				
+				dialog.dismiss();
 			}
 		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		noButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			
+			public void onClick(View v) {
+				dialog.dismiss();
 			}
 		});
-		builder.show();
+		dialog.show();
 		
 		actionMode = null;
 	}
@@ -1404,7 +1432,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Audio could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Audio could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == IMAGE_REQUEST_CODE) {
@@ -1430,7 +1458,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Image(s) could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Image(s) could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == CAMERA_IMAGE_REQUEST_CODE) {
@@ -1445,7 +1473,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode == ImagePicker.RESULT_ERROR) {
-				Toast.makeText(getContext(), "Image could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Image could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == DOC_REQUEST_CODE) {
@@ -1511,7 +1539,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Video(s) could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Video(s) could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == AUDIO_REQUEST_CODE) {
@@ -1560,7 +1588,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Audio(s) could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Audio(s) could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		}
@@ -1596,11 +1624,11 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				String newName = input.getText().toString().trim();
 				File newFolder = new File(noteFolder, newName);
 				if (newName.isEmpty()) {
-					Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else if (newFolder.exists()) {
-					Toast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else if (newName.contains("/")) {
-					Toast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else {
 					if (newFolder.mkdirs()) {
 						notes.add(new FileItem(newFolder.getPath()));
@@ -1613,7 +1641,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						
 						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 					} else {
-						Toast.makeText(requireActivity(), "Cannot create new folder", Toast.LENGTH_SHORT).show();
+						StyleableToast.makeText(requireActivity(), "Cannot create new folder", Toast.LENGTH_SHORT, R.style.designedToast).show();
 					}
 				}
 			}
@@ -1749,7 +1777,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					newNote = newNote.substring(0, newNote.length() - 4);
 					
 					if (!newNote.equals(name)) {
-						Toast.makeText(requireContext(), name + " is already used. Setting name to " + newNote, Toast.LENGTH_SHORT).show();
+						StyleableToast.makeText(requireContext(), name + " is already used. Setting name to " + newNote, Toast.LENGTH_SHORT, R.style.designedToast).show();
 					}
 					
 					try {
@@ -1773,7 +1801,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						
 						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 					} catch (Exception e) {
-						Toast.makeText(requireContext(), "Could not create the note " + e.getMessage(), Toast.LENGTH_SHORT).show();
+						StyleableToast.makeText(requireContext(), "Could not create the note " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 						e.printStackTrace();
 					}
 					
