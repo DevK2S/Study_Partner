@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -565,69 +566,99 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                         builder.setTitle("Delete File");
                         builder.setMessage("Are you sure you want to delete the file?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (starred.get(position).getType() != FileType.FILE_TYPE_LINK) {
-                                    File file = new File(starred.get(position).getPath());
-                                    deleteRecursive(file);
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
 
-                                    if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
-                                        ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
-                                        for (FileItem linkItem : links) {
-                                            if (linkItem.getPath().contains(file.getPath())) {
-                                                linksToBeRemoved.add(linkItem);
-                                            }
-                                        }
-                                        links.removeAll(linksToBeRemoved);
+								// Hiding the file to be deleted from RecyclerView
+								recyclerView.findViewHolderForAdapterPosition(position).itemView.
+										findViewById(R.id.noteItemLayout).setVisibility(View.GONE);
 
-                                        SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-                                        SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+								// Displaying a Snackbar to allow user to UNDO the delete file action
+								Snackbar undoSnackbar = Snackbar.make(recyclerView, R.string.starred_file_deleted, Snackbar.LENGTH_LONG);
+								undoSnackbar.setAction(R.string.notes_action_undo, new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										// Making folder visible to user again
+										recyclerView.findViewHolderForAdapterPosition(position).itemView.
+												findViewById(R.id.noteItemLayout).setVisibility(View.VISIBLE);
+									}
 
-                                        if (links.size() == 0) {
-                                            linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-                                        }
-                                        Gson gson = new Gson();
-                                        linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-                                        linkPreferenceEditor.apply();
+								}).setDuration(3000).setActionTextColor(getResources().getColor(R.color.colorPrimary));
 
-                                        ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-                                        for (FileItem starItem : starred) {
-                                            if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
-                                                starredToBeRemoved.add(starItem);
-                                            }
-                                        }
-                                        starredToBeRemoved.add(starred.get(position));
-                                        starred.removeAll(starredToBeRemoved);
+								undoSnackbar.addCallback(new Snackbar.Callback() {
+									// Called when the Snackbar is dismissed by an event other than
+									// clicking of UNDO.
+									@Override
+									public void onDismissed(Snackbar snackbar, int event) {
+										if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+												event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
+												event == Snackbar.Callback.DISMISS_EVENT_MANUAL) {
 
-                                        SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-                                        SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+											if (starred.get(position).getType() != FileType.FILE_TYPE_LINK) {
+												File file = new File(starred.get(position).getPath());
+												deleteRecursive(file);
 
-                                        if (starred.size() == 0) {
-                                            starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-                                            mEmptyLayout.setVisibility(View.VISIBLE);
-                                        }
-                                        starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-                                        starredPreferenceEditor.apply();
-                                    }
+												if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
+													ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+													for (FileItem linkItem : links) {
+														if (linkItem.getPath().contains(file.getPath())) {
+															linksToBeRemoved.add(linkItem);
+														}
+													}
+													links.removeAll(linksToBeRemoved);
 
-                                } else {
-                                    int linkPosition = linkIndex(position);
-                                    if (linkPosition != -1) {
-                                        links.remove(linkPosition);
-                                        SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-                                        SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
 
-                                        if (links.size() == 0) {
-                                            linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-                                        }
-                                        Gson gson = new Gson();
-                                        linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-                                        linkPreferenceEditor.apply();
-                                    }
-                                }
-                                mStarredAdapter.notifyDataSetChanged();
-                            }
-                        });
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+
+													ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+													for (FileItem starItem : starred) {
+														if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+															starredToBeRemoved.add(starItem);
+														}
+													}
+													starredToBeRemoved.add(starred.get(position));
+													starred.removeAll(starredToBeRemoved);
+
+													SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+													SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+													if (starred.size() == 0) {
+														starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+														mEmptyLayout.setVisibility(View.VISIBLE);
+													}
+													starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+													starredPreferenceEditor.apply();
+												}
+
+											} else {
+												int linkPosition = linkIndex(position);
+												if (linkPosition != -1) {
+													links.remove(linkPosition);
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+												}
+											}
+											mStarredAdapter.notifyDataSetChanged();
+										}
+									}
+								});
+								undoSnackbar.show(); // Snackbar will appear for 3 seconds
+							}
+						});
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
