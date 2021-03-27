@@ -87,6 +87,14 @@ public class FileItem implements Parcelable {
 			this.dateCreated = String.valueOf(file.lastModified());
 		}
 	}
+
+	public String getCreationTime() {
+		return dateCreated;
+	}
+
+	public void setCreationTime(String str) {
+		this.dateCreated = str;
+	}
 	
 	public String getPath() {
 		return path;
