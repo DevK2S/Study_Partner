@@ -34,6 +34,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -823,90 +824,121 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						final AlertDialog dialog= builder.create();
 						dialog.setCanceledOnTouchOutside(true);
 
-						yesButton.setOnClickListener( new View.OnClickListener() {
+						yesButton.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View v) {
-								
-								if (mInterstitialAd.isLoaded()) {
-									mInterstitialAd.show();
-								}
-								
-								if (notes.get(position).getType() != FileType.FILE_TYPE_LINK) {
-									File file = new File(notes.get(position).getPath());
-									deleteRecursive(file);
-									
-									if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
-										ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
-										for (FileItem linkItem : links) {
-											if (linkItem.getPath().contains(file.getPath())) {
-												linksToBeRemoved.add(linkItem);
-											}
-										}
-										links.removeAll(linksToBeRemoved);
-										
-										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-										
-										if (links.size() == 0) {
-											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-										}
-										Gson gson = new Gson();
-										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-										linkPreferenceEditor.apply();
-										
-										ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-										for (FileItem starItem : starred) {
-											if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
-												starredToBeRemoved.add(starItem);
-											}
-										}
-										starred.removeAll(starredToBeRemoved);
-										
-										SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-										SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-										
-										if (starred.size() == 0) {
-											starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-										}
-										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-										starredPreferenceEditor.apply();
-									}
-									
-								} else {
-									int linkPosition = linkIndex(position);
-									if (linkPosition != -1) {
-										links.remove(linkPosition);
-										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-										
-										if (links.size() == 0) {
-											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-										}
-										Gson gson = new Gson();
-										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-										linkPreferenceEditor.apply();
-									}
-								}
-								int starPosition = starredIndex(position);
-								if (starPosition != -1) {
-									starred.remove(starPosition);
-									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-									
-									if (starred.size() == 0) {
-										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-									}
-									Gson gson = new Gson();
-									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-									starredPreferenceEditor.apply();
-								}
-								mNotesAdapter.notifyItemRemoved(position);
-								notes.remove(position);
-								
-								if (notes.isEmpty()) {
-									mEmptyLayout.setVisibility(View.VISIBLE);
-								}
+
 								dialog.dismiss();
+
+								// Hiding the file to be deleted from RecyclerView
+								recyclerView.findViewHolderForAdapterPosition(position).itemView.
+										findViewById(R.id.noteItemLayout).setVisibility(View.GONE);
+
+								// Displaying a Snackbar to allow user to UNDO the delete file action
+								Snackbar undoSnackbar = Snackbar.make(recyclerView, R.string.file_action_deleted, Snackbar.LENGTH_LONG);
+								undoSnackbar.setAction(R.string.notes_action_undo, new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										// Making file visible to user again
+										recyclerView.findViewHolderForAdapterPosition(position).itemView.
+												findViewById(R.id.noteItemLayout).setVisibility(View.VISIBLE);
+									}
+
+								}).setDuration(3000).setActionTextColor(getResources().getColor(R.color.colorPrimary));
+
+								undoSnackbar.addCallback(new Snackbar.Callback() {
+
+									// Called when the Snackbar is dismissed by an event other than
+									// clicking of UNDO.
+									@Override
+									public void onDismissed(Snackbar snackbar, int event) {
+										if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+												event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
+												event == Snackbar.Callback.DISMISS_EVENT_MANUAL) {
+
+											if (mInterstitialAd.isLoaded()) {
+												mInterstitialAd.show();
+											}
+
+											if (notes.get(position).getType() != FileType.FILE_TYPE_LINK) {
+												File file = new File(notes.get(position).getPath());
+												deleteRecursive(file);
+
+												if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
+													ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+													for (FileItem linkItem : links) {
+														if (linkItem.getPath().contains(file.getPath())) {
+															linksToBeRemoved.add(linkItem);
+														}
+													}
+													links.removeAll(linksToBeRemoved);
+
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+
+													ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+													for (FileItem starItem : starred) {
+														if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+															starredToBeRemoved.add(starItem);
+														}
+													}
+													starred.removeAll(starredToBeRemoved);
+
+													SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+													SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+													if (starred.size() == 0) {
+														starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+													}
+													starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+													starredPreferenceEditor.apply();
+												}
+
+											} else {
+												int linkPosition = linkIndex(position);
+												if (linkPosition != -1) {
+													links.remove(linkPosition);
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+												}
+											}
+											int starPosition = starredIndex(position);
+											if (starPosition != -1) {
+												starred.remove(starPosition);
+												SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+												SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+												if (starred.size() == 0) {
+													starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+												}
+												Gson gson = new Gson();
+												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+												starredPreferenceEditor.apply();
+											}
+											mNotesAdapter.notifyItemRemoved(position);
+											notes.remove(position);
+
+											if (notes.isEmpty()) {
+												mEmptyLayout.setVisibility(View.VISIBLE);
+											}
+										}
+									}
+								});
+								undoSnackbar.show(); // Snackbar will appear for 3 seconds
 							}
 						});
 						noButton.setOnClickListener(new View.OnClickListener() {
@@ -1210,87 +1242,123 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 		yesButton.setOnClickListener( new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mInterstitialAd.isLoaded()) {
-					mInterstitialAd.show();
-				}
-				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-					if (notes.get(selectedItemPositions.get(i)).getType() != FileType.FILE_TYPE_LINK) {
-						File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
-						deleteRecursive(file);
-						
-						if (notes.get(selectedItemPositions.get(i)).getType() == FileType.FILE_TYPE_FOLDER) {
-							ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
-							for (FileItem linkItem : links) {
-								if (linkItem.getPath().contains(file.getPath())) {
-									linksToBeRemoved.add(linkItem);
-								}
-							}
-							links.removeAll(linksToBeRemoved);
-							
-							SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-							SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-							
-							if (links.size() == 0) {
-								linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-							}
-							Gson gson = new Gson();
-							linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-							linkPreferenceEditor.apply();
-							
-							ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-							for (FileItem starItem : starred) {
-								if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
-									starredToBeRemoved.add(starItem);
-								}
-							}
-							starred.removeAll(starredToBeRemoved);
-							
-							SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-							SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-							
-							if (starred.size() == 0) {
-								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-							}
-							starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-							starredPreferenceEditor.apply();
-						}
-					} else {
-						int linkPosition = linkIndex(selectedItemPositions.get(i));
-						if (linkPosition != -1) {
-							links.remove(linkPosition);
-							SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-							SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-							
-							if (links.size() == 0) {
-								linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-							}
-							Gson gson = new Gson();
-							linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-							linkPreferenceEditor.apply();
-						}
-					}
-					
-					int starPosition = starredIndex(selectedItemPositions.get(i));
-					if (starPosition != -1) {
-						starred.remove(starPosition);
-						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-						
-						if (starred.size() == 0) {
-							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-						}
-						Gson gson = new Gson();
-						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-						starredPreferenceEditor.apply();
-					}
-					
-					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
-					notes.remove(selectedItemPositions.get(i).intValue());
-				}
-				if (notes.isEmpty()) {
-					mEmptyLayout.setVisibility(View.VISIBLE);
-				}
+
 				dialog.dismiss();
+
+				// Hiding selected folders to be deleted from RecyclerView
+				for (Integer folderPosition : selectedItemPositions) {
+					recyclerView.findViewHolderForAdapterPosition(folderPosition).itemView.
+							findViewById(R.id.noteItemLayout).setVisibility(View.GONE);
+				}
+
+				// Displaying a Snackbar to allow user to UNDO the delete folder action
+				Snackbar undoSnackbar = Snackbar.make(recyclerView, R.string.multiple_files_deleted, Snackbar.LENGTH_LONG);
+				undoSnackbar.setAction(R.string.notes_action_undo, new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						// Making selected folders visible to user again
+						for (Integer folderPosition : selectedItemPositions) {
+							recyclerView.findViewHolderForAdapterPosition(folderPosition).itemView.
+									findViewById(R.id.noteItemLayout).setVisibility(View.VISIBLE);
+						}
+					}
+
+				}).setDuration(3000).setActionTextColor(getResources().getColor(R.color.colorPrimary));
+
+				undoSnackbar.addCallback(new Snackbar.Callback() {
+
+					// Called when the Snackbar is dismissed by an event other than
+					// clicking of UNDO.
+					@Override
+					public void onDismissed(Snackbar snackbar, int event) {
+						if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+								event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
+								event == Snackbar.Callback.DISMISS_EVENT_MANUAL) {
+
+							if (mInterstitialAd.isLoaded()) {
+								mInterstitialAd.show();
+							}
+							for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+								if (notes.get(selectedItemPositions.get(i)).getType() != FileType.FILE_TYPE_LINK) {
+									File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
+									deleteRecursive(file);
+
+									if (notes.get(selectedItemPositions.get(i)).getType() == FileType.FILE_TYPE_FOLDER) {
+										ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+										for (FileItem linkItem : links) {
+											if (linkItem.getPath().contains(file.getPath())) {
+												linksToBeRemoved.add(linkItem);
+											}
+										}
+										links.removeAll(linksToBeRemoved);
+
+										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+										if (links.size() == 0) {
+											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+										}
+										Gson gson = new Gson();
+										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+										linkPreferenceEditor.apply();
+
+										ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+										for (FileItem starItem : starred) {
+											if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+												starredToBeRemoved.add(starItem);
+											}
+										}
+										starred.removeAll(starredToBeRemoved);
+
+										SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+										SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+										if (starred.size() == 0) {
+											starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+										}
+										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+										starredPreferenceEditor.apply();
+									}
+								} else {
+									int linkPosition = linkIndex(selectedItemPositions.get(i));
+									if (linkPosition != -1) {
+										links.remove(linkPosition);
+										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+										if (links.size() == 0) {
+											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+										}
+										Gson gson = new Gson();
+										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+										linkPreferenceEditor.apply();
+									}
+								}
+
+								int starPosition = starredIndex(selectedItemPositions.get(i));
+								if (starPosition != -1) {
+									starred.remove(starPosition);
+									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+									if (starred.size() == 0) {
+										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+									}
+									Gson gson = new Gson();
+									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+									starredPreferenceEditor.apply();
+								}
+
+								mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
+								notes.remove(selectedItemPositions.get(i).intValue());
+							}
+							if (notes.isEmpty()) {
+								mEmptyLayout.setVisibility(View.VISIBLE);
+							}
+						}
+					}
+				});
+				undoSnackbar.show(); // Snackbar will appear for 3 seconds
 			}
 		});
 		noButton.setOnClickListener(new View.OnClickListener() {

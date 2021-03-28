@@ -99,7 +99,9 @@
     <string name="file_sort_order_cd">Sort Order</string>
     <string name="file_empty_icon_cd">File Empty Icon</string>
     <string name="file_empty">No items</string>
+    <string name="file_action_deleted">File deleted</string>
     <string name="starred_file_deleted">Starred file deleted</string>
+    <string name="multiple_files_deleted">Selected files deleted</string>
 
     <string name="notes_action_delete">Delete</string>
     <string name="notes_action_unstar">Unstar</string>
