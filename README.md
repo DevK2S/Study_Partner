@@ -6,7 +6,7 @@ STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution
 <p align="center"> <a href="https://play.google.com/store/apps/details?id=com.studypartner" target="blank"><img src="https://life1019.com/wp-content/uploads/sites/7/2015/10/google-play-logo.jpg" alt="PlayStore Icon" width = "250" /></a> </p>
  
 ### Screenshots
-<p float="left">
+<p float ="left">
 	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/Home%20Screen.jpg" alt="Home Screen" width="150">
 	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/File%20Screen.jpg" alt="File Screen" width="150">
 	<img src="https://github.com/krayong/Study_Partner/blob/master/screenshots/Attendance%20Screen.jpg" alt="Attendance Screen" width="150">
