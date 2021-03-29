@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
@@ -490,31 +491,31 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 				switch (item.getItemId()) {
 					case R.id.notes_item_rename:
 
-						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-						alertDialog.setMessage("New Name");
+						final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+						final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+						alertDialog.setView(dialogView);
+
+						Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+						Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+						final TextView titleDialog = dialogView.findViewById(R.id.notesAddLinkTitle);
+						titleDialog.setText("New Name");
+
+						final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
 
 						final FileItem fileItem = notes.get(position);
 
-						final EditText input = new EditText(getContext());
-						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.MATCH_PARENT,
-								LinearLayout.LayoutParams.MATCH_PARENT);
-						input.setLayoutParams(lp);
-
 						if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
-							input.setText(fileItem.getName());
+							nameTextInput.getEditText().setText(fileItem.getName());
 						}
 
-						alertDialog.setView(input);
-
-						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
+						okButton.setOnClickListener( new View.OnClickListener() {
+							public void onClick(View view) {
 
 								if (mInterstitialAd.isLoaded()) {
 									mInterstitialAd.show();
 								}
 
-								String newName = input.getText().toString().trim();
+								String newName = nameTextInput.getEditText().getText().toString().trim();
 								File oldFile = new File(fileItem.getPath());
 								File newFile = new File(noteFolder, newName);
 								if (newName.equals(fileItem.getName()) || newName.equals("")) {
@@ -571,12 +572,13 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 										StyleableToast.makeText(getContext(), "Folder could not be renamed", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									}
 								}
+								alertDialog.dismiss();
 							}
 						});
 
-						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.cancel();
+						cancelButton.setOnClickListener( new View.OnClickListener() {
+							public void onClick(View view) {
+								alertDialog.cancel();
 							}
 						});
 
@@ -868,19 +870,20 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 	private void addFolder() {
 		if (isExternalStorageReadableWritable()) {
 			if (writeReadPermission()) {
-				AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-				alertDialog.setMessage("Name of the folder");
-				final EditText input = new EditText(getContext());
-				LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-						LinearLayout.LayoutParams.MATCH_PARENT,
-						LinearLayout.LayoutParams.MATCH_PARENT);
-				input.setLayoutParams(lp);
-				input.setHint("Enter folder name");//added hint for editText in notes fragment for entering folder name instead of text
-				alertDialog.setView(input);
+				final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+				final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+				alertDialog.setView(dialogView);
+
+				Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+				Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+				final TextView title = dialogView.findViewById(R.id.notesAddLinkTitle);
+				title.setText("Name of the folder");
+
+				final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
 				
-				alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						String newName = input.getText().toString().trim();
+				okButton.setOnClickListener( new View.OnClickListener() {
+					public void onClick(View view) {
+						String newName = nameTextInput.getEditText().getText().toString().trim();
 						File newFolder = new File(noteFolder, newName);
 						if (newName.isEmpty()) {
 							StyleableToast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT, R.style.designedToast).show();
@@ -903,13 +906,14 @@ public class NotesFragment extends Fragment implements NotesAdapter.NotesClickLi
 								StyleableToast.makeText(activity, "Cannot create new folder", Toast.LENGTH_SHORT, R.style.designedToast).show();
 							}
 						}
+						alertDialog.dismiss();
 					}
 					
 				});
 				
-				alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
+				cancelButton.setOnClickListener( new View.OnClickListener() {
+					public void onClick(View view) {
+						alertDialog.cancel();
 					}
 				});
 				

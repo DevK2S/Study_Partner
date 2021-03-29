@@ -1,83 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/smallMargin"
-    app:contentPadding="@dimen/mediumPadding">
+    android:orientation="vertical"
+    android:padding="15dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <Button
+        android:id="@+id/notesAddLinkOkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/smallMargin"
+        android:background="@drawable/rounded_buttons"
+        android:backgroundTint="@color/roundedButtonsBg"
+        android:paddingStart="@dimen/smallPadding"
+        android:paddingEnd="@dimen/smallPadding"
+        android:text="@string/notes_add_link_ok"
+        android:textColor="@color/alternativeText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notesAddLinkTextInputLayout"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/notesAddLinkCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/smallMargin"
+        android:background="@drawable/rounded_buttons"
+        android:backgroundTint="@color/lightGrayText"
+        android:paddingStart="@dimen/smallPadding"
+        android:paddingEnd="@dimen/smallPadding"
+        android:text="@string/notes_add_link_cancel"
+        android:textColor="@color/primaryText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notesAddLinkTextInputLayout"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/notesAddLinkTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notes_add_link_title"
+        android:textColor="@color/primaryText"
+        android:textSize="@dimen/largeText"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/notesAddLinkTextInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/smallMargin"
+        app:boxStrokeColor="@color/iconTint"
+        app:boxStrokeErrorColor="@color/errorTint"
+        app:boxStrokeWidthFocused="2dp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/iconTint"
+        app:errorEnabled="true"
+        app:errorIconTint="@color/errorTint"
+        app:errorTextColor="@color/errorTint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notesAddLinkTitle">
 
-        <Button
-            android:id="@+id/notesAddLinkOkButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/smallMargin"
-            android:background="@drawable/rounded_buttons"
-            android:backgroundTint="@color/roundedButtonsBg"
-            android:paddingEnd="@dimen/smallPadding"
-            android:paddingStart="@dimen/smallPadding"
-            android:text="@string/notes_add_link_ok"
-            android:textColor="@color/alternativeText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/notesAddLinkTextInputLayout"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/notesAddLinkCancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/smallMargin"
-            android:background="@drawable/rounded_buttons"
-            android:backgroundTint="@color/lightGrayText"
-            android:paddingEnd="@dimen/smallPadding"
-            android:paddingStart="@dimen/smallPadding"
-            android:text="@string/notes_add_link_cancel"
-            android:textColor="@color/primaryText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/notesAddLinkTextInputLayout"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <TextView
-            android:id="@+id/notesAddLinkTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/notes_add_link_title"
-            android:textColor="@color/primaryText"
-            android:textSize="@dimen/largeText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/notesAddLinkTextInputLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/smallMargin"
-            app:boxStrokeColor="@color/iconTint"
-            app:boxStrokeErrorColor="@color/errorTint"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/iconTint"
-            app:errorEnabled="true"
-            app:errorIconTint="@color/errorTint"
-            app:errorTextColor="@color/errorTint"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/notesAddLinkTitle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textCursorDrawable="@drawable/color_cursor"
-                android:inputType="textUri" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.cardview.widget.CardView>
+            android:inputType="textUri"
+            android:textCursorDrawable="@drawable/color_cursor" />
+    </com.google.android.material.textfield.TextInputLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
