@@ -6,6 +6,7 @@
 
 **STUDY PARTNER** is a free, fully-featured app for Android Users. One-stop solution for organizing and maintaining notes, attendance, reminders, and much more. STUDY PARTNER helps you organize your student life just at your fingertips. Coherent and utilitarian tool for storing notes. A true partner a student need. An application made for students by students.
 
+> Download the App from the Play Store by clicking on the icon below
 <p align="center">
 <a href="https://play.google.com/store/apps/details?id=com.studypartner" target="_blank">
 <img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="90"/></a>
