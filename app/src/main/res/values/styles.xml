@@ -32,4 +32,11 @@
         <item name="cornerSizeBottomRight">@dimen/mediumMargin</item>
         <item name="cornerSizeBottomLeft">@dimen/mediumMargin</item>
     </style>
+    
+    <style name="designedToast">
+        <item name="stColorBackground">#FFFFFF</item>
+        <item name="stTextColor">#2799FB</item>
+        <item name="stStrokeColor">#2799FB</item>
+        <item name="stStrokeWidth">1dp</item>
+    </style>
 </resources>

@@ -19,6 +19,8 @@ import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.muddzdev.styleabletoast.StyleableToast;
+import com.studypartner.R;
 
 import androidx.fragment.app.Fragment;
 
@@ -46,7 +48,7 @@ public class Connection {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							dialog.cancel();
-							Toast.makeText(fragment.requireActivity(), "Some functions might not work properly without internet", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(fragment.requireActivity(), "Some functions might not work properly without internet", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 					})
 					.setNeutralButton("Reload", new DialogInterface.OnClickListener() {
@@ -79,7 +81,7 @@ public class Connection {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							dialog.cancel();
-							Toast.makeText(activity, "Some functions might not work properly without internet", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(activity, "Some functions might not work properly without internet", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 					})
 					.setNeutralButton("Reload", new DialogInterface.OnClickListener() {
