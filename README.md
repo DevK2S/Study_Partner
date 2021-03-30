@@ -4,7 +4,7 @@
 
 <h1 align="center"> Study Partner</h1>
 
-STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution for organizing and maintaining notes, attendance, reminders, and much more. STUDY PARTNER helps you organize your student life just at your fingertips. Coherent and utilitarian tool for storing notes. A true partner a student need. An application made for students by students.
+**STUDY PARTNER** is a free, fully-featured app for Android Users. One-stop solution for organizing and maintaining notes, attendance, reminders, and much more. STUDY PARTNER helps you organize your student life just at your fingertips. Coherent and utilitarian tool for storing notes. A true partner a student need. An application made for students by students.
 
 <p align="center">
 <a href="https://play.google.com/store/apps/details?id=com.studypartner" target="_blank">
