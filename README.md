@@ -1,5 +1,16 @@
+<p align="center">
+<img src="https://github.com/krayong/Study_Partner/blob/master/app/src/main/app_logo-playstore.png" alt="Get it on Google Play" height="90"/>
+</p>
+
 <h1 align="center"> Study Partner</h1>
-STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution for organizing and maintaining notes, attendance, reminders, and much more. STUDY PARTNER helps you organize your student life just at your fingertips. Coherent and utilitarian tool for storing notes. A true partner a student need. An application made for students by students.
+
+**STUDY PARTNER** is a free, fully-featured app for Android Users. One-stop solution for organizing and maintaining notes, attendance, reminders, and much more. STUDY PARTNER helps you organize your student life just at your fingertips. Coherent and utilitarian tool for storing notes. A true partner a student need. An application made for students by students.
+
+> Download the App from the Play Store by clicking on the icon below
+<p align="center">
+<a href="https://play.google.com/store/apps/details?id=com.studypartner" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="90"/></a>
+</p>
 
 <div style="text-align:center">
 
@@ -25,10 +36,6 @@ STUDY PARTNER is a free, fully-featured app for Android Users. One-stop solution
 [![discord](https://img.shields.io/badge/Chat-on%20discord-red)](https://discord.com/channels/811724426965811210/815030597843419156)
 
 </div>
-
-![Logo](https://github.com/krayong/Study_Partner/blob/master/app/src/main/app_logo-playstore.png)
-
- Download it now at https://play.google.com/store/apps/details?id=com.studypartner&hl=en_IN
 
 ### Screenshots
 <p float="left">
