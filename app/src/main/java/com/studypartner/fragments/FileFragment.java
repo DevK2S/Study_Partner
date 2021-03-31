@@ -628,45 +628,44 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					case R.id.notes_item_rename:
 						
 						final FileItem fileItem = notes.get(position);
-						
-						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+
+						final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+						final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+						alertDialog.setView(dialogView);
+
+						Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+						Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+						final TextView titleDialog = dialogView.findViewById(R.id.notesAddLinkTitle);
+
+						final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
+
 						if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
-							alertDialog.setMessage("Edit this link");
+							titleDialog.setText("Edit this link");
 						} else {
-							alertDialog.setMessage("Enter a new name");
+							titleDialog.setText("Enter a new name");
 						}
-						
-						final EditText input = new EditText(getContext());
-						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.MATCH_PARENT,
-								LinearLayout.LayoutParams.MATCH_PARENT);
-						lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-						lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-						input.setLayoutParams(lp);
 						
 						String extension = "";
 						if (fileItem.getType() == FileType.FILE_TYPE_FOLDER || fileItem.getType() == FileType.FILE_TYPE_LINK) {
-							input.setText(fileItem.getName());
+							nameTextInput.getEditText().setText(fileItem.getName());
 						} else {
 							String name = fileItem.getName();
 							if (name.indexOf(".") > 0) {
 								extension = name.substring(name.lastIndexOf("."));
 								name = name.substring(0, name.lastIndexOf("."));
 							}
-							input.setText(name);
+							nameTextInput.getEditText().setText(name);
 						}
-						
-						alertDialog.setView(input);
-						
+
 						final String finalExtension = extension;
-						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
+						okButton.setOnClickListener(new View.OnClickListener() {
+							public void onClick(View view) {
 								if (mInterstitialAd.isLoaded()) {
 									
 									mInterstitialAd.show();
 								}
 								
-								String newName = input.getText().toString().trim();
+								String newName = nameTextInput.getEditText().getText().toString().trim();
 								File oldFile = new File(fileItem.getPath());
 								File newFile = new File(noteFolder, newName + finalExtension);
 								if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
@@ -762,11 +761,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 										}
 									}
 								}
+								alertDialog.dismiss();
 							}
 						});
-						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.cancel();
+						cancelButton.setOnClickListener(new View.OnClickListener() {
+							public void onClick(View view) {
+								alertDialog.cancel();
 							}
 						});
 						
@@ -1675,21 +1675,22 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			++count;
 			file = new File(noteFolder, newFolder);
 		} while (file.exists());
+
+
+		final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+		final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+		alertDialog.setView(dialogView);
+
+		Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+		Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+		final TextView title = dialogView.findViewById(R.id.notesAddLinkTitle);
+		title.setText("Name of the folder");
+
+		final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
 		
-		
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-		alertDialog.setMessage("Name of the folder");
-		final EditText input = new EditText(getContext());
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.MATCH_PARENT);
-		input.setLayoutParams(lp);
-		input.setText(file.getName());
-		alertDialog.setView(input);
-		
-		alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				String newName = input.getText().toString().trim();
+		okButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				String newName = nameTextInput.getEditText().getText().toString().trim();
 				File newFolder = new File(noteFolder, newName);
 				if (newName.isEmpty()) {
 					StyleableToast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT, R.style.designedToast).show();
@@ -1712,12 +1713,13 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						StyleableToast.makeText(requireActivity(), "Cannot create new folder", Toast.LENGTH_SHORT, R.style.designedToast).show();
 					}
 				}
+				alertDialog.dismiss();
 			}
 		});
 		
-		alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				alertDialog.cancel();
 			}
 		});
 		

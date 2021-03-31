@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -420,39 +421,38 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 
                         final FileItem fileItem = starred.get(position);
 
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                        if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
-                            alertDialog.setMessage("Edit this link");
-                        } else {
-                            alertDialog.setMessage("Enter a new name");
-                        }
+						final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+						final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+						alertDialog.setView(dialogView);
 
-                        final EditText input = new EditText(getContext());
-                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT);
-                        lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-                        lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-                        input.setLayoutParams(lp);
+						Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+						Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+						final TextView titleDialog = dialogView.findViewById(R.id.notesAddLinkTitle);
+
+						final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
+
+                        if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
+                            titleDialog.setText("Edit this link");
+                        } else {
+                            titleDialog.setText("Enter a new name");
+                        }
 
                         String extension = "";
                         if (fileItem.getType() == FileType.FILE_TYPE_FOLDER || fileItem.getType() == FileType.FILE_TYPE_LINK) {
-                            input.setText(fileItem.getName());
+                            nameTextInput.getEditText().setText(fileItem.getName());
                         } else {
                             String name = fileItem.getName();
                             if (name.indexOf(".") > 0) {
                                 extension = name.substring(name.lastIndexOf("."));
                                 name = name.substring(0, name.lastIndexOf("."));
                             }
-                            input.setText(name);
+                            nameTextInput.getEditText().setText(name);
                         }
 
-                        alertDialog.setView(input);
-
                         final String finalExtension = extension;
-                        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String newName = input.getText().toString().trim();
+						okButton.setOnClickListener(new View.OnClickListener() {
+							public void onClick(View view){
+							String newName = nameTextInput.getEditText().getText().toString().trim();
                                 File oldFile = new File(fileItem.getPath());
                                 File newFile = new File(oldFile.getParent(), (newName + finalExtension));
                                 if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
@@ -532,13 +532,14 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                         }
                                     }
                                 }
+								alertDialog.dismiss();
                             }
                         });
-                        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
+						cancelButton.setOnClickListener(new View.OnClickListener() {
+															public void onClick(View view) {
+																alertDialog.cancel();
+															}
+														});
 
                         alertDialog.show();
                         return true;
