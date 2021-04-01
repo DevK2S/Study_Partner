@@ -509,16 +509,16 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                                     }
                                                 }
 
-												starred.get(position).setName(newFile.getName());
-												starred.get(position).setPath(newFile.getPath());
-												Log.d("Rename", starred.get(position).getPath());
-
                                                 SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
                                                 SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
 
                                                 linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
                                                 linkPreferenceEditor.apply();
                                             }
+
+											starred.get(position).setName(newFile.getName());
+											starred.get(position).setPath(newFile.getPath());
+											Log.d("Rename", starred.get(position).getPath());
 
                                             SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
                                             SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
