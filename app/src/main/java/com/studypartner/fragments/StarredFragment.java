@@ -495,9 +495,6 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                     } else {
                                         if (oldFile.renameTo(newFile)) {
                                             StyleableToast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
-                                            starred.get(position).setName(newFile.getName());
-                                            starred.get(position).setPath(newFile.getPath());
-                                            Log.d("Rename", starred.get(position).getPath());
                                             Gson gson = new Gson();
 
                                             if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
@@ -518,6 +515,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                                 linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
                                                 linkPreferenceEditor.apply();
                                             }
+
+											starred.get(position).setName(newFile.getName());
+											starred.get(position).setPath(newFile.getPath());
+											Log.d("Rename", starred.get(position).getPath());
 
                                             SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
                                             SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
