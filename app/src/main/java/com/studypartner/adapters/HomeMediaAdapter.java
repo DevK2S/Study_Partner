@@ -47,13 +47,13 @@ public class HomeMediaAdapter extends RecyclerView.Adapter<HomeMediaAdapter.Home
 			
 			File image = new File(fileItem.getPath());
 			if (image.exists()) {
-				
+
 				Glide.with(mActivity.getBaseContext())
 						.asBitmap()
 						.load(image)
 						.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 						.into(holder.homeMediaImage);
-				
+
 			} else {
 				holder.homeMediaImage.setImageResource(R.drawable.image_add_icon_bs);
 			}

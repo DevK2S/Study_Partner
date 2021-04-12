@@ -23,8 +23,12 @@
         <ImageView
             android:id="@+id/homeMediaImage"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
             android:contentDescription="@string/home_media_item_cd" />
+
+
+
 
     </com.google.android.material.card.MaterialCardView>
 
