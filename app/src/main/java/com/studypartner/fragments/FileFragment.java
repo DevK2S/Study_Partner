@@ -34,11 +34,13 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.BuildConfig;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
@@ -626,52 +628,51 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					case R.id.notes_item_rename:
 						
 						final FileItem fileItem = notes.get(position);
-						
-						AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+
+						final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+						final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+						alertDialog.setView(dialogView);
+
+						Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+						Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+						final TextView titleDialog = dialogView.findViewById(R.id.notesAddLinkTitle);
+
+						final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
+
 						if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
-							alertDialog.setMessage("Edit this link");
+							titleDialog.setText("Edit this link");
 						} else {
-							alertDialog.setMessage("Enter a new name");
+							titleDialog.setText("Enter a new name");
 						}
-						
-						final EditText input = new EditText(getContext());
-						LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.MATCH_PARENT,
-								LinearLayout.LayoutParams.MATCH_PARENT);
-						lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-						lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-						input.setLayoutParams(lp);
 						
 						String extension = "";
 						if (fileItem.getType() == FileType.FILE_TYPE_FOLDER || fileItem.getType() == FileType.FILE_TYPE_LINK) {
-							input.setText(fileItem.getName());
+							nameTextInput.getEditText().setText(fileItem.getName());
 						} else {
 							String name = fileItem.getName();
 							if (name.indexOf(".") > 0) {
 								extension = name.substring(name.lastIndexOf("."));
 								name = name.substring(0, name.lastIndexOf("."));
 							}
-							input.setText(name);
+							nameTextInput.getEditText().setText(name);
 						}
-						
-						alertDialog.setView(input);
-						
+
 						final String finalExtension = extension;
-						alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
+						okButton.setOnClickListener(new View.OnClickListener() {
+							public void onClick(View view) {
 								if (mInterstitialAd.isLoaded()) {
 									
 									mInterstitialAd.show();
 								}
 								
-								String newName = input.getText().toString().trim();
+								String newName = nameTextInput.getEditText().getText().toString().trim();
 								File oldFile = new File(fileItem.getPath());
 								File newFile = new File(noteFolder, newName + finalExtension);
 								if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
 									if (newName.equals(fileItem.getName()) || newName.equals("")) {
 										Log.d(TAG, "onClick: link not changed");
 									} else if (!FileUtils.isValidUrl(newName)) {
-										Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									} else {
 										
 										int linkIndex = linkIndex(position);
@@ -705,12 +706,12 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 									if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
 										Log.d(TAG, "onClick: filename not changed");
 									} else if (newFile.exists()) {
-										Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									} else if (newName.contains("/")) {
-										Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
+										StyleableToast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									} else {
 										if (oldFile.renameTo(newFile)) {
-											Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 											
 											int starredIndex = starredIndex(position);
 											if (starredIndex != -1) {
@@ -756,15 +757,16 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 											populateDataAndSetAdapter();
 											sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 										} else {
-											Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT, R.style.designedToast).show();
 										}
 									}
 								}
+								alertDialog.dismiss();
 							}
 						});
-						alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								dialog.cancel();
+						cancelButton.setOnClickListener(new View.OnClickListener() {
+							public void onClick(View view) {
+								alertDialog.cancel();
 							}
 						});
 						
@@ -799,108 +801,153 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 							starredPreferenceEditor.apply();
 							mNotesAdapter.notifyItemChanged(position);
 						} else {
-							Toast.makeText(getContext(), "You are some sort of wizard aren't you", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "You are some sort of wizard aren't you", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 						
 						return true;
 					
 					case R.id.notes_item_delete:
-						
-						final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-						builder.setTitle("Delete File");
-						builder.setMessage("Are you sure you want to delete the file?");
-						builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getContext());
+						View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+						Button yesButton=view.findViewById(R.id.yes_button);
+						Button noButton=view.findViewById(R.id.no_button);
+						TextView title = view.findViewById(R.id.title_dialog);
+						TextView detail = view.findViewById(R.id.detail_dialog);
+						title.setText("Delete File");
+						detail.setText("Are you sure you want to delete the file?");
+
+						builder.setView(view);
+
+						final AlertDialog dialog= builder.create();
+						dialog.setCanceledOnTouchOutside(true);
+
+						yesButton.setOnClickListener(new View.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								
-								if (mInterstitialAd.isLoaded()) {
-									mInterstitialAd.show();
-								}
-								
-								if (notes.get(position).getType() != FileType.FILE_TYPE_LINK) {
-									File file = new File(notes.get(position).getPath());
-									deleteRecursive(file);
-									
-									if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
-										ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
-										for (FileItem linkItem : links) {
-											if (linkItem.getPath().contains(file.getPath())) {
-												linksToBeRemoved.add(linkItem);
+							public void onClick(View v) {
+
+								dialog.dismiss();
+
+								// Hiding the file to be deleted from RecyclerView
+								recyclerView.findViewHolderForAdapterPosition(position).itemView.
+										findViewById(R.id.noteItemLayout).setVisibility(View.GONE);
+
+								// Displaying a Snackbar to allow user to UNDO the delete file action
+								Snackbar undoSnackbar = Snackbar.make(recyclerView, R.string.file_action_deleted, Snackbar.LENGTH_LONG);
+								undoSnackbar.setAction(R.string.notes_action_undo, new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										// Making file visible to user again
+										recyclerView.findViewHolderForAdapterPosition(position).itemView.
+												findViewById(R.id.noteItemLayout).setVisibility(View.VISIBLE);
+									}
+
+								}).setDuration(3000).setActionTextColor(getResources().getColor(R.color.colorPrimary));
+
+								undoSnackbar.addCallback(new Snackbar.Callback() {
+
+									// Called when the Snackbar is dismissed by an event other than
+									// clicking of UNDO.
+									@Override
+									public void onDismissed(Snackbar snackbar, int event) {
+										if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+												event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
+												event == Snackbar.Callback.DISMISS_EVENT_MANUAL) {
+
+											if (mInterstitialAd.isLoaded()) {
+												mInterstitialAd.show();
+											}
+
+											if (notes.get(position).getType() != FileType.FILE_TYPE_LINK) {
+												File file = new File(notes.get(position).getPath());
+												deleteRecursive(file);
+
+												if (notes.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
+													ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+													for (FileItem linkItem : links) {
+														if (linkItem.getPath().contains(file.getPath())) {
+															linksToBeRemoved.add(linkItem);
+														}
+													}
+													links.removeAll(linksToBeRemoved);
+
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+
+													ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+													for (FileItem starItem : starred) {
+														if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+															starredToBeRemoved.add(starItem);
+														}
+													}
+													starred.removeAll(starredToBeRemoved);
+
+													SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+													SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+													if (starred.size() == 0) {
+														starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+													}
+													starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+													starredPreferenceEditor.apply();
+												}
+
+											} else {
+												int linkPosition = linkIndex(position);
+												if (linkPosition != -1) {
+													links.remove(linkPosition);
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+												}
+											}
+											int starPosition = starredIndex(position);
+											if (starPosition != -1) {
+												starred.remove(starPosition);
+												SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+												SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+												if (starred.size() == 0) {
+													starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+												}
+												Gson gson = new Gson();
+												starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+												starredPreferenceEditor.apply();
+											}
+											mNotesAdapter.notifyItemRemoved(position);
+											notes.remove(position);
+
+											if (notes.isEmpty()) {
+												mEmptyLayout.setVisibility(View.VISIBLE);
 											}
 										}
-										links.removeAll(linksToBeRemoved);
-										
-										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-										
-										if (links.size() == 0) {
-											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-										}
-										Gson gson = new Gson();
-										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-										linkPreferenceEditor.apply();
-										
-										ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-										for (FileItem starItem : starred) {
-											if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
-												starredToBeRemoved.add(starItem);
-											}
-										}
-										starred.removeAll(starredToBeRemoved);
-										
-										SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-										SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-										
-										if (starred.size() == 0) {
-											starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-										}
-										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-										starredPreferenceEditor.apply();
 									}
-									
-								} else {
-									int linkPosition = linkIndex(position);
-									if (linkPosition != -1) {
-										links.remove(linkPosition);
-										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-										
-										if (links.size() == 0) {
-											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-										}
-										Gson gson = new Gson();
-										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-										linkPreferenceEditor.apply();
-									}
-								}
-								int starPosition = starredIndex(position);
-								if (starPosition != -1) {
-									starred.remove(starPosition);
-									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-									
-									if (starred.size() == 0) {
-										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-									}
-									Gson gson = new Gson();
-									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-									starredPreferenceEditor.apply();
-								}
-								mNotesAdapter.notifyItemRemoved(position);
-								notes.remove(position);
-								
-								if (notes.isEmpty()) {
-									mEmptyLayout.setVisibility(View.VISIBLE);
-								}
+								});
+								undoSnackbar.show(); // Snackbar will appear for 3 seconds
 							}
 						});
-						builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+						noButton.setOnClickListener(new View.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
-							
+							public void onClick(View v) {
+								dialog.dismiss();
 							}
 						});
-						builder.show();
+						dialog.show();
 						return true;
 					
 					case R.id.notes_item_share:
@@ -928,7 +975,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 								
 							}
 						} else {
-							Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT, R.style.designedToast).show();
 						}
 						return true;
 					default:
@@ -1175,103 +1222,152 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 	
 	private void deleteRows() {
 		final ArrayList<Integer> selectedItemPositions = mNotesAdapter.getSelectedItems();
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Delete Files");
-		builder.setMessage("Are you sure you want to delete " + selectedItemPositions.size() + " files?");
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				getContext());
+		View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+		Button yesButton=view.findViewById(R.id.yes_button);
+		Button noButton=view.findViewById(R.id.no_button);
+		TextView title = view.findViewById(R.id.title_dialog);
+		TextView detail = view.findViewById(R.id.detail_dialog);
+		title.setText("Delete Files");
+		detail.setText("Are you sure you want to delete " + selectedItemPositions.size() + " files?");
+
+		builder.setView(view);
+
+		final AlertDialog dialog= builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+
+		yesButton.setOnClickListener( new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				if (mInterstitialAd.isLoaded()) {
-					mInterstitialAd.show();
+			public void onClick(View v) {
+
+				dialog.dismiss();
+
+				// Hiding selected folders to be deleted from RecyclerView
+				for (Integer folderPosition : selectedItemPositions) {
+					recyclerView.findViewHolderForAdapterPosition(folderPosition).itemView.
+							findViewById(R.id.noteItemLayout).setVisibility(View.GONE);
 				}
-				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
-					if (notes.get(selectedItemPositions.get(i)).getType() != FileType.FILE_TYPE_LINK) {
-						File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
-						deleteRecursive(file);
-						
-						if (notes.get(selectedItemPositions.get(i)).getType() == FileType.FILE_TYPE_FOLDER) {
-							ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
-							for (FileItem linkItem : links) {
-								if (linkItem.getPath().contains(file.getPath())) {
-									linksToBeRemoved.add(linkItem);
-								}
-							}
-							links.removeAll(linksToBeRemoved);
-							
-							SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-							SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-							
-							if (links.size() == 0) {
-								linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-							}
-							Gson gson = new Gson();
-							linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-							linkPreferenceEditor.apply();
-							
-							ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-							for (FileItem starItem : starred) {
-								if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
-									starredToBeRemoved.add(starItem);
-								}
-							}
-							starred.removeAll(starredToBeRemoved);
-							
-							SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-							SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-							
-							if (starred.size() == 0) {
-								starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-							}
-							starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-							starredPreferenceEditor.apply();
-						}
-					} else {
-						int linkPosition = linkIndex(selectedItemPositions.get(i));
-						if (linkPosition != -1) {
-							links.remove(linkPosition);
-							SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-							SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
-							
-							if (links.size() == 0) {
-								linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-							}
-							Gson gson = new Gson();
-							linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-							linkPreferenceEditor.apply();
+
+				// Displaying a Snackbar to allow user to UNDO the delete folder action
+				Snackbar undoSnackbar = Snackbar.make(recyclerView, R.string.multiple_files_deleted, Snackbar.LENGTH_LONG);
+				undoSnackbar.setAction(R.string.notes_action_undo, new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						// Making selected folders visible to user again
+						for (Integer folderPosition : selectedItemPositions) {
+							recyclerView.findViewHolderForAdapterPosition(folderPosition).itemView.
+									findViewById(R.id.noteItemLayout).setVisibility(View.VISIBLE);
 						}
 					}
-					
-					int starPosition = starredIndex(selectedItemPositions.get(i));
-					if (starPosition != -1) {
-						starred.remove(starPosition);
-						SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-						SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
-						
-						if (starred.size() == 0) {
-							starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+
+				}).setDuration(3000).setActionTextColor(getResources().getColor(R.color.colorPrimary));
+
+				undoSnackbar.addCallback(new Snackbar.Callback() {
+
+					// Called when the Snackbar is dismissed by an event other than
+					// clicking of UNDO.
+					@Override
+					public void onDismissed(Snackbar snackbar, int event) {
+						if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+								event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
+								event == Snackbar.Callback.DISMISS_EVENT_MANUAL) {
+
+							if (mInterstitialAd.isLoaded()) {
+								mInterstitialAd.show();
+							}
+							for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
+								if (notes.get(selectedItemPositions.get(i)).getType() != FileType.FILE_TYPE_LINK) {
+									File file = new File(notes.get(selectedItemPositions.get(i)).getPath());
+									deleteRecursive(file);
+
+									if (notes.get(selectedItemPositions.get(i)).getType() == FileType.FILE_TYPE_FOLDER) {
+										ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+										for (FileItem linkItem : links) {
+											if (linkItem.getPath().contains(file.getPath())) {
+												linksToBeRemoved.add(linkItem);
+											}
+										}
+										links.removeAll(linksToBeRemoved);
+
+										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+										if (links.size() == 0) {
+											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+										}
+										Gson gson = new Gson();
+										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+										linkPreferenceEditor.apply();
+
+										ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+										for (FileItem starItem : starred) {
+											if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+												starredToBeRemoved.add(starItem);
+											}
+										}
+										starred.removeAll(starredToBeRemoved);
+
+										SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+										SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+										if (starred.size() == 0) {
+											starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+										}
+										starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+										starredPreferenceEditor.apply();
+									}
+								} else {
+									int linkPosition = linkIndex(selectedItemPositions.get(i));
+									if (linkPosition != -1) {
+										links.remove(linkPosition);
+										SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+										SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+										if (links.size() == 0) {
+											linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+										}
+										Gson gson = new Gson();
+										linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+										linkPreferenceEditor.apply();
+									}
+								}
+
+								int starPosition = starredIndex(selectedItemPositions.get(i));
+								if (starPosition != -1) {
+									starred.remove(starPosition);
+									SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+									SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+									if (starred.size() == 0) {
+										starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+									}
+									Gson gson = new Gson();
+									starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+									starredPreferenceEditor.apply();
+								}
+
+								mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
+								notes.remove(selectedItemPositions.get(i).intValue());
+							}
+							if (notes.isEmpty()) {
+								mEmptyLayout.setVisibility(View.VISIBLE);
+							}
 						}
-						Gson gson = new Gson();
-						starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-						starredPreferenceEditor.apply();
 					}
-					
-					mNotesAdapter.notifyItemRemoved(selectedItemPositions.get(i));
-					notes.remove(selectedItemPositions.get(i).intValue());
-				}
-				if (notes.isEmpty()) {
-					mEmptyLayout.setVisibility(View.VISIBLE);
-				}
-				
+				});
+				undoSnackbar.show(); // Snackbar will appear for 3 seconds
 			}
 		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		noButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			
+			public void onClick(View v) {
+				dialog.dismiss();
 			}
 		});
-		builder.show();
+		dialog.show();
 		
 		actionMode = null;
 	}
@@ -1404,7 +1500,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Audio could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Audio could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == IMAGE_REQUEST_CODE) {
@@ -1430,7 +1526,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Image(s) could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Image(s) could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == CAMERA_IMAGE_REQUEST_CODE) {
@@ -1445,7 +1541,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode == ImagePicker.RESULT_ERROR) {
-				Toast.makeText(getContext(), "Image could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Image could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == DOC_REQUEST_CODE) {
@@ -1511,7 +1607,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 				
 				sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Video(s) could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Video(s) could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		} else if (requestCode == AUDIO_REQUEST_CODE) {
@@ -1560,7 +1656,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 				}
 			} else if (resultCode != Activity.RESULT_CANCELED) {
-				Toast.makeText(getContext(), "Audio(s) could not be saved", Toast.LENGTH_SHORT).show();
+				StyleableToast.makeText(getContext(), "Audio(s) could not be saved", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			}
 			
 		}
@@ -1579,28 +1675,29 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 			++count;
 			file = new File(noteFolder, newFolder);
 		} while (file.exists());
+
+
+		final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+		final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+		alertDialog.setView(dialogView);
+
+		Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+		Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+		final TextView title = dialogView.findViewById(R.id.notesAddLinkTitle);
+		title.setText("Name of the folder");
+
+		final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
 		
-		
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-		alertDialog.setMessage("Name of the folder");
-		final EditText input = new EditText(getContext());
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.MATCH_PARENT);
-		input.setLayoutParams(lp);
-		input.setText(file.getName());
-		alertDialog.setView(input);
-		
-		alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				String newName = input.getText().toString().trim();
+		okButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				String newName = nameTextInput.getEditText().getText().toString().trim();
 				File newFolder = new File(noteFolder, newName);
 				if (newName.isEmpty()) {
-					Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else if (newFolder.exists()) {
-					Toast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Folder with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else if (newName.contains("/")) {
-					Toast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Folder name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				} else {
 					if (newFolder.mkdirs()) {
 						notes.add(new FileItem(newFolder.getPath()));
@@ -1613,15 +1710,16 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						
 						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 					} else {
-						Toast.makeText(requireActivity(), "Cannot create new folder", Toast.LENGTH_SHORT).show();
+						StyleableToast.makeText(requireActivity(), "Cannot create new folder", Toast.LENGTH_SHORT, R.style.designedToast).show();
 					}
 				}
+				alertDialog.dismiss();
 			}
 		});
 		
-		alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
+				alertDialog.cancel();
 			}
 		});
 		
@@ -1749,7 +1847,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 					newNote = newNote.substring(0, newNote.length() - 4);
 					
 					if (!newNote.equals(name)) {
-						Toast.makeText(requireContext(), name + " is already used. Setting name to " + newNote, Toast.LENGTH_SHORT).show();
+						StyleableToast.makeText(requireContext(), name + " is already used. Setting name to " + newNote, Toast.LENGTH_SHORT, R.style.designedToast).show();
 					}
 					
 					try {
@@ -1773,7 +1871,7 @@ public class FileFragment extends Fragment implements NotesAdapter.NotesClickLis
 						
 						sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
 					} catch (Exception e) {
-						Toast.makeText(requireContext(), "Could not create the note " + e.getMessage(), Toast.LENGTH_SHORT).show();
+						StyleableToast.makeText(requireContext(), "Could not create the note " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 						e.printStackTrace();
 					}
 					

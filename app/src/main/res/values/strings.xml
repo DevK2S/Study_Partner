@@ -99,11 +99,17 @@
     <string name="file_sort_order_cd">Sort Order</string>
     <string name="file_empty_icon_cd">File Empty Icon</string>
     <string name="file_empty">No items</string>
+    <string name="file_action_deleted">File deleted</string>
+    <string name="starred_file_deleted">Starred file deleted</string>
+    <string name="multiple_files_deleted">Selected files deleted</string>
 
     <string name="notes_action_delete">Delete</string>
     <string name="notes_action_unstar">Unstar</string>
     <string name="notes_action_select_all">Select All</string>
     <string name="notes_action_share">Share</string>
+    <string name="notes_action_undo">UNDO</string>
+    <string name="notes_action_deleted">Folder deleted</string>
+    <string name="multiple_folders_deleted">Selected folders deleted</string>
 
     <string name="notes_empty_icon_cd">Notes Empty Icon</string>
     <string name="notes_empty">No subjects stored</string>
@@ -188,6 +194,11 @@
     <string name="team_saket_agarwal">Saket Agarwal</string>
     <string name="team_developer">Lead Developer</string>
     <string name="team_karan_gourisaria">Karan Gourisaria</string>
+
+
+    <string name="logout_alert_dialog_yes">YES</string>
+    <string name="logout_alert_dialog_no">NO</string>
+    <string name="logout_alert_dialog_subtitle">Are you sure you want to logout?</string>
 
     <string name="notes_interstitial_ad">ca-app-pub-4955404294529066/1479765372</string>!
 <!--    <string name="notes_interstitial_ad">ca-app-pub-3940256099942544/1033173712</string>-->

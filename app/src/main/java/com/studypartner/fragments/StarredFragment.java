@@ -24,9 +24,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.studypartner.BuildConfig;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
@@ -418,46 +421,45 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 
                         final FileItem fileItem = starred.get(position);
 
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
-                        if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
-                            alertDialog.setMessage("Edit this link");
-                        } else {
-                            alertDialog.setMessage("Enter a new name");
-                        }
+						final AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+						final View dialogView = getLayoutInflater().inflate(R.layout.notes_add_link_layout, null);
+						alertDialog.setView(dialogView);
 
-                        final EditText input = new EditText(getContext());
-                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT);
-                        lp.setMarginStart((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-                        lp.setMarginEnd((int) requireActivity().getResources().getDimension(R.dimen.mediumMargin));
-                        input.setLayoutParams(lp);
+						Button okButton = dialogView.findViewById(R.id.notesAddLinkOkButton);
+						Button cancelButton = dialogView.findViewById(R.id.notesAddLinkCancelButton);
+						final TextView titleDialog = dialogView.findViewById(R.id.notesAddLinkTitle);
+
+						final TextInputLayout nameTextInput = dialogView.findViewById(R.id.notesAddLinkTextInputLayout);
+
+                        if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
+                            titleDialog.setText("Edit this link");
+                        } else {
+                            titleDialog.setText("Enter a new name");
+                        }
 
                         String extension = "";
                         if (fileItem.getType() == FileType.FILE_TYPE_FOLDER || fileItem.getType() == FileType.FILE_TYPE_LINK) {
-                            input.setText(fileItem.getName());
+                            nameTextInput.getEditText().setText(fileItem.getName());
                         } else {
                             String name = fileItem.getName();
                             if (name.indexOf(".") > 0) {
                                 extension = name.substring(name.lastIndexOf("."));
                                 name = name.substring(0, name.lastIndexOf("."));
                             }
-                            input.setText(name);
+                            nameTextInput.getEditText().setText(name);
                         }
 
-                        alertDialog.setView(input);
-
                         final String finalExtension = extension;
-                        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String newName = input.getText().toString().trim();
+						okButton.setOnClickListener(new View.OnClickListener() {
+							public void onClick(View view){
+							String newName = nameTextInput.getEditText().getText().toString().trim();
                                 File oldFile = new File(fileItem.getPath());
                                 File newFile = new File(oldFile.getParent(), (newName + finalExtension));
                                 if (fileItem.getType() == FileType.FILE_TYPE_LINK) {
                                     if (newName.equals(fileItem.getName()) || newName.equals("")) {
                                         Log.d(TAG, "onClick: link not changed");
                                     } else if (!FileUtils.isValidUrl(newName)) {
-                                        Toast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT).show();
+                                        StyleableToast.makeText(getContext(), "Link is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                     } else {
                                         int linkIndex = linkIndex(position);
                                         if (linkIndex != -1) {
@@ -487,15 +489,12 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                     if (newFile.getName().equals(fileItem.getName()) || newName.equals("")) {
                                         Log.d(TAG, "onClick: filename not changed");
                                     } else if (newFile.exists()) {
-                                        Toast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT).show();
+                                        StyleableToast.makeText(getContext(), "File with this name already exists", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                     } else if (newName.contains("/")) {
-                                        Toast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT).show();
+                                        StyleableToast.makeText(getContext(), "File name is not valid", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                     } else {
                                         if (oldFile.renameTo(newFile)) {
-                                            Toast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT).show();
-                                            starred.get(position).setName(newFile.getName());
-                                            starred.get(position).setPath(newFile.getPath());
-                                            Log.d("Rename", starred.get(position).getPath());
+                                            StyleableToast.makeText(getContext(), "File renamed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                             Gson gson = new Gson();
 
                                             if (fileItem.getType() == FileType.FILE_TYPE_FOLDER) {
@@ -517,6 +516,10 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                                 linkPreferenceEditor.apply();
                                             }
 
+											starred.get(position).setName(newFile.getName());
+											starred.get(position).setPath(newFile.getPath());
+											Log.d("Rename", starred.get(position).getPath());
+
                                             SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
                                             SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
 
@@ -526,17 +529,18 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                             mStarredAdapter.notifyItemChanged(position);
                                             sort(sortBy, sortOrder.equals(ASCENDING_ORDER));
                                         } else {
-                                            Toast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT).show();
+                                            StyleableToast.makeText(getContext(), "File could not be renamed", Toast.LENGTH_SHORT, R.style.designedToast).show();
                                         }
                                     }
                                 }
+								alertDialog.dismiss();
                             }
                         });
-                        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
+						cancelButton.setOnClickListener(new View.OnClickListener() {
+															public void onClick(View view) {
+																alertDialog.cancel();
+															}
+														});
 
                         alertDialog.show();
                         return true;
@@ -559,83 +563,128 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 
                         return true;
 
-                    case R.id.notes_item_delete:
+					case R.id.notes_item_delete:
 
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setTitle("Delete File");
-                        builder.setMessage("Are you sure you want to delete the file?");
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (starred.get(position).getType() != FileType.FILE_TYPE_LINK) {
-                                    File file = new File(starred.get(position).getPath());
-                                    deleteRecursive(file);
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								getContext());
+						View view = getLayoutInflater().inflate(R.layout.alert_dialog_box, null);
 
-                                    if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
-                                        ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
-                                        for (FileItem linkItem : links) {
-                                            if (linkItem.getPath().contains(file.getPath())) {
-                                                linksToBeRemoved.add(linkItem);
-                                            }
-                                        }
-                                        links.removeAll(linksToBeRemoved);
+						Button yesButton = view.findViewById(R.id.yes_button);
+						Button noButton = view.findViewById(R.id.no_button);
+						TextView title = view.findViewById(R.id.title_dialog);
+						TextView detail = view.findViewById(R.id.detail_dialog);
+						title.setText("Delete File");
+						detail.setText("Are you sure you want to delete the file?");
 
-                                        SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-                                        SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+						builder.setView(view);
 
-                                        if (links.size() == 0) {
-                                            linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-                                        }
-                                        Gson gson = new Gson();
-                                        linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-                                        linkPreferenceEditor.apply();
+						final AlertDialog dialog = builder.create();
+						dialog.setCanceledOnTouchOutside(true);
 
-                                        ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
-                                        for (FileItem starItem : starred) {
-                                            if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
-                                                starredToBeRemoved.add(starItem);
-                                            }
-                                        }
-                                        starredToBeRemoved.add(starred.get(position));
-                                        starred.removeAll(starredToBeRemoved);
+						yesButton.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
 
-                                        SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
-                                        SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+								dialog.dismiss();
 
-                                        if (starred.size() == 0) {
-                                            starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
-                                            mEmptyLayout.setVisibility(View.VISIBLE);
-                                        }
-                                        starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
-                                        starredPreferenceEditor.apply();
-                                    }
+								// Hiding the file to be deleted from RecyclerView
+								recyclerView.findViewHolderForAdapterPosition(position).itemView.
+										findViewById(R.id.noteItemLayout).setVisibility(View.GONE);
 
-                                } else {
-                                    int linkPosition = linkIndex(position);
-                                    if (linkPosition != -1) {
-                                        links.remove(linkPosition);
-                                        SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
-                                        SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+								// Displaying a Snackbar to allow user to UNDO the delete file action
+								Snackbar undoSnackbar = Snackbar.make(recyclerView, R.string.starred_file_deleted, Snackbar.LENGTH_LONG);
+								undoSnackbar.setAction(R.string.notes_action_undo, new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										// Making folder visible to user again
+										recyclerView.findViewHolderForAdapterPosition(position).itemView.
+												findViewById(R.id.noteItemLayout).setVisibility(View.VISIBLE);
+									}
 
-                                        if (links.size() == 0) {
-                                            linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
-                                        }
-                                        Gson gson = new Gson();
-                                        linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
-                                        linkPreferenceEditor.apply();
-                                    }
-                                }
-                                mStarredAdapter.notifyDataSetChanged();
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+								}).setDuration(3000).setActionTextColor(getResources().getColor(R.color.colorPrimary));
 
-                            }
-                        });
-                        builder.show();
-                        return true;
+								undoSnackbar.addCallback(new Snackbar.Callback() {
+									// Called when the Snackbar is dismissed by an event other than
+									// clicking of UNDO.
+									@Override
+									public void onDismissed(Snackbar snackbar, int event) {
+										if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+												event == Snackbar.Callback.DISMISS_EVENT_SWIPE ||
+												event == Snackbar.Callback.DISMISS_EVENT_MANUAL) {
+
+											if (starred.get(position).getType() != FileType.FILE_TYPE_LINK) {
+												File file = new File(starred.get(position).getPath());
+												deleteRecursive(file);
+
+												if (starred.get(position).getType() == FileType.FILE_TYPE_FOLDER) {
+													ArrayList<FileItem> linksToBeRemoved = new ArrayList<>();
+													for (FileItem linkItem : links) {
+														if (linkItem.getPath().contains(file.getPath())) {
+															linksToBeRemoved.add(linkItem);
+														}
+													}
+													links.removeAll(linksToBeRemoved);
+
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+
+													ArrayList<FileItem> starredToBeRemoved = new ArrayList<>();
+													for (FileItem starItem : starred) {
+														if (starItem.getPath().contains(file.getPath()) && !starItem.getPath().equals(file.getPath())) {
+															starredToBeRemoved.add(starItem);
+														}
+													}
+													starredToBeRemoved.add(starred.get(position));
+													starred.removeAll(starredToBeRemoved);
+
+													SharedPreferences starredPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "STARRED", MODE_PRIVATE);
+													SharedPreferences.Editor starredPreferenceEditor = starredPreference.edit();
+
+													if (starred.size() == 0) {
+														starredPreferenceEditor.putBoolean("STARRED_ITEMS_EXISTS", false);
+														mEmptyLayout.setVisibility(View.VISIBLE);
+													}
+													starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
+													starredPreferenceEditor.apply();
+												}
+
+											} else {
+												int linkPosition = linkIndex(position);
+												if (linkPosition != -1) {
+													links.remove(linkPosition);
+													SharedPreferences linkPreference = requireActivity().getSharedPreferences(FirebaseAuth.getInstance().getCurrentUser().getUid() + "LINK", MODE_PRIVATE);
+													SharedPreferences.Editor linkPreferenceEditor = linkPreference.edit();
+
+													if (links.size() == 0) {
+														linkPreferenceEditor.putBoolean("LINK_ITEMS_EXISTS", false);
+													}
+													Gson gson = new Gson();
+													linkPreferenceEditor.putString("LINK_ITEMS", gson.toJson(links));
+													linkPreferenceEditor.apply();
+												}
+											}
+											mStarredAdapter.notifyDataSetChanged();
+										}
+									}
+								});
+								undoSnackbar.show(); // Snackbar will appear for 3 seconds
+							}
+						});
+						noButton.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								dialog.dismiss();
+							}
+						});
+						dialog.show();
+						return true;
 
                     case R.id.notes_item_share:
                         if (starred.get(position).getType() != FileType.FILE_TYPE_FOLDER) {
@@ -652,7 +701,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
                                 startActivity(Intent.createChooser(intentShareFile, "Share File"));
                             }
                         } else {
-                            Toast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT).show();
+                            StyleableToast.makeText(getContext(), "Folder cannot be shared", Toast.LENGTH_SHORT, R.style.designedToast).show();
                         }
                         return true;
 
@@ -746,7 +795,7 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 			}
 		}
 		if (!fileOrDirectory.delete()) {
-			Toast.makeText(activity, "Cannot delete some files", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(activity, "Cannot delete some files", Toast.LENGTH_SHORT, R.style.designedToast).show();
 		}
 	}
 	
@@ -833,13 +882,26 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 	
 	private void unstarRows() {
 		final ArrayList<Integer> selectedItemPositions = mStarredAdapter.getSelectedItems();
-		
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		builder.setTitle("Unstar Files");
-		builder.setMessage("Are you sure you want to unstar " + selectedItemPositions.size() + " files?");
-		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(
+				getContext());
+		View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+		Button yesButton=view.findViewById(R.id.yes_button);
+		Button noButton=view.findViewById(R.id.no_button);
+		TextView title = view.findViewById(R.id.title_dialog);
+		TextView detail = view.findViewById(R.id.detail_dialog);
+		title.setText("Unstar Files");
+		detail.setText("Are you sure you want to unstar " + selectedItemPositions.size() + " files?");
+
+		builder.setView(view);
+
+		final AlertDialog dialog= builder.create();
+		dialog.setCanceledOnTouchOutside(true);
+
+		yesButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {
 				for (int i = selectedItemPositions.size() - 1; i >= 0; i--) {
 					starred.remove(selectedItemPositions.get(i).intValue());
 					mStarredAdapter.notifyItemRemoved(selectedItemPositions.get(i));
@@ -856,15 +918,16 @@ public class StarredFragment extends Fragment implements NotesAdapter.NotesClick
 				starredPreferenceEditor.putString("STARRED_ITEMS", gson.toJson(starred));
 				starredPreferenceEditor.apply();
 				activity.mBottomAppBar.performShow();
+				dialog.dismiss();
 			}
 		});
-		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+		noButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-			
+			public void onClick(View v) {
+				dialog.dismiss();
 			}
 		});
-		builder.show();
+		dialog.show();
 		
 		actionMode = null;
 	}

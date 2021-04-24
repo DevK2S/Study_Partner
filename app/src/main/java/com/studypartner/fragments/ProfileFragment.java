@@ -48,6 +48,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.muddzdev.styleabletoast.StyleableToast;
 import com.squareup.picasso.Picasso;
 import com.studypartner.R;
 import com.studypartner.activities.MainActivity;
@@ -410,7 +411,7 @@ public class ProfileFragment extends Fragment {
 				if (!signedInWithGoogle) {
 					updateEmail();
 				} else {
-					Toast.makeText(getContext(), "Signed in with google, cannot update email", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Signed in with google, cannot update email", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				}
 			}
 		});
@@ -422,7 +423,7 @@ public class ProfileFragment extends Fragment {
 				if (!signedInWithGoogle) {
 					updatePassword();
 				} else {
-					Toast.makeText(getContext(), "Signed in with google, cannot update password", Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Signed in with google, cannot update password", Toast.LENGTH_SHORT, R.style.designedToast).show();
 				}
 			}
 		});
@@ -495,7 +496,7 @@ public class ProfileFragment extends Fragment {
 		if (!signedInWithGoogle && deleteAccountPasswordTextInput.getVisibility() == View.GONE) {
 			Log.d(TAG, "deleteAccount: showing delete account password edit text");
 			deleteAccountPasswordTextInput.setVisibility(View.VISIBLE);
-			Toast.makeText(getContext(), "Enter the current password to delete the account", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(getContext(), "Enter the current password to delete the account", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			enableViews();
 		} else {
 			Log.d(TAG, "deleteAccount: re authenticating the user");
@@ -518,14 +519,28 @@ public class ProfileFragment extends Fragment {
 							if (task.isSuccessful()) {
 								Log.d(TAG, "onComplete: re authenticating successful");
 								enableViews();
-								
-								final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-								builder.setTitle("Deleting your account");
-								builder.setMessage("Are you sure you want to delete the account? All the data will be lost and cannot be retrieved later.");
-								builder.setCancelable(false);
-								builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+								AlertDialog.Builder builder = new AlertDialog.Builder(
+										getContext());
+								View view=getLayoutInflater().inflate(R.layout.alert_dialog_box,null);
+
+								Button yesButton=view.findViewById(R.id.yes_button);
+								Button noButton=view.findViewById(R.id.no_button);
+								TextView title = view.findViewById(R.id.title_dialog);
+								TextView detail = view.findViewById(R.id.detail_dialog);
+								yesButton.setText("Delete");
+								noButton.setText("Cancel");
+								title.setText("Deleting your account");
+								detail.setText("Are you sure you want to delete the account? All the data will be lost and cannot be retrieved later.");
+
+								builder.setView(view);
+
+								final AlertDialog dialog= builder.create();
+								dialog.setCancelable(false);
+
+								yesButton.setOnClickListener(new View.OnClickListener() {
 									@Override
-									public void onClick(DialogInterface dialog, int which) {
+									public void onClick(View v) {
 										Log.d(TAG, "onClick: deleting account");
 										
 										mDatabaseReference.child("users").child(currentUser.getUid()).removeValue(new DatabaseReference.CompletionListener() {
@@ -551,7 +566,7 @@ public class ProfileFragment extends Fragment {
 																			@Override
 																			public void onComplete(@NonNull Task<Void> task) {
 																				if (task.isSuccessful()) {
-																					Toast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT).show();
+																					StyleableToast.makeText(getContext(), "Account deleted successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 																					
 																					SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SESSIONS, MODE_PRIVATE);
 																					SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -579,7 +594,7 @@ public class ProfileFragment extends Fragment {
 																								activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 																								enableViews();
 																							} else {
-																								Toast.makeText(requireContext(), "Could not sign out. Please try again", Toast.LENGTH_SHORT).show();
+																								StyleableToast.makeText(requireContext(), "Could not sign out. Please try again", Toast.LENGTH_SHORT, R.style.designedToast).show();
 																								enableViews();
 																							}
 																						}
@@ -603,11 +618,12 @@ public class ProfileFragment extends Fragment {
 												}
 											}
 										});
+										dialog.dismiss();
 									}
 								});
-								builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								noButton.setOnClickListener(new View.OnClickListener() {
 									@Override
-									public void onClick(DialogInterface dialog, int which) {
+									public void onClick(View v) {
 										dialog.dismiss();
 										deleteAccountPasswordTextInput.getEditText().setText("");
 										deleteAccountPasswordTextInput.setVisibility(View.GONE);
@@ -615,15 +631,15 @@ public class ProfileFragment extends Fragment {
 									}
 								});
 								
-								builder.show();
+								dialog.show();
 							} else if (task.getException().getMessage().contains("The supplied auth credential is malformed or has expired.")){
-								Toast.makeText(requireContext(), "We are facing some errors! Please login again and then try deleting your account", Toast.LENGTH_SHORT).show();
+								StyleableToast.makeText(requireContext(), "We are facing some errors! Please login again and then try deleting your account", Toast.LENGTH_SHORT, R.style.designedToast).show();
 								enableViews();
 							} else if (task.getException().getMessage().contains("The password is invalid or the user does not have a password.")){
-								Toast.makeText(requireContext(), "The given password is incorrect.", Toast.LENGTH_SHORT).show();
+								StyleableToast.makeText(requireContext(), "The given password is incorrect.", Toast.LENGTH_SHORT, R.style.designedToast).show();
 								enableViews();
 							} else {
-								Toast.makeText(requireContext(), "We have blocked all requests from this device due to unusual activity. Try again later.", Toast.LENGTH_SHORT).show();
+								StyleableToast.makeText(requireContext(), "We have blocked all requests from this device due to unusual activity. Try again later.", Toast.LENGTH_SHORT, R.style.designedToast).show();
 								enableViews();
 							}
 						}
@@ -689,7 +705,7 @@ public class ProfileFragment extends Fragment {
 														public void onSuccess(Void aVoid) {
 															Log.d(TAG, "onSuccess: usernames database updated successfully");
 															
-															Toast.makeText(getContext(), "Display name and username updated successfully", Toast.LENGTH_SHORT).show();
+															StyleableToast.makeText(getContext(), "Display name and username updated successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 															
 															Log.d(TAG, "onSuccess: setting full name in nav header");
 															NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
@@ -704,7 +720,7 @@ public class ProfileFragment extends Fragment {
 														@Override
 														public void onFailure(@NonNull Exception e) {
 															Log.d(TAG, "onFailure: usernames database could not be updated");
-															Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+															StyleableToast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 															enableViews();
 														}
 													});
@@ -714,7 +730,7 @@ public class ProfileFragment extends Fragment {
 										@Override
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: users database could not be updated");
-											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 											enableViews();
 										}
 									});
@@ -724,7 +740,7 @@ public class ProfileFragment extends Fragment {
 						@Override
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: display name changing failed");
-							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 							enableViews();
 						}
 					});
@@ -750,7 +766,7 @@ public class ProfileFragment extends Fragment {
 										public void onSuccess(Void aVoid) {
 											Log.d(TAG, "onSuccess: users database updated successfully");
 											
-											Toast.makeText(getContext(), "Display name updated successfully", Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "Display name updated successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 											
 											Log.d(TAG, "onSuccess: setting full name in nav header");
 											NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
@@ -766,7 +782,7 @@ public class ProfileFragment extends Fragment {
 										@Override
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: users database could not be updated");
-											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 											enableViews();
 										}
 									});
@@ -776,7 +792,7 @@ public class ProfileFragment extends Fragment {
 						@Override
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: display name changing failed");
-							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 							enableViews();
 						}
 					});
@@ -798,7 +814,7 @@ public class ProfileFragment extends Fragment {
 										public void onSuccess(Void aVoid) {
 											Log.d(TAG, "onSuccess: usernames database updated successfully");
 											
-											Toast.makeText(getContext(), "Username updated successfully", Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "Username updated successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 											enableViews();
 										}
 									})
@@ -806,7 +822,7 @@ public class ProfileFragment extends Fragment {
 										@Override
 										public void onFailure(@NonNull Exception e) {
 											Log.d(TAG, "onFailure: usernames database could not be updated");
-											Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+											StyleableToast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 											enableViews();
 										}
 									});
@@ -816,12 +832,12 @@ public class ProfileFragment extends Fragment {
 						@Override
 						public void onFailure(@NonNull Exception e) {
 							Log.d(TAG, "onFailure: users database could not be updated");
-							Toast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT).show();
+							StyleableToast.makeText(getContext(), "Details could not be updated " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 							enableViews();
 						}
 					});
 		} else {
-			Toast.makeText(requireContext(), "Name and Username are same as before", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(requireContext(), "Name and Username are same as before", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			enableViews();
 		}
 		
@@ -837,7 +853,7 @@ public class ProfileFragment extends Fragment {
 		password = passwordTextInput.getEditText().getText().toString().trim();
 		
 		if (email.matches(user.getEmail())) {
-			Toast.makeText(getContext(), "Entered email is same as current email", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(getContext(), "Entered email is same as current email", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			enableViews();
 			return;
 		}
@@ -853,7 +869,7 @@ public class ProfileFragment extends Fragment {
 			Log.d(TAG, "updateEmail: showing password edit text");
 			passwordTextInput.setVisibility(View.VISIBLE);
 			emailTextInput.setEnabled(false);
-			Toast.makeText(getContext(), "Enter the current password to change the email", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(getContext(), "Enter the current password to change the email", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			enableViews();
 		} else {
 			
@@ -884,7 +900,7 @@ public class ProfileFragment extends Fragment {
 														public void onComplete(@NonNull Task<Void> task) {
 															if (task.isSuccessful()) {
 																Log.d(TAG, "onComplete: verification email sent successfully");
-																Toast.makeText(getContext(), "Email changed successfully", Toast.LENGTH_SHORT).show();
+																StyleableToast.makeText(getContext(), "Email changed successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 																NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
 																ImageView verifiedImage = navigationView.getHeaderView(0).findViewById(R.id.navigationDrawerVerifiedImage);
 																
@@ -914,14 +930,14 @@ public class ProfileFragment extends Fragment {
 														}
 													});
 												} else {
-													Toast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+													StyleableToast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 													enableViews();
 												}
 											}
 										});
 								
 							} else {
-								Toast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+								StyleableToast.makeText(getContext(), "Could not update email: " + task.getException().getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 								enableViews();
 							}
 						}
@@ -943,7 +959,7 @@ public class ProfileFragment extends Fragment {
 		if (oldPasswordTextInput.getVisibility() == View.GONE) {
 			Log.d(TAG, "updatePassword: showing old password edit text");
 			oldPasswordTextInput.setVisibility(View.VISIBLE);
-			Toast.makeText(getContext(), "Enter the current password to change it", Toast.LENGTH_SHORT).show();
+			StyleableToast.makeText(getContext(), "Enter the current password to change it", Toast.LENGTH_SHORT, R.style.designedToast).show();
 			enableViews();
 		} else {
 			
@@ -962,7 +978,7 @@ public class ProfileFragment extends Fragment {
 									Log.d(TAG, "updatePassword: showing password edit text");
 									newPasswordTextInput.setVisibility(View.VISIBLE);
 									confirmPasswordTextInput.setVisibility(View.VISIBLE);
-									Toast.makeText(getContext(), "Enter the new password", Toast.LENGTH_SHORT).show();
+									StyleableToast.makeText(getContext(), "Enter the new password", Toast.LENGTH_SHORT, R.style.designedToast).show();
 									oldPasswordTextInput.setEnabled(false);
 									enableViews();
 									return;
@@ -981,7 +997,7 @@ public class ProfileFragment extends Fragment {
 											@Override
 											public void onComplete(@NonNull Task<Void> task) {
 												if (task.isSuccessful()) {
-													Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+													StyleableToast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT, R.style.designedToast).show();
 													
 													SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SESSIONS, MODE_PRIVATE);
 													SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -1002,14 +1018,14 @@ public class ProfileFragment extends Fragment {
 													confirmPasswordTextInput.setVisibility(View.GONE);
 													enableViews();
 												} else {
-													Toast.makeText(getContext(), "Could not update password " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+													StyleableToast.makeText(getContext(), "Could not update password " + task.getException().getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 													enableViews();
 												}
 											}
 										});
 								
 							} else {
-								Toast.makeText(getContext(), "Could not update password. Please reenter the correct password", Toast.LENGTH_SHORT).show();
+								StyleableToast.makeText(getContext(), "Could not update password. Please reenter the correct password", Toast.LENGTH_SHORT, R.style.designedToast).show();
 								enableViews();
 							}
 						}
@@ -1086,7 +1102,7 @@ public class ProfileFragment extends Fragment {
 				public void onFailure(@NonNull Exception e) {
 					Log.d(TAG, "onFailure: photo upload failed");
 					progressDialog.dismiss();
-					Toast.makeText(getContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+					StyleableToast.makeText(getContext(), "Failed " + e.getMessage(), Toast.LENGTH_SHORT, R.style.designedToast).show();
 				}
 			});
 		}
