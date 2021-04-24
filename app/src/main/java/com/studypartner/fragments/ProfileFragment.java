@@ -340,11 +340,8 @@ public class ProfileFragment extends Fragment {
 		cameraButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				chooseProfilePicture();
 				Log.d(TAG, "onClick: camera button clicked");
-				Intent intent = new Intent();
-				intent.setType("image/*");
-				intent.setAction(Intent.ACTION_GET_CONTENT);
-				startActivityForResult(Intent.createChooser(intent, "Select Image from here..."), PICK_IMAGE_REQUEST);
 			}
 		});
 		
@@ -446,7 +443,48 @@ public class ProfileFragment extends Fragment {
 		
 		return rootView;
 	}
-	
+
+	private void chooseProfilePicture() {
+		AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
+		LayoutInflater inflater=getLayoutInflater();
+		View dialogView=inflater.inflate(R.layout.alert_dialog_profile_picture,null);
+		builder.setCancelable(true);
+		builder.setView(dialogView);
+		ImageView galleryImageChooser=dialogView.findViewById(R.id.gallery_profile_option);
+		ImageView cameraImageChooser=dialogView.findViewById(R.id.camera_profile_option);
+
+
+		final AlertDialog alertDialogProfilePicture=builder.create();
+		alertDialogProfilePicture.show();
+		galleryImageChooser.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				takePictureFromGallery();
+				alertDialogProfilePicture.cancel();
+			}
+		});
+		cameraImageChooser.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				takePictureFromCamera();
+				alertDialogProfilePicture.cancel();
+			}
+		});
+	}
+
+	private void takePictureFromCamera() {
+		Intent takePicture=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		startActivityForResult(takePicture,PICK_IMAGE_REQUEST);
+
+	}
+
+	private void takePictureFromGallery() {
+		Intent intent = new Intent();
+		intent.setType("image/*");
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+		startActivityForResult(Intent.createChooser(intent, "Select Image from here..."), PICK_IMAGE_REQUEST);
+	}
+
 	private void deleteAccount() {
 		Log.d(TAG, "deleteAccount: checking internet connection");
 		
