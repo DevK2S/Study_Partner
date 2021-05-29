@@ -37,7 +37,7 @@
             android:layout_marginStart="@dimen/largeMargin"
             android:layout_marginTop="@dimen/mediumMargin"
             android:background="@drawable/rounded_buttons"
-            android:backgroundTint="@color/darkIconTint"
+            android:backgroundTint="@color/errorTint"
             android:text="@string/profile_screen_delete_account"
             android:textColor="@color/alternativeText"
             android:textSize="@dimen/mediumText"
