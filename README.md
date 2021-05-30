@@ -98,6 +98,15 @@ The recommended IDE for Android development is [Android Studio](https://develope
 
 Avoid adding Android Studio's specific configuration files, such as .iml files to the version control system as these often contain configurations specific to your local machine, which won't work for your colleagues.
 
+## Organisation
+This project is under the GirlScript Summer of Code 2021. We would like to thank GirlScript for choosing our project so that people could contribute to it.
+
+## About GirlScript Summer of Code
+GirlScript Summer of Code is the 3 month long Open Source program during summers conducted by GirlScript Foundation, started in 2018, with an aim to help beginners get started with Open Source Development while encouraging diversity.
+
+Throughout the program, participants contribute to different projects under guidance of experienced mentors. Top participants get exciting goodies and opportunities.
+
+
 ## Contributors:
 ### Credits goes to these people:✨
 
