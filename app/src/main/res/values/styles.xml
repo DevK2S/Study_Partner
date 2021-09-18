@@ -37,6 +37,7 @@
         <item name="stColorBackground">#FFFFFF</item>
         <item name="stTextColor">#2799FB</item>
         <item name="stStrokeColor">#2799FB</item>
+        <item name="stSolidBackground">true</item>
         <item name="stStrokeWidth">1dp</item>
     </style>
 </resources>
